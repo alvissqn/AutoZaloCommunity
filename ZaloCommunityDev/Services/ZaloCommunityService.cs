@@ -92,7 +92,7 @@ namespace ZaloCommunityDev.Services
         }
 
 
-        public string[] OnlineDevices => _adb.Devices.Where(x => x.IsOnline).Select(x => x.SerialNumber).ToArray();
+        public string[] OnlineDevices => _adb?.Devices.Where(x => x.IsOnline).Select(x => x.SerialNumber).ToArray();
 
         public void StartAvd(string name)
         {
@@ -144,7 +144,7 @@ namespace ZaloCommunityDev.Services
             await TouchSwipe(_settings.Screen.WorkingRect.Center.X, _settings.Screen.WorkingRect.Center.Y, _settings.Screen.WorkingRect.Center.X, _settings.Screen.WorkingRect.Center.Y - _settings.Screen.FriendRowHeight, times);
         }
 
-        public async Task AddFriendNearBy(AddingFriendConfig config)
+        public async Task AddFriendNearBy(AddFriendNearByConfig config)
         {
 
             var gender = config.GenderSelection;
@@ -171,7 +171,7 @@ namespace ZaloCommunityDev.Services
             await AddFriend(maxFriendToday, config);
         }
 
-        private async Task AddFriend(int maxFriendToday, AddingFriendConfig config)
+        private async Task AddFriend(int maxFriendToday, AddFriendNearByConfig config)
         {
             bool finish = false;
 
@@ -206,7 +206,7 @@ namespace ZaloCommunityDev.Services
                 ProfileMessage profile = new ProfileMessage();
                 if (Screen.InfoRect.Contains(pointRowFriend.Point) && await ClickToAddFriendAt(profile, pointRowFriend.Point, config))
                 {
-                    _dbContext.AddProfileAddFriend(profile);
+                    _dbContext.AddProfile(profile);
                     //Add Log
                     countSuccess++;
                 }
@@ -220,7 +220,7 @@ namespace ZaloCommunityDev.Services
             var captureFiles = await CaptureScreenNow();
             var names = _zaloImageProcessing.GetListFriendName(captureFiles, Screen);
 
-            var t = names.Where(v => _dbContext.FriendProfileInfoSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
+            var t = names.Where(v => _dbContext.ProfileSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
 
             allPrrofiles(names.Select(x => x.Name).ToArray());
             return t.ToArray();
@@ -229,17 +229,17 @@ namespace ZaloCommunityDev.Services
         ScreenInfo Screen => _settings.Screen;
 
 
-        public async Task<bool> ClickToAddFriendAtRowPosition(ProfileMessage profile, int position, AddingFriendConfig config)
+        public async Task<bool> ClickToAddFriendAtRowPosition(ProfileMessage profile, int position, AddFriendNearByConfig config)
         {
             return await ClickToAddFriendAt(profile, Screen.MenuPoint.Y * 2, (position - 1) * Screen.FriendRowHeight + Screen.FriendRowHeight / 2 + Screen.HeaderHeight, config);
         }
 
-        public async Task<bool> ClickToAddFriendAt(ProfileMessage profile, ScreenPoint point, AddingFriendConfig config)
+        public async Task<bool> ClickToAddFriendAt(ProfileMessage profile, ScreenPoint point, AddFriendNearByConfig config)
         {
             return await ClickToAddFriendAt(profile, point.X, point.Y, config);
         }
 
-        public async Task<bool> ClickToAddFriendAt(ProfileMessage profile, int x, int y, AddingFriendConfig config)
+        public async Task<bool> ClickToAddFriendAt(ProfileMessage profile, int x, int y, AddFriendNearByConfig config)
         {
             await TouchAt(x, y);//TOUCH TO ROW_INDEX
 
@@ -440,7 +440,7 @@ namespace ZaloCommunityDev.Services
             _device.ExecuteShellCommand("adb shell am display-size " + x.ToString() + "x" + y.ToString(), _receiver);
         }
 
-        public async Task SpamFriend(AutoPostToFriendSessionConfig config)
+        public async Task SpamFriend(MessageToFriendConfig config)
         {
             bool finish = false;
 
@@ -489,7 +489,7 @@ namespace ZaloCommunityDev.Services
             }
         }
 
-        private async Task<bool> ClickToChatFriendAt(ProfileMessage profile, ScreenPoint point, AutoPostToFriendSessionConfig config)
+        private async Task<bool> ClickToChatFriendAt(ProfileMessage profile, ScreenPoint point, MessageToFriendConfig config)
         {
             await TouchAt(point);
             await Task.Delay(2000);//wait to navigate chat screen
@@ -521,7 +521,7 @@ namespace ZaloCommunityDev.Services
             return true;
         }
 
-        public async Task SpamFriend2(AutoPostToFriendSessionConfig config)
+        public async Task SpamFriend2(MessageToFriendConfig config)
         {
             Thread.Sleep((int)(delaynet + delay));
             InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.MainTabActivity");

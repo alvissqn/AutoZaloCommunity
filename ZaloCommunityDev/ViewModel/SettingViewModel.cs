@@ -12,7 +12,7 @@ namespace ZaloCommunityDev.ViewModel
 
         public Delay Delay { get; set; } = new Delay();
 
-        public AddingFriendConfig AddingFriendConfig { get; set; }
+        public AddFriendNearByConfig AddingFriendConfig { get; set; }
 
         public string TextAddFriend { get; set; } = "Hi. ";
         public int MaxFriendAddedPerDay { get; set; } = 23;

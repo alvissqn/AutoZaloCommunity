@@ -3,15 +3,164 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d"
-      d:DesignHeight="300"
-      d:DesignWidth="300"
+      DataContext="{Binding Main, Source={StaticResource Locator}}"
+      d:DesignHeight="700"
+      d:DesignWidth="700"
       Title="AutoAddFriendPage">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20,10,0,0">
+                <StackPanel Orientation="Horizontal"
+                            Margin="5">
+                    <TextBlock Text="CẤU HÌNH"
+                               VerticalAlignment="Center" />
+
+                    <ComboBox x:Name="ConfigsList"
+                              Margin="10,0,0,0"
+                              MinWidth="250"
+                              SelectedIndex="0"
+                              ItemsSource="{Binding AddingFriendConfigs}"
+                              Width="453">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}"
+                                               FontWeight="Bold" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Độ tuổi: " />
+                                            <TextBlock Text="{Binding AgeRange}"
+                                                       FontStyle="Italic" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal"
+                                                    Margin="10,0,0,0">
+                                            <TextBlock Text="Giới tính: " />
+                                            <TextBlock Text="{Binding GenderSelection}"
+                                                       FontStyle="Italic" />
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal"
+                                                    Margin="10,0,0,0">
+                                            <TextBlock Text="Số bạn mỗi lần: " />
+                                            <TextBlock Text="{Binding WishAddedNumberFriendPerDay}"
+                                                       FontStyle="Italic" />
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal">
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Lời chào nam: " />
+                                            <TextBlock Text="{Binding TextGreetingForMale}"
+                                                       FontStyle="Italic" />
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal"
+                                                    Margin="10,0,0,0">
+                                            <TextBlock Text="Lời chào nữ: " />
+                                            <TextBlock Text="{Binding TextGreetingForFemale}"
+                                                       FontStyle="Italic" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Button Content="Tải lại"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Style="{DynamicResource MaterialDesignFlatButton}"
+                            Margin="25,0,0,0"
+                            Command="{Binding RefreshAutoAddFriendConfigListCommand}" />
+                </StackPanel>
+
+                <StackPanel Margin="20,10,0,0"
+                            DataContext="{Binding ElementName=ConfigsList, Path=SelectedItem}"
+                            Orientation="Vertical">
+
+                    <TextBlock Text="{Binding Name}"
+                               MinWidth="150"
+                               Margin="5"
+                               FontWeight="Bold" />
+
+                    <StackPanel Orientation="Horizontal"
+                                Margin="5">
+                        <TextBlock Text="Độ tuổi: "
+                                   MinWidth="150"
+                                   VerticalAlignment="Bottom" />
+                        <TextBox Text="{Binding AgeRange}"
+                                 MinWidth="350"
+                                 FontStyle="Italic" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="5">
+                        <TextBlock Text="Giới tính: "
+                                   MinWidth="150"
+                                   VerticalAlignment="Bottom" />
+                        <TextBox Text="{Binding GenderSelection}"
+                                 MinWidth="350"
+                                 FontStyle="Italic" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                                Margin="5">
+                        <TextBlock Text="Số bạn mỗi lần: "
+                                   MinWidth="150"
+                                   VerticalAlignment="Bottom" />
+                        <TextBox Text="{Binding WishAddedNumberFriendPerDay}"
+                                 MinWidth="350"
+                                 FontStyle="Italic" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                                Margin="5">
+                        <TextBlock Text="Lời chào nam: "
+                                   MinWidth="150"
+                                   VerticalAlignment="Bottom" />
+                        <TextBox Text="{Binding TextGreetingForMale}"
+                                 MinWidth="350"
+                                 FontStyle="Italic" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                                Margin="5">
+                        <TextBlock Text="Lời chào nữ: "
+                                   MinWidth="150"
+                                   VerticalAlignment="Bottom" />
+                        <TextBox Text="{Binding TextGreetingForFemale}"
+                                 MinWidth="350"
+                                 FontStyle="Italic" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <TextBlock Grid.Row="0"
+                   Text="THÊM BẠN TỰ ĐỘNG"
+                   Margin="20,20,0,0"
+                   FontSize="20"
+                   VerticalAlignment="Center" />
+
+        <materialDesign:Card Grid.Row="2"
+                             Margin="5">
+            <Button Content="Bắt đầu kết bạn"
+                    Margin="10"
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{Binding AutoAddFriendCommand}"
+                    CommandParameter="{Binding ElementName=ConfigsList, Path=SelectedItem}"
+                    HorizontalAlignment="Right" />
+        </materialDesign:Card>
     </Grid>
 </Page>

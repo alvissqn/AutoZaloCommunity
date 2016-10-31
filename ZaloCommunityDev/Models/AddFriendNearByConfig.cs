@@ -2,7 +2,7 @@
 
 namespace ZaloCommunityDev.Models
 {
-    public class AddingFriendConfig
+    public class AddFriendNearByConfig
     {
         public int Id { get; set; }
 

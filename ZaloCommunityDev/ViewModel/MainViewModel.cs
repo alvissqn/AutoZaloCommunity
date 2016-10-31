@@ -13,8 +13,8 @@ namespace ZaloCommunityDev.ViewModel
         private readonly DatabaseContext _databaseContext;
         private readonly ZaloCommunityService _zaloCommunityService;
 
-        private AddingFriendConfig[] _addingFriendConfigs;
-        private AutoPostToFriendSessionConfig[] _autoPostToFriendSessionConfigs;
+        private AddFriendNearByConfig[] _addingFriendConfigs;
+        private MessageToFriendConfig[] _autoPostToFriendSessionConfigs;
         private string[] _onlineDevices;
 
         public ICommand AutoAddFriendCommand { get; }
@@ -37,20 +37,20 @@ namespace ZaloCommunityDev.ViewModel
             StartAvdCommand = new RelayCommand<string>(_zaloCommunityService.StartAvd);
             RefreshAvdListCommand = new RelayCommand(() => OnlineDevices = _zaloCommunityService.OnlineDevices);
 
-            AutoAddFriendCommand = new RelayCommand<AddingFriendConfig>(x => AddFriendAuto(x));
+            AutoAddFriendCommand = new RelayCommand<AddFriendNearByConfig>(x => AddFriendAuto(x));
             RefreshAutoAddFriendConfigListCommand = new RelayCommand(() => AddingFriendConfigs = _databaseContext.GetAddingFriendConfig());
             RefreshAutoPostToFriendSessionConfigCommand = new RelayCommand(() => AutoPostToFriendSessionConfigs = _databaseContext.GetAutoSpamConfigs());
 
-            AutoSpamFriendCommand = new RelayCommand<AutoPostToFriendSessionConfig>(x => SpamFriendNow(x));
+            AutoSpamFriendCommand = new RelayCommand<MessageToFriendConfig>(x => SpamFriendNow(x));
         }
 
-        public AddingFriendConfig[] AddingFriendConfigs
+        public AddFriendNearByConfig[] AddingFriendConfigs
         {
             get { return _addingFriendConfigs; }
             set { Set(ref _addingFriendConfigs, value); }
         }
 
-        public AutoPostToFriendSessionConfig[] AutoPostToFriendSessionConfigs
+        public MessageToFriendConfig[] AutoPostToFriendSessionConfigs
         {
             get { return _autoPostToFriendSessionConfigs; }
             set { Set(ref _autoPostToFriendSessionConfigs, value); }
@@ -69,10 +69,10 @@ namespace ZaloCommunityDev.ViewModel
             AutoPostToFriendSessionConfigs = _databaseContext.GetAutoSpamConfigs();
         }
 
-        private async Task AddFriendAuto(AddingFriendConfig x)
+        private async Task AddFriendAuto(AddFriendNearByConfig x)
             => await _zaloCommunityService.AddFriendNearBy(x);
 
-        private async Task SpamFriendNow(AutoPostToFriendSessionConfig x)
+        private async Task SpamFriendNow(MessageToFriendConfig x)
                     => await _zaloCommunityService.SpamFriend(x);
     }
 }

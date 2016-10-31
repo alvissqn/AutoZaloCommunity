@@ -7,13 +7,13 @@ namespace ZaloCommunityDev.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class addprofilea11 : IMigrationMetadata
+    public sealed partial class initcode : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(addprofilea11));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(initcode));
         
         string IMigrationMetadata.Id
         {
-            get { return "201610301406212_add-profilea11"; }
+            get { return "201610311116120_initcode"; }
         }
         
         string IMigrationMetadata.Source

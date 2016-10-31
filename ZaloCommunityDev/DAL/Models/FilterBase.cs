@@ -4,21 +4,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ZaloCommunityDev.DAL.Models
 {
-    [Table("AddingFriendConfig")]
-    public class AutoAddFriendSessionConfigDto
+    public abstract class FilterBase
     {
         [Key]
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string AccountName { get; set; }
 
-        public string AgeRange { get; set; }
+        public string ConfigName { get; set; }
 
         [Column("MaleGreeting")]
         public string TextGreetingForMale { get; set; }
 
         [Column("FemaleGreeting")]
         public string TextGreetingForFemale { get; set; }
+
+        public string FilterAgeRange { get; set; }
+
+        public string IncludedPeopleNames { get; set; }
+
+        public string ExceptPeopleNames { get; set; }
+
+        public int NumberOfAction { get; set; }
 
         [NotMapped]
         public GenderSelection GenderSelection { get; set; }
@@ -35,6 +42,6 @@ namespace ZaloCommunityDev.DAL.Models
             }
         }
 
-        public int WishAddedNumberFriendPerDay { get; set; }
+         public string Locations { get; set; }
     }
 }

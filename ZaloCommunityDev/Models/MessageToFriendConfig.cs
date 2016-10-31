@@ -1,6 +1,6 @@
 ﻿namespace ZaloCommunityDev.Models
 {
-    public class AutoPostToFriendSessionConfig
+    public class MessageToFriendConfig
     {
         public int Id { get; set; }
 
@@ -16,9 +16,6 @@
 
         public string NumberOfSpamMail { get; set; }
 
-        public override string ToString()
-        {
-            return $"{Name}: Nữ{TextToFemale} Nam:{TextToMale}";
-        }
+        public override string ToString() => $"{Name}: Nữ{TextToFemale} Nam:{TextToMale}";
     }
 }

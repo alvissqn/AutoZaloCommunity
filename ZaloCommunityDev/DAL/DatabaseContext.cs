@@ -14,23 +14,28 @@ namespace ZaloCommunityDev.DAL
         {
         }
 
-        public DbSet<AutoAddFriendSessionConfigDto> AutoAddFriendSessionConfigSet { get; set; }
-        public DbSet<FriendProfileInfoDto> FriendProfileInfoSet { get; set; }
+        public DbSet<AddFriendNearByConfigDto> AddFriendNearByConfigSet { get; set; }
+        public DbSet<AddFriendByPhoneConfigDto> AddFriendByPhoneConfigSet { get; set; }
+        public DbSet<MessageToFriendConfigDto> MessageToFriendConfigSet { get; set; }
+        public DbSet<MessageToStrangerConfigDto> MessageToStrangerConfigSet { get; set; }
+
         public DbSet<LogActivityDto> LogActivitySet { get; set; }
-        public DbSet<AutoPostToStrangerSessionConfigDto> AutoPostToStrangerSessionConfigSet { get; set; }
-        public DbSet<AutoPostToFriendSessionConfigDto> AutoPostToFriendSessionConfigSet { get; set; }
+        public DbSet<LogMessageSentToFriendDto> LogMessageSentToFriendSet { get; set; }
+        public DbSet<LogMessageSentToStrangerDto> LogMessageSentToStrangerSet { get; set; }
+        public DbSet<LogRequestAddFriendDto> LogRequestAddFriendSet { get; set; }
+        public DbSet<ProfileDto> ProfileSet { get; set; }
 
-        public AddingFriendConfig[] GetAddingFriendConfig()
-            => AutoAddFriendSessionConfigSet.ToArray().Select(Mapper.Map<AutoAddFriendSessionConfigDto, AddingFriendConfig>).ToArray();
+        public AddFriendNearByConfig[] GetAddingFriendConfig()
+            => AddFriendNearByConfigSet.ToArray().Select(Mapper.Map<AddFriendNearByConfigDto, AddFriendNearByConfig>).ToArray();
 
-        public AutoPostToFriendSessionConfig[] GetAutoSpamConfigs()
-            => AutoPostToFriendSessionConfigSet.ToArray().Select(Mapper.Map<AutoPostToFriendSessionConfigDto, AutoPostToFriendSessionConfig>).ToArray();
+        public MessageToFriendConfig[] GetAutoSpamConfigs()
+            => MessageToFriendConfigSet.ToArray().Select(Mapper.Map<MessageToFriendConfigDto, MessageToFriendConfig>).ToArray();
 
         private static string TodayText => DateTime.Now.Date.ToString("dd/MM/yyyy");
 
-        public void AddProfileAddFriend(ProfileMessage info)
+        public void AddProfile(ProfileMessage profile)
         {
-            FriendProfileInfoSet.Add(new FriendProfileInfoDto { BirthdayText = info.BirthdayText, Gender = info.Gender == "Nam" ? Gender.Male : Gender.Female, Name = info.Name });
+            ProfileSet.Add(new ProfileDto { BirthdayText = profile.BirthdayText, Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female, Name = profile.Name });
 
             var item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText);
             if (item == null)

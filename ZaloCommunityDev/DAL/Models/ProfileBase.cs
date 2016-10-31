@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ZaloCommunityDev.DAL.Models
 {
-    [Table("FriendProfileInfo")]
-    public class FriendProfileInfoDto
+    public abstract class ProfileBase
     {
         [Key]
         public int Id { get; set; }
@@ -17,7 +16,7 @@ namespace ZaloCommunityDev.DAL.Models
         [NotMapped]
         public Gender Gender { get; set; }
 
-        public string GenderSelectionText
+        public string GenderText
         {
             get
             {
@@ -29,6 +28,6 @@ namespace ZaloCommunityDev.DAL.Models
             }
         }
 
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime CreatedTime { get; set; } = DateTime.Now;
     }
 }
