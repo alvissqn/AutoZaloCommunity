@@ -122,46 +122,6 @@
     <None Include="tessdata\vie.traineddata">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Tesseract-OCR\doc\AUTHORS" />
-    <None Include="Tesseract-OCR\doc\COPYING" />
-    <None Include="Tesseract-OCR\doc\README" />
-    <None Include="Tesseract-OCR\doc\ReleaseNotes" />
-    <None Include="Tesseract-OCR\tessdata\chi_sim.traineddata" />
-    <None Include="Tesseract-OCR\tessdata\configs\ambigs.train" />
-    <None Include="Tesseract-OCR\tessdata\configs\api_config" />
-    <None Include="Tesseract-OCR\tessdata\configs\bigram" />
-    <None Include="Tesseract-OCR\tessdata\configs\box.train" />
-    <None Include="Tesseract-OCR\tessdata\configs\box.train.stderr" />
-    <None Include="Tesseract-OCR\tessdata\configs\digits" />
-    <None Include="Tesseract-OCR\tessdata\configs\hocr" />
-    <None Include="Tesseract-OCR\tessdata\configs\inter" />
-    <None Include="Tesseract-OCR\tessdata\configs\kannada" />
-    <None Include="Tesseract-OCR\tessdata\configs\linebox" />
-    <None Include="Tesseract-OCR\tessdata\configs\logfile" />
-    <None Include="Tesseract-OCR\tessdata\configs\makebox" />
-    <None Include="Tesseract-OCR\tessdata\configs\quiet" />
-    <None Include="Tesseract-OCR\tessdata\configs\rebox" />
-    <None Include="Tesseract-OCR\tessdata\configs\strokewidth" />
-    <None Include="Tesseract-OCR\tessdata\configs\unlv" />
-    <None Include="Tesseract-OCR\tessdata\eng.cube.bigrams" />
-    <None Include="Tesseract-OCR\tessdata\eng.cube.fold" />
-    <None Include="Tesseract-OCR\tessdata\eng.cube.lm" />
-    <None Include="Tesseract-OCR\tessdata\eng.cube.lm_" />
-    <None Include="Tesseract-OCR\tessdata\eng.cube.nn" />
-    <None Include="Tesseract-OCR\tessdata\eng.cube.params" />
-    <None Include="Tesseract-OCR\tessdata\eng.cube.size" />
-    <None Include="Tesseract-OCR\tessdata\eng.cube.word-freq" />
-    <None Include="Tesseract-OCR\tessdata\eng.tesseract_cube.nn" />
-    <None Include="Tesseract-OCR\tessdata\eng.traineddata" />
-    <None Include="Tesseract-OCR\tessdata\tessconfigs\batch" />
-    <None Include="Tesseract-OCR\tessdata\tessconfigs\batch.nochop" />
-    <None Include="Tesseract-OCR\tessdata\tessconfigs\matdemo" />
-    <None Include="Tesseract-OCR\tessdata\tessconfigs\msdemo" />
-    <None Include="Tesseract-OCR\tessdata\tessconfigs\nobatch" />
-    <None Include="Tesseract-OCR\tessdata\tessconfigs\segdemo" />
-    <None Include="Tesseract-OCR\tessdata\vie.traineddata">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="ImageData\1280x2048.dpi384\template\add_friend_pattern_template.png">
@@ -199,20 +159,6 @@
     <None Include="ImageData\800x1280.dpi240\template\profile_info_pattern_template.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="Tesseract-OCR\ambiguous_words.exe" />
-    <Content Include="Tesseract-OCR\classifier_tester.exe" />
-    <Content Include="Tesseract-OCR\cntraining.exe" />
-    <Content Include="Tesseract-OCR\combine_tessdata.exe" />
-    <Content Include="Tesseract-OCR\dawg2wordlist.exe" />
-    <Content Include="Tesseract-OCR\doc\eurotext.tif" />
-    <Content Include="Tesseract-OCR\doc\phototest.tif" />
-    <Content Include="Tesseract-OCR\java\ScrollView.jar" />
-    <Content Include="Tesseract-OCR\mftraining.exe" />
-    <Content Include="Tesseract-OCR\output\ocr_output_buffer.txt" />
-    <Content Include="Tesseract-OCR\shapeclustering.exe" />
-    <Content Include="Tesseract-OCR\tesseract_org.exe" />
-    <Content Include="Tesseract-OCR\unicharset_extractor.exe" />
-    <Content Include="Tesseract-OCR\wordlist2dawg.exe" />
     <Content Include="x64\liblept172.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

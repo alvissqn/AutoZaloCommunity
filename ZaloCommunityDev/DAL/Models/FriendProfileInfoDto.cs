@@ -4,13 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ZaloCommunityDev.DAL.Models
 {
-    public enum Gender
-    {
-        Unknown = 0,
-        Male = 1,
-        Female = 2,
-    }
-
     [Table("FriendProfileInfo")]
     public class FriendProfileInfoDto
     {

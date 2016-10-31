@@ -159,6 +159,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DAL\DatabaseContext.cs" />
+    <Compile Include="DAL\Models\AutoPostToStrangerSessionConfigDto.cs" />
+    <Compile Include="DAL\Models\Enums.cs" />
     <Compile Include="DAL\Models\LogActivityDto.cs" />
     <Compile Include="DAL\Models\AutoPostSessionConfigDto.cs" />
     <Compile Include="DAL\Models\FriendProfileInfoDto.cs" />
@@ -172,11 +174,12 @@
       <DependentUpon>201610301406212_add-profilea11.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AddFriendConfig.cs" />
-    <Compile Include="Models\Class1.cs" />
-    <Compile Include="Models\Configs.cs" />
-    <Compile Include="Models\DelayConfig.cs" />
+    <Compile Include="Models\AddingFriendConfig.cs" />
+    <Compile Include="Models\AutoPostToFriendSessionConfig.cs" />
     <Compile Include="Models\KeyCode.cs" />
+    <Compile Include="Pages\AutoAddFriendPage.xaml.cs">
+      <DependentUpon>AutoAddFriendPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SettingViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -193,6 +196,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\AutoAddFriendPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -239,9 +246,6 @@
       <Project>{018e8827-2886-49ed-ba7d-d883fbd3dab6}</Project>
       <Name>ZaloImageProcessing207</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Templates\800_1280_240dpi\touch_points.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Database - Copy.accdb" />

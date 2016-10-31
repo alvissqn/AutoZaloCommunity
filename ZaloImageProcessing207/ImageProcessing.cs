@@ -9,8 +9,8 @@ using Emgu.CV.CvEnum;
 using ZaloImageProcessing207.Structures;
 using System.Text.RegularExpressions;
 using System.IO;
-using ZaloCommunityDev.Models;
 using System.Text;
+using ZaloCommunityDev.Shared;
 
 namespace ZaloImageProcessing207
 {

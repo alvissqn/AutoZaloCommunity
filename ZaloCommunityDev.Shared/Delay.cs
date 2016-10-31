@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ZaloCommunityDev.Models
+﻿namespace ZaloCommunityDev.Shared
 {
     public class Delay
     {

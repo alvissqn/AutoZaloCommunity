@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
-        xmlns:local="clr-namespace:ZaloCommunityDev"
         mc:Ignorable="d"
         Title="MainWindow"
         Height="350"
@@ -21,22 +20,22 @@
 
             <TextBlock Text="Chọn thiết bị đang online"
                        VerticalAlignment="Center" />
-            
+
             <ComboBox Grid.Column="1"
-                      x:Name="onlineDevices"
+                      x:Name="OnlineDevices"
                       SelectedIndex="0"
-                      ItemsSource="{Binding Service.OnlineDevices ,Source={StaticResource Locator}}" />
+                      ItemsSource="{Binding OnlineDevices}" />
 
             <Button Content="Tải lại"
                     Grid.Column="2"
                     Margin="10,0,0,0"
-                    Command="{Binding RefreshAvdListCommand}"/>
-            
+                    Command="{Binding RefreshAvdListCommand}" />
+
             <Button Content="Khởi động"
                     Grid.Column="3"
                     Margin="10,0,0,0"
                     Command="{Binding StartAvdCommand}"
-                    CommandParameter="{Binding ElementName=onlineDevices, Path=SelectedItem}" />
+                    CommandParameter="{Binding ElementName=OnlineDevices, Path=SelectedItem}" />
         </Grid>
 
         <Grid Margin="5">
@@ -51,7 +50,7 @@
                        VerticalAlignment="Center" />
 
             <ComboBox Grid.Column="1"
-                      x:Name="configsList"
+                      x:Name="ConfigsList"
                       SelectedIndex="0"
                       ItemsSource="{Binding AddingFriendConfigs}">
                 <ComboBox.ItemTemplate>
@@ -78,13 +77,11 @@
                                     <TextBlock Text="{Binding WishAddedNumberFriendPerDay}"
                                                FontStyle="Italic" />
                                 </StackPanel>
-                                
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal">
-                               
-                                <StackPanel Orientation="Horizontal"
-                                            >
+
+                                <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Lời chào nam: " />
                                     <TextBlock Text="{Binding TextGreetingForMale}"
                                                FontStyle="Italic" />
@@ -98,9 +95,7 @@
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
-
                     </DataTemplate>
-
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
@@ -109,13 +104,13 @@
                     VerticalAlignment="Top"
                     Margin="10,0,0,0"
                     Command="{Binding RefreshAutoAddFriendConfigListCommand}" />
-            
+
             <Button Content="Tự động kết bạn"
                     Grid.Column="3"
                     Margin="10,0,0,0"
                     VerticalAlignment="Top"
                     Command="{Binding AutoAddFriendCommand}"
-                    CommandParameter="{Binding ElementName=configsList, Path=SelectedItem}" />
+                    CommandParameter="{Binding ElementName=ConfigsList, Path=SelectedItem}" />
         </Grid>
 
         <Grid Margin="5">
@@ -126,7 +121,7 @@
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Spam Friends"
+            <TextBlock Text="Nhắn tin cho bạn bè trong danh sách"
                        FontWeight="Bold"
                        VerticalAlignment="Top" />
 
@@ -136,8 +131,7 @@
                     <TextBlock Text="Cấu hình "
                                FontWeight="Bold" />
                     <ComboBox ItemsSource="{Binding AutoPostToFriendSessionConfigs}"
-                              x:Name="AutoPostToFriendSessionConfigs"
-                              />
+                              x:Name="AutoPostToFriendSessionConfigs" />
 
                     <Button Content="Tải lại"
                             Grid.Column="2"
@@ -145,10 +139,12 @@
                             Margin="10,0,0,0"
                             Command="{Binding RefreshAutoAddFriendConfigListCommand}" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <TextBlock Text="Nội dung spam bạn nam: " FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal"
+                            Margin="5">
+                    <TextBlock Text="Nội dung spam bạn nam: "
+                               FontWeight="Bold" />
                     <TextBox Text="{Binding ElementName=AutoPostToFriendSessionConfigs, Path=SelectedItem.TextToMale}"
-                             MinWidth="250"/>
+                             MinWidth="250" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal"
@@ -183,7 +179,7 @@
                              MinWidth="250" />
                 </StackPanel>
             </StackPanel>
-           
+
             <Button Content="Spam ngay"
                     Grid.Column="3"
                     Margin="10,0,0,0"
@@ -192,18 +188,15 @@
                     CommandParameter="{Binding ElementName=AutoPostToFriendSessionConfigs, Path=SelectedItem}" />
         </Grid>
 
-
-
         <Button Width="150"
                 Height="50"
                 Content="Add Friend"
-                Click="OKOK"
+                Click="Okok"
                 Margin="184,0,183,0" />
 
         <Button Content="Capture Screen"
                 Width="160"
                 Height="50"
                 Click="Button_Click" />
-
     </StackPanel>
 </Window>

@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using ZaloCommunityDev.DAL;
 using ZaloCommunityDev.DAL.Models;
 using ZaloCommunityDev.Models;
+using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.ViewModel;
 using ZaloImageProcessing207;
 using ZaloImageProcessing207.Structures;
@@ -401,7 +402,7 @@ namespace ZaloCommunityDev.Services
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
                 Thread.Sleep(delay);
                 await SendText(phonelist[total_action].ToString());
-                await SendKey(KeyCode.AKEYCODE_ENTER, 1);
+                await SendKey(KeyCode.AkeycodeEnter, 1);
                 Thread.Sleep(delaynet);
                 await TouchAt(0x2fd, 70, 1);
                 await TouchAt(780, 200, 2);
@@ -581,7 +582,7 @@ namespace ZaloCommunityDev.Services
             {
                 UpImageChat(path);
                 Thread.Sleep(delay);
-                SendKey(KeyCode.AKEYCODE_DPAD_DOWN, 1);
+                SendKey(KeyCode.AkeycodeDpadDown, 1);
                 while (str != "#158FC2")
                 {
                     for (int j = 0; j < 10; j++)
@@ -590,8 +591,8 @@ namespace ZaloCommunityDev.Services
                         {
                             return;
                         }
-                        SendKey(KeyCode.AKEYCODE_DPAD_DOWN, 2);
-                        SendKey(KeyCode.AKEYCODE_ENTER, 1);
+                        SendKey(KeyCode.AkeycodeDpadDown, 2);
+                        SendKey(KeyCode.AkeycodeEnter, 1);
                         Thread.Sleep(delay);
                         TouchAt(200, 0x492, 1);
                         string str2 = ResultSpin(text);
@@ -662,8 +663,8 @@ namespace ZaloCommunityDev.Services
             for (int i = 0; !istop && (i < numFriends); i++)
             {
                 Thread.Sleep(delay);
-                SendKey(KeyCode.AKEYCODE_DPAD_DOWN, 2);
-                SendKey(KeyCode.AKEYCODE_ENTER, 1);
+                SendKey(KeyCode.AkeycodeDpadDown, 2);
+                SendKey(KeyCode.AkeycodeEnter, 1);
                 Thread.Sleep(delaynet);
                 TouchAt(40, 0x492, 1);
                 TouchAt(200, 0x492, 1);
@@ -681,7 +682,7 @@ namespace ZaloCommunityDev.Services
                 {
                     TouchAt(0x2ff, 0x474, 1);
                 }
-                SendKey(KeyCode.AKEYCODE_BACK, 2);
+                SendKey(KeyCode.AkeycodeBack, 2);
             }
             TouchAt(100, 0x4b, 3);
         }
@@ -700,7 +701,7 @@ namespace ZaloCommunityDev.Services
 
                 Thread.Sleep(delaynet);
                 SendText(phonelist[total_action].ToString());
-                SendKey(KeyCode.AKEYCODE_ENTER, 1);
+                SendKey(KeyCode.AkeycodeEnter, 1);
                 Thread.Sleep(delaynet);
                 TouchAt(40, 0x492, 1);
                 TouchAt(200, 0x492, 1);
@@ -790,14 +791,14 @@ namespace ZaloCommunityDev.Services
                 await TouchAt(650, 260, 1);
                 for (int i = 0; i < 12; i++)
                 {
-                    await SendKey(KeyCode.AKEYCODE_DEL);
+                    await SendKey(KeyCode.AkeycodeDel);
                 }
                 await SendText(account);
 
 
                 await TouchAt(640, 0x14f, 1);
                 await SendText(password);
-                await SendKey(KeyCode.AKEYCODE_ENTER, 2);
+                await SendKey(KeyCode.AkeycodeEnter, 2);
 
                 await Task.Delay(_settings.Delay.WaitLogin);
             }
@@ -957,7 +958,7 @@ namespace ZaloCommunityDev.Services
             await TouchAt(750, 50, 1);
 
             await SendText(lat + "," + longt);
-            await SendKey(KeyCode.AKEYCODE_ENTER);
+            await SendKey(KeyCode.AkeycodeEnter);
 
             await TouchAt(750, 50, 1);
 

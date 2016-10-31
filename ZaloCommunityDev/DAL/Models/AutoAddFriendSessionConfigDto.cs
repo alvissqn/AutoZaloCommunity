@@ -4,13 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ZaloCommunityDev.DAL.Models
 {
-    public enum GenderSelection
-    {
-        OnlyMale,
-        OnlyFemale,
-        Both
-    }
-
     [Table("AddingFriendConfig")]
     public class AutoAddFriendSessionConfigDto
     {
@@ -43,6 +36,5 @@ namespace ZaloCommunityDev.DAL.Models
         }
 
         public int WishAddedNumberFriendPerDay { get; set; }
-
     }
 }

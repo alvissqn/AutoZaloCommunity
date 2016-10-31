@@ -1,4 +1,4 @@
-﻿using ZaloCommunityDev.Models;
+﻿using ZaloCommunityDev.Shared;
 using ZaloImageProcessing207.Structures;
 
 namespace ZaloImageProcessing207

@@ -8,7 +8,6 @@ namespace ZaloCommunityDev.ViewModel
 {
     public class ViewModelLocator
     {
-
         public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
@@ -22,12 +21,6 @@ namespace ZaloCommunityDev.ViewModel
         }
 
         public ZaloCommunityService Service => ServiceLocator.Current.GetInstance<ZaloCommunityService>();
-
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
-
-        public static void Cleanup()
-        {
-            
-        }
     }
 }

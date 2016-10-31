@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
-using System.Windows;
 using ZaloCommunityDev.Models;
+using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.ViewModel
 {

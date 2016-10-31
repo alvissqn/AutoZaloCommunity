@@ -1,5 +1,5 @@
 ﻿using System;
-using ZaloCommunityDev.Models;
+using ZaloCommunityDev.Shared;
 
 namespace ZaloImageProcessing207.Structures
 {

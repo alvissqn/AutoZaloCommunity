@@ -1,5 +1,4 @@
-﻿using System;
-using ZaloCommunityDev.DAL.Models;
+﻿using ZaloCommunityDev.DAL.Models;
 
 namespace ZaloCommunityDev.Models
 {
@@ -19,9 +18,6 @@ namespace ZaloCommunityDev.Models
 
         public string TextGreetingForFemale { get; set; }
 
-        public override string ToString()
-        {
-            return $@"{Name}";
-        }
+        public override string ToString() => $@"{Name}";
     }
 }

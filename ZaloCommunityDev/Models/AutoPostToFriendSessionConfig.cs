@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ZaloCommunityDev.Models
+﻿namespace ZaloCommunityDev.Models
 {
     public class AutoPostToFriendSessionConfig
     {
-
         public int Id { get; set; }
 
         public string Name { get; set; }
