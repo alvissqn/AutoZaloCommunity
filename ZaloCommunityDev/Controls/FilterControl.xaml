@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              x:Name="This"
              d:DesignHeight="700"
@@ -23,18 +24,26 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="FilterSelection"
-                      SelectedItem="{Binding ElementName=This,Path=SelectedItem}"
-                      ItemsSource="{Binding ElementName=This,Path=ItemsSource}" />
+                      SelectedItem="{Binding ElementName=This, Path=SelectedFilter, Mode=TwoWay}"
+                      ItemsSource="{Binding ElementName=This, Path=Sources}" />
             <Button Grid.Column="1"
                     Margin="10,0,0,0"
                     Style="{DynamicResource MaterialDesignFlatButton}"
-                    Content="TẢI LẠI"
-                    Command="{Binding ElementName=This,Path=RefreshCommand}" />
+                    
+                    Command="{Binding ElementName=This,Path=RefreshCommand}" >
+                <StackPanel Orientation="Horizontal">
+
+                    <wpf:PackIcon Kind="Refresh" Margin="8,0"/>
+                    <TextBlock Text="TẢI LẠI"/>
+
+                </StackPanel>
+                </Button>
+                    
         </Grid>
 
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel DataContext="{Binding ElementName=FilterSelection, Path=SelectedItem}">
+            <StackPanel DataContext="{Binding ElementName=This, Path=SelectedFilter}">
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50" Width="220"/>

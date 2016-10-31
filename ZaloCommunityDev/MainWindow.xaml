@@ -29,42 +29,49 @@
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <ListBox x:Name="TaskListBox">
+                <ListBox x:Name="TaskListBox" Margin="0,20,0,0">
                     <ListBox.Items>
                         <ListBoxItem Tag="Pages\SelectDevicePage.xaml">
                             <StackPanel Orientation="Horizontal">
                                 <wpf:PackIcon Kind="Settings" />
-                                <TextBlock Text="Cấu hình chung"
+                                <TextBlock Text="TÙY CHỈNH CHUNG"
                                            Margin="10,0,0,0" />
                             </StackPanel>
                         </ListBoxItem>
-                        <ListBoxItem  Tag="Pages\AutoAddFriendPage.xaml">
+                        <ListBoxItem  Tag="Pages\AutoAddFriendNearByPage.xaml">
                             <StackPanel Orientation="Horizontal">
                                 <wpf:PackIcon Kind="AccountLocation" />
-                                <TextBlock Text="Kết bạn gần đây"
+                                <TextBlock Text="KẾT BẠN GẦN ĐÂY"
                                            Margin="10,0,0,0" />
                             </StackPanel>
                         </ListBoxItem>
-                        <ListBoxItem Tag="Pages\AutoAddFriendPage.xaml">
+                        <ListBoxItem Tag="Pages\AutoAddFriendByPhonePage.xaml">
                             <StackPanel Orientation="Horizontal">
-                                <wpf:PackIcon Kind="AccountPlus" />
-                                <TextBlock Text="Kết bạn bằng số đt"
-                                           Margin="10,0,0,0" />
-                            </StackPanel>
-                        </ListBoxItem>
-
-                        <ListBoxItem Tag="Pages\AutoPostFriendPage.xaml">
-                            <StackPanel Orientation="Horizontal">
-                                <wpf:PackIcon Kind="Message" />
-                                <TextBlock Text="Gửi tin nhắn cho bạn"
+                                <wpf:PackIcon Kind="Phone" />
+                                <TextBlock Text="KẾT BẠN BẰNG SỐ ĐT"
                                            Margin="10,0,0,0" />
                             </StackPanel>
                         </ListBoxItem>
 
-                        <ListBoxItem Tag="Pages\AutoAddFriendPage.xaml">
+                        <ListBoxItem Tag="Pages\AutoSendMessageToFriendPage.xaml">
                             <StackPanel Orientation="Horizontal">
                                 <wpf:PackIcon Kind="Message" />
-                                <TextBlock Text="Gửi tin nhắn gần đây"
+                                <TextBlock Text="GỬI TIN NHẮN CHO BẠN"
+                                           Margin="10,0,0,0" />
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <ListBoxItem Tag="Pages\AutoSendMessageToStrangerNearByPage.xaml">
+                            <StackPanel Orientation="Horizontal">
+                                <wpf:PackIcon Kind="NearMe" />
+                                <TextBlock Text="GỬI TIN NHẮN GẦN ĐÂY"
+                                           Margin="10,0,0,0" />
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Tag="Pages\AutoSendMessageToStrangerByPhonePage.xaml">
+                            <StackPanel Orientation="Horizontal">
+                                <wpf:PackIcon Kind="CallMade" />
+                                <TextBlock Text="GỬI TIN NHẮN QUA SỐ ĐT"
                                            Margin="10,0,0,0" />
                             </StackPanel>
                         </ListBoxItem>

@@ -35,15 +35,15 @@
             Center = new ScreenPoint(left + Width / 2, top + Height / 2);
         }
 
-        public int Left { get; }
-        public int Right { get; }
-        public int Top { get; }
-        public int Bottom { get; }
+        public int Left { get; set; }
+        public int Right { get; set; }
+        public int Top { get; set; }
+        public int Bottom { get; set; }
 
-        public int Width { get; }
-        public int Height { get; }
+        public int Width { get; set; }
+        public int Height { get; set; }
 
-        public ScreenPoint Center { get; }
+        public ScreenPoint Center { get; set; }
 
         public bool Contains(ScreenPoint point)=> point.X >= Left && point.X <= Right && point.Y >= Top && point.Y <= Bottom;
     }

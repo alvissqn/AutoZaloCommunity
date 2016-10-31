@@ -177,42 +177,28 @@
     <Compile Include="Controls\FilterControl.xaml.cs">
       <DependentUpon>FilterControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DAL\DatabaseContext.cs" />
-    <Compile Include="DAL\Models\AddFriendByPhoneConfigDto.cs" />
-    <Compile Include="DAL\Models\FilterBase.cs" />
-    <Compile Include="DAL\Models\MessageToStrangerConfigDto.cs" />
-    <Compile Include="DAL\Models\Enums.cs" />
-    <Compile Include="DAL\Models\LogActivityDto.cs" />
-    <Compile Include="DAL\Models\MessageToFriendConfigDto.cs" />
-    <Compile Include="DAL\Models\LogMessageSentToStrangerDto.cs" />
-    <Compile Include="DAL\Models\LogMessageSentToFriendDto.cs" />
-    <Compile Include="DAL\Models\LogRequestAddFriendDto.cs" />
-    <Compile Include="DAL\Models\ProfileBase.cs" />
-    <Compile Include="DAL\Models\ProfileInfoDto.cs" />
-    <Compile Include="DAL\Models\AddFriendNearByConfigDto.cs" />
-    <Compile Include="DAL\Models\SentMessage.cs" />
-    <Compile Include="Migrations\201610311116120_initcode.cs" />
-    <Compile Include="Migrations\201610311116120_initcode.Designer.cs">
-      <DependentUpon>201610311116120_initcode.cs</DependentUpon>
+    <Compile Include="Pages\AutoAddFriendByPhonePage.xaml.cs">
+      <DependentUpon>AutoAddFriendByPhonePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Filter.cs" />
-    <Compile Include="Models\AddFriendNearByConfig.cs" />
-    <Compile Include="Models\MessageToFriendConfig.cs" />
-    <Compile Include="Models\KeyCode.cs" />
-    <Compile Include="Pages\AutoAddFriendPage.xaml.cs">
-      <DependentUpon>AutoAddFriendPage.xaml</DependentUpon>
+    <Compile Include="Pages\AutoSendMessageToStrangerByPhonePage.xaml.cs">
+      <DependentUpon>AutoSendMessageToStrangerByPhonePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\AutoPostFriendPage.xaml.cs">
-      <DependentUpon>AutoPostFriendPage.xaml</DependentUpon>
+    <Compile Include="Pages\AutoSendMessageToStrangerNearByPage.xaml.cs">
+      <DependentUpon>AutoSendMessageToStrangerNearByPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AutoAddFriendNearByPage.xaml.cs">
+      <DependentUpon>AutoAddFriendNearByPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AutoSendMessageToFriendPage.xaml.cs">
+      <DependentUpon>AutoSendMessageToFriendPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SelectDevicePage.xaml.cs">
       <DependentUpon>SelectDevicePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UiAssists\UiConverterHelper.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\SettingViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="ViewModel\ZaloServive.cs" />
     <Page Include="Controls\FilterControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -225,16 +211,27 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Services\ZaloCommunityService.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\AutoAddFriendPage.xaml">
+    <Page Include="Pages\AutoAddFriendByPhonePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AutoAddFriendNearByPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\AutoPostFriendPage.xaml">
+    <Page Include="Pages\AutoSendMessageToStrangerByPhonePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AutoSendMessageToStrangerNearByPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AutoSendMessageToFriendPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -257,9 +254,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Migrations\201610311116120_initcode.resx">
-      <DependentUpon>201610311116120_initcode.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -277,6 +271,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ZaloCommunityDev.Data\ZaloCommunityDev.Data.csproj">
+      <Project>{21831bec-5617-4beb-bd2a-ecc44367a934}</Project>
+      <Name>ZaloCommunityDev.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZaloCommunityDev.Shared\ZaloCommunityDev.Shared.csproj">
       <Project>{c46869ab-da93-48e2-b1d4-694ce9a25ff5}</Project>
       <Name>ZaloCommunityDev.Shared</Name>

@@ -79,8 +79,6 @@
     <Compile Include="ImageProcessing.cs" />
     <Compile Include="IZaloImageProcessing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Structures\FriendMessage.cs" />
-    <Compile Include="Structures\ProfileMessage.cs" />
     <Compile Include="SubImageFinder.cs" />
   </ItemGroup>
   <ItemGroup>

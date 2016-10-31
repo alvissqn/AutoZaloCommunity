@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaloImageProcessing207", "Z
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaloCommunityDev.Shared", "ZaloCommunityDev.Shared\ZaloCommunityDev.Shared.csproj", "{C46869AB-DA93-48E2-B1D4-694CE9A25FF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaloCommunityDev.Service", "ZaloCommunityDev.Service\ZaloCommunityDev.Service.csproj", "{376B7DCF-740E-4E9C-8101-631723B49B93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaloCommunityDev.Data", "ZaloCommunityDev.Data\ZaloCommunityDev.Data.csproj", "{21831BEC-5617-4BEB-BD2A-ECC44367A934}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,30 @@ Global
 		{C46869AB-DA93-48E2-B1D4-694CE9A25FF5}.Release|x64.Build.0 = Release|Any CPU
 		{C46869AB-DA93-48E2-B1D4-694CE9A25FF5}.Release|x86.ActiveCfg = Release|Any CPU
 		{C46869AB-DA93-48E2-B1D4-694CE9A25FF5}.Release|x86.Build.0 = Release|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Debug|x64.Build.0 = Debug|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Debug|x86.Build.0 = Debug|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Release|x64.ActiveCfg = Release|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Release|x64.Build.0 = Release|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Release|x86.ActiveCfg = Release|Any CPU
+		{376B7DCF-740E-4E9C-8101-631723B49B93}.Release|x86.Build.0 = Release|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Debug|x64.Build.0 = Debug|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Debug|x86.Build.0 = Debug|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Release|x64.ActiveCfg = Release|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Release|x64.Build.0 = Release|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Release|x86.ActiveCfg = Release|Any CPU
+		{21831BEC-5617-4BEB-BD2A-ECC44367A934}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

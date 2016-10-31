@@ -1,5 +1,4 @@
-﻿using GalaSoft.MvvmLight;
-using log4net;
+﻿using log4net;
 using Managed.Adb;
 using System;
 using System.Collections.Generic;
@@ -11,20 +10,18 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using ZaloCommunityDev.DAL;
 using ZaloCommunityDev.DAL.Models;
 using ZaloCommunityDev.Models;
 using ZaloCommunityDev.Shared;
-using ZaloCommunityDev.ViewModel;
 using ZaloImageProcessing207;
 using ZaloImageProcessing207.Structures;
 
 namespace ZaloCommunityDev.Services
 {
-    public class ZaloCommunityService
+    public class ZaloCommunityDistributeService
     {
-        private ILog log = LogManager.GetLogger(nameof(ZaloCommunityService));
+        private ILog log = LogManager.GetLogger(nameof(ZaloCommunityDistributeService));
 
         public enum Activity
         {
@@ -42,10 +39,9 @@ namespace ZaloCommunityDev.Services
         private int currentaction;
         private int delay = 1000;
         private int delaynet;
-        private bool istop;
         private int NoImg;
 
-        private SettingViewModel _settings;
+        private Settings _settings;
 
         private void InvokeProc(string args)
         {
@@ -59,7 +55,7 @@ namespace ZaloCommunityDev.Services
         }
         IZaloImageProcessing _zaloImageProcessing;
         DatabaseContext _dbContext;
-        public ZaloCommunityService(SettingViewModel settings, IZaloImageProcessing zaloImageProcessing, DatabaseContext dbContext)
+        public ZaloCommunityDistributeService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -70,15 +66,12 @@ namespace ZaloCommunityDev.Services
 
 
             _zaloImageProcessing = zaloImageProcessing;
-            this._dbContext = dbContext;
 
             _settings = settings;
+            _dbContext = dbContext;
 
             _receiver = new ConsoleOutputReceiver();
             _adbPath = settings.AndroidDebugBridgeOsLocation;
-
-            istop = false;
-
             try
             {
                 _adb = AndroidDebugBridge.CreateBridge(Path.Combine(_settings.AndroidDebugBridgeOsLocation, "adb.exe"), true);
@@ -88,20 +81,23 @@ namespace ZaloCommunityDev.Services
             {
                 log.Error(ex);
             }
-
         }
 
 
         public string[] OnlineDevices => _adb?.Devices.Where(x => x.IsOnline).Select(x => x.SerialNumber).ToArray();
 
-        public void StartAvd(string name)
+        public void StartAvd(string nameOrIndex)
         {
             try
             {
-
-                _device = _adb.Devices.First(x => x.SerialNumber == name);
-                while (_device.State != DeviceState.Online)
+                int value = 0;
+                if (int.TryParse(nameOrIndex, out value))
                 {
+                    _device = _adb.Devices.FirstOrDefault(x => x.IsOnline);
+                }
+                else
+                {
+                    _device = _adb.Devices.First(x => x.SerialNumber == nameOrIndex && x.IsOnline);
                 }
             }
             catch (Exception ex)
@@ -110,7 +106,7 @@ namespace ZaloCommunityDev.Services
             }
         }
 
-        public async Task GotoActivity(Activity activity)
+        public void GotoActivity(Activity activity)
         {
             const string ActivityStart = "/c adb shell am start -n";
             string arguments;
@@ -131,36 +127,36 @@ namespace ZaloCommunityDev.Services
 
             }
 
-            await Task.Delay(_settings.Delay.BetweenActivity);
+            Delay(_settings.Delay.BetweenActivity);
 
             InvokeProc(arguments);
 
-            await Task.Delay(_settings.Delay.BetweenActivity);
+            Delay(_settings.Delay.BetweenActivity);
 
         }
 
-        private async Task ScrollFriendList(int times)
+        private void ScrollFriendList(int times)
         {
-            await TouchSwipe(_settings.Screen.WorkingRect.Center.X, _settings.Screen.WorkingRect.Center.Y, _settings.Screen.WorkingRect.Center.X, _settings.Screen.WorkingRect.Center.Y - _settings.Screen.FriendRowHeight, times);
+            TouchSwipe(Screen.WorkingRect.Center.X, Screen.WorkingRect.Center.Y, Screen.WorkingRect.Center.X, Screen.WorkingRect.Center.Y - Screen.FriendRowHeight, times);
         }
 
-        public async Task AddFriendNearBy(AddFriendNearByConfig config)
+        public void AddFriendNearBy(Filter filter)
         {
+            var gender = filter.GenderSelection;
+            var ageValues = filter.FilterAgeRange.Split("-".ToArray());
+            var age_from = ageValues[0];
+            var age_to = ageValues[1];
+            var numFriends = filter.NumberOfAction;
 
-            var gender = config.GenderSelection;
-            var age_from = config.AgeRange.Split("-".ToArray())[0];
-            var age_to = config.AgeRange.Split("-".ToArray())[1];
-            var numFriends = config.WishAddedNumberFriendPerDay;
+            GotoActivity(Activity.UserNearbyList);
 
-            await GotoActivity(Activity.UserNearbyList);
-
-            //await ConfigsSearchFriend(gender, age_from, age_to);
+            ConfigsSearchFriend(gender, age_from, age_to);
             //I'm on Search Page
-            await TouchAt(Screen.IconTopRight);//Open Right SideBar
-            await Task.Delay(500);
-            await TouchGenderOnSideBar(gender);
+            TouchAt(Screen.IconTopRight);//Open Right SideBar
+            Delay(500);
+            TouchGenderOnSideBar(gender);
 
-            int maxFriendToday = _settings.MaxFriendAddedPerDay - _dbContext.GetAddedFriendCount();
+            int maxFriendToday = _settings.MaxFriendAddedPerDay - _settings.AddedFriendTodayCount;
 
             if (maxFriendToday > numFriends)
                 maxFriendToday = numFriends;
@@ -168,31 +164,46 @@ namespace ZaloCommunityDev.Services
             if (maxFriendToday < 0)
                 maxFriendToday = 0;
 
-            await AddFriend(maxFriendToday, config);
+            AddFriend(maxFriendToday, filter);
         }
 
-        private async Task AddFriend(int maxFriendToday, AddFriendNearByConfig config)
+        private void AddFriend(int maxFriendToday, Filter filter)
         {
+            Console.WriteLine($"!bắt đầu thêm bạn. số bạn yêu cầu tối đa trong ngày hôm nay là {maxFriendToday}");
             bool finish = false;
 
             int countSuccess = 0;
             string[] profilesPage1 = null;
             string[] profilesPage2 = null;
+            Console.WriteLine("!đang tìm thông tin các bạn");
+            var friendNotAdded = (GetPositionAccountNotAdded((x) => profilesPage1 = x)).OrderByDescending(x => x.Point.Y);
+            var points = new Stack<FriendPositionMessage>(friendNotAdded);
 
-            var points = new Stack<FriendPositionMessage>((await GetPositionAccountNotAdded((x) => profilesPage1 = x)).OrderByDescending(x => x.Point.Y));
-
+            profilesPage1.ToList().ForEach((x)=> Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
+            Console.WriteLine($"!--------------------");
+            friendNotAdded.ToList().ForEach((x) => Console.WriteLine($"!các bạn chưa được gửi lời mời: {x}"));
             while (!finish)
             {
 
                 while (points.Count == 0)
                 {
+                    Console.WriteLine("!đang cuộn danh sách bạn");
+                    ScrollFriendList(9);
 
-                    await ScrollFriendList(10);
+                    Console.WriteLine("!đang tìm thông tin các bạn");
 
-                    points = new Stack<FriendPositionMessage>((await GetPositionAccountNotAdded((x) => profilesPage2 = x)).OrderByDescending(x => x.Point.Y));
+                    friendNotAdded = (GetPositionAccountNotAdded((x) => profilesPage2 = x)).OrderByDescending(x => x.Point.Y);
+                    points = new Stack<FriendPositionMessage>(friendNotAdded);
+
+                    profilesPage1.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
+                    Console.WriteLine($"!--------------------");
+                    friendNotAdded.ToList().ForEach((x) => Console.WriteLine($"!các bạn chưa được gửi lời mời: {x}"));
+
+                    profilesPage2.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
+
                     if (profilesPage2.Except(profilesPage1).Count() == 0)
                     {
-                        //add het ban
+                        Console.WriteLine("!hết bạn trong danh sách.");
                         return;
                     }
 
@@ -200,24 +211,27 @@ namespace ZaloCommunityDev.Services
 
                 }
 
-                await Task.Delay(2000);
+                Delay(2000);
 
                 var pointRowFriend = points.Pop();
-                ProfileMessage profile = new ProfileMessage();
-                if (Screen.InfoRect.Contains(pointRowFriend.Point) && await ClickToAddFriendAt(profile, pointRowFriend.Point, config))
+
+                
+                ProfileMessage profile = new ProfileMessage() { Name = pointRowFriend.Name };
+                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToAddFriendAt(profile, pointRowFriend.Point, filter))
                 {
                     _dbContext.AddProfile(profile);
                     //Add Log
                     countSuccess++;
+                    Console.WriteLine($"!yêu cầu kết bạn [{countSuccess}]: {profile.Name} bị thành công.");
                 }
 
                 finish = countSuccess == maxFriendToday;
             }
         }
 
-        private async Task<FriendPositionMessage[]> GetPositionAccountNotAdded(Action<string[]> allPrrofiles)
+        private FriendPositionMessage[] GetPositionAccountNotAdded(Action<string[]> allPrrofiles)
         {
-            var captureFiles = await CaptureScreenNow();
+            var captureFiles = CaptureScreenNow();
             var names = _zaloImageProcessing.GetListFriendName(captureFiles, Screen);
 
             var t = names.Where(v => _dbContext.ProfileSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
@@ -229,63 +243,64 @@ namespace ZaloCommunityDev.Services
         ScreenInfo Screen => _settings.Screen;
 
 
-        public async Task<bool> ClickToAddFriendAtRowPosition(ProfileMessage profile, int position, AddFriendNearByConfig config)
+        public bool ClickToAddFriendAtRowPosition(ProfileMessage profile, int position, Filter filter)
         {
-            return await ClickToAddFriendAt(profile, Screen.MenuPoint.Y * 2, (position - 1) * Screen.FriendRowHeight + Screen.FriendRowHeight / 2 + Screen.HeaderHeight, config);
+            return ClickToAddFriendAt(profile, Screen.MenuPoint.Y * 2, (position - 1) * Screen.FriendRowHeight + Screen.FriendRowHeight / 2 + Screen.HeaderHeight, filter);
         }
 
-        public async Task<bool> ClickToAddFriendAt(ProfileMessage profile, ScreenPoint point, AddFriendNearByConfig config)
+        public bool ClickToAddFriendAt(ProfileMessage profile, ScreenPoint point, Filter filter)
         {
-            return await ClickToAddFriendAt(profile, point.X, point.Y, config);
+            return ClickToAddFriendAt(profile, point.X, point.Y, filter);
         }
 
-        public async Task<bool> ClickToAddFriendAt(ProfileMessage profile, int x, int y, AddFriendNearByConfig config)
+        public bool ClickToAddFriendAt(ProfileMessage profile, int x, int y, Filter filter)
         {
-            await TouchAt(x, y);//TOUCH TO ROW_INDEX
+            Console.WriteLine($"!đã nhấn vào bạn: {profile.Name}");
 
-            await Task.Delay(2000);
+            TouchAt(x, y);//TOUCH TO ROW_INDEX
+
+            Delay(2000);
             //I''m on profile page
 
-            var info = await GrabProfileInfo(profile.Name);
+            var info = GrabProfileInfo(profile.Name);
             CopyProfile(profile, info);
 
             if (!info.IsAddedToFriend)
             {
+                Console.WriteLine($"!tiến hành gửi yêu cầu kết bạn: {profile.Name}");
                 //Wait to navigate to profiles
-                await TouchAtIconBottomRight();//Touch to AddFriends
-                                               //Wait to Navigate to new windows
-                await Task.Delay(3000);
+                TouchAtIconBottomRight();//Touch to AddFriends
+                                         //Wait to Navigate to new windows
+                Delay(3000);
 
-                var proccessedDialog = await ProcessIfShowDialogWaitRequestedFriendConfirm();
+                var proccessedDialog = ProcessIfShowDialogWaitRequestedFriendConfirm();
                 if (proccessedDialog)
                 {
-                    await TouchAtIconTopLeft(); //GoBack to friendList
+                    Console.WriteLine($"!yêu cầu kết bạn: {profile.Name} bị từ chối. Lý do: đã gửi yêu cầu rồi");
+                    TouchAtIconTopLeft(); //GoBack to friendList
                     return false;
                 }
 
-                await TouchAt(Screen.AddFriendScreenGreetingTextField); //Touch tab Thong Tin
+                TouchAt(Screen.AddFriendScreenGreetingTextField);
 
+                var textGreeting = info.Gender == "Nam" ? filter.TextGreetingForMale : filter.TextGreetingForFemale;
 
-                var textGreeting = info.Gender == "Nam" ? config.TextGreetingForMale : config.TextGreetingForFemale;
-
-
-                await SendText(textGreeting);
+                SendText(textGreeting);
 
                 //Debug:
-                await TouchAtIconTopLeft();
-                //await TouchAt(Screen.AddFriendScreenOkButton); //TouchToAddFriend then goto profile
+                TouchAtIconTopLeft();
+                //TouchAt(Screen.AddFriendScreenOkButton); //TouchToAddFriend then goto profile
 
-                await Task.Delay(2000);
+                Delay(300);
 
-                await Task.Delay(300);
-
-                await TouchAtIconTopLeft(); //GoBack to friendList
+                TouchAtIconTopLeft(); //GoBack to friendList
 
                 return true;
             }
             else
             {
-                await TouchAtIconTopLeft(); //GoBack to friendList
+                Console.WriteLine($"!yêu cầu kết bạn: {profile.Name} bị từ hủy. Lý do: đã có tên trong cơ sở dữ liệu");
+                TouchAtIconTopLeft(); //GoBack to friendList
                 return false;
             }
         }
@@ -299,24 +314,30 @@ namespace ZaloCommunityDev.Services
             profile.PhoneNumber = info.PhoneNumber;
         }
 
-        private async Task<ProfileMessage> GrabProfileInfo(string initName = null)
+        private ProfileMessage GrabProfileInfo(string initName = null)
         {
-            await TouchAt(Screen.ProfileScreenTabInfo); //Touch tab Thong Tin
-            await Task.Delay(300);
+            Console.WriteLine($"!đang lấy thông tin bạn: {initName}");
 
-            var file = await CaptureScreenNow();
-            var profile = _zaloImageProcessing.GetProfile(file, _settings.Screen);
+            TouchAt(Screen.ProfileScreenTabInfo); //Touch tab Thong Tin
+            Delay(300);
 
+            var file = CaptureScreenNow();
+            var profile = _zaloImageProcessing.GetProfile(file, Screen);
+            if (!string.IsNullOrWhiteSpace(initName))
+            {
+                profile.Name = initName;
+            }
+            Console.WriteLine($"!@: {profile.Name} {profile.BirthdayText} {profile.Gender} {profile.PhoneNumber}");
             return profile;
         }
 
-        private async Task<bool> ProcessIfShowDialogWaitRequestedFriendConfirm()
+        private bool ProcessIfShowDialogWaitRequestedFriendConfirm()
         {
-            var file = await CaptureScreenNow();
-            var hasDialog = _zaloImageProcessing.IsShowDialogWaitAddedFriendConfirmWhenRequestAdd(file, _settings.Screen);
+            var file = CaptureScreenNow();
+            var hasDialog = _zaloImageProcessing.IsShowDialogWaitAddedFriendConfirmWhenRequestAdd(file, Screen);
             if (hasDialog)
             {
-                await TouchAt(Screen.AddFriendScreenWaitFriendConfirmDialog);
+                TouchAt(Screen.AddFriendScreenWaitFriendConfirmDialog);
 
                 return true;
             }
@@ -324,96 +345,96 @@ namespace ZaloCommunityDev.Services
             return false;
         }
 
-        public async Task ConfigsSearchFriend(GenderSelection gender, string age_from, string age_to)
+        public void ConfigsSearchFriend(GenderSelection gender, string age_from, string age_to)
         {
-            await GotoActivity(Activity.UserNearbySettings);
+            GotoActivity(Activity.UserNearbySettings);
 
-            await TouchGender(gender);
-            await TouchAgeRange(age_from, age_to);
-            await Task.Delay(300);
-            await TouchAt(Screen.ConfigSearchFriendUpdateButton);//TOUCH Update
+            TouchGender(gender);
+            TouchAgeRange(age_from, age_to);
+            Delay(300);
+            TouchAt(Screen.ConfigSearchFriendUpdateButton);//TOUCH Update
         }
 
-        private async Task TouchAgeRange(string age_from, string age_to)
+        private void TouchAgeRange(string age_from, string age_to)
         {
-            await TouchAt(Screen.ConfigSearchFriendAgeCombobox);//touch to do tuoi
-            await Task.Delay(300);
+            TouchAt(Screen.ConfigSearchFriendAgeCombobox);//touch to do tuoi
+            Delay(300);
 
-            await TouchAt(Screen.ConfigSearchFriendAgeFromTextField);//touch to age to
-            await SendText(age_from);
+            TouchAt(Screen.ConfigSearchFriendAgeFromTextField);//touch to age to
+            SendText(age_from);
 
-            await TouchAt(Screen.ConfigSearchFriendAgeToTextField);//Touch to age from
-            await SendText(age_to);
+            TouchAt(Screen.ConfigSearchFriendAgeToTextField);//Touch to age from
+            SendText(age_to);
 
-            await TouchAt(Screen.ConfigSearchFriendAgeFromTextField);//re-touch to age to
+            TouchAt(Screen.ConfigSearchFriendAgeFromTextField);//re-touch to age to
 
-            await Task.Delay(200);
+            Delay(200);
 
-            await TouchAt(Screen.ConfigSearchFriendAgeOkButton); //touch OK
-            await Task.Delay(300);
+            TouchAt(Screen.ConfigSearchFriendAgeOkButton); //touch OK
+            Delay(300);
         }
 
-        private async Task TouchGender(GenderSelection gender)
+        private void TouchGender(GenderSelection gender)
         {
-            await TouchAt(Screen.ConfigSearchFriendGenderCombobox);
-            await Task.Delay(200);
+            TouchAt(Screen.ConfigSearchFriendGenderCombobox);
+            Delay(200);
             switch (gender)
             {
                 case GenderSelection.OnlyMale:
-                    await TouchAt(Screen.ConfigSearchFriendMaleOnlyComboboxItem);
+                    TouchAt(Screen.ConfigSearchFriendMaleOnlyComboboxItem);
                     break;
 
                 case GenderSelection.OnlyFemale:
-                    await TouchAt(Screen.ConfigSearchFriendFemaleOnlyComboboxItem);
+                    TouchAt(Screen.ConfigSearchFriendFemaleOnlyComboboxItem);
                     break;
 
                 default:
-                    await TouchAt(Screen.ConfigSearchFriendBothGenderComboboxItem);
+                    TouchAt(Screen.ConfigSearchFriendBothGenderComboboxItem);
                     break;
             }
         }
 
-        private async Task TouchGenderOnSideBar(GenderSelection gender)
+        private void TouchGenderOnSideBar(GenderSelection gender)
         {
             switch (gender)
             {
                 case GenderSelection.OnlyMale:
-                    await TouchAt(Screen.SearchFriendSideBarMaleOnlyTextItem);
+                    TouchAt(Screen.SearchFriendSideBarMaleOnlyTextItem);
                     break;
 
                 case GenderSelection.OnlyFemale:
-                    await TouchAt(Screen.SearchFriendSideBarFemaleOnlyTextItem);
+                    TouchAt(Screen.SearchFriendSideBarFemaleOnlyTextItem);
                     break;
 
                 default:
-                    await TouchAt(Screen.SearchFriendSideBarBothGenderTextItem);
+                    TouchAt(Screen.SearchFriendSideBarBothGenderTextItem);
                     break;
             }
         }
 
 
-        public async Task AddFriendPhone(List<string> phonelist, int numfriends, string text)
+        public void AddFriendPhone(List<string> phonelist, int numfriends, string text)
         {
             numfriends = (numfriends < phonelist.Count) ? numfriends : phonelist.Count;
             int num = 0;
             var total_action = 0;
-            while (!istop && (num < numfriends))
+            while ((num < numfriends))
             {
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
                 Thread.Sleep(delay);
-                await SendText(phonelist[total_action].ToString());
-                await SendKey(KeyCode.AkeycodeEnter, 1);
+                SendText(phonelist[total_action].ToString());
+                SendKey(KeyCode.AkeycodeEnter, 1);
                 Thread.Sleep(delaynet);
-                await TouchAt(0x2fd, 70, 1);
-                await TouchAt(780, 200, 2);
-                await SendText(text);
+                TouchAt(0x2fd, 70, 1);
+                TouchAt(780, 200, 2);
+                SendText(text);
 
-                await TouchAt(360, 340, 1);
+                TouchAt(360, 340, 1);
 
                 num++;
                 total_action++;
             }
-            await TouchAt(100, 0x4b, 5);
+            TouchAt(100, 0x4b, 5);
         }
 
         public void ChangeDes(int des)
@@ -440,7 +461,7 @@ namespace ZaloCommunityDev.Services
             _device.ExecuteShellCommand("adb shell am display-size " + x.ToString() + "x" + y.ToString(), _receiver);
         }
 
-        public async Task SpamFriend(MessageToFriendConfig config)
+        public void SpamFriend(Filter config)
         {
             bool finish = false;
 
@@ -449,7 +470,7 @@ namespace ZaloCommunityDev.Services
             string[] profilesPage1 = null;
             string[] profilesPage2 = null;
 
-            var fileCapture = await CaptureScreenNow();
+            var fileCapture = CaptureScreenNow();
             var friends = _zaloImageProcessing.GetFriendProfileList(fileCapture, Screen);
             var points = new Stack<FriendPositionMessage>(friends.Where(x => !string.IsNullOrWhiteSpace(x.Name)).OrderByDescending(x => x.Point.Y));
             profilesPage1 = points.Select(x => x.Name).ToArray();
@@ -459,9 +480,9 @@ namespace ZaloCommunityDev.Services
 
                 while (points.Count == 0)
                 {
-                    await ScrollFriendList(9);
+                    ScrollFriendList(9);
 
-                    fileCapture = await CaptureScreenNow();
+                    fileCapture = CaptureScreenNow();
                     friends = _zaloImageProcessing.GetFriendProfileList(fileCapture, Screen);
                     points = new Stack<FriendPositionMessage>(friends.OrderByDescending(x => x.Point.Y));
                     profilesPage2 = points.Select(x => x.Name).ToArray();
@@ -474,11 +495,11 @@ namespace ZaloCommunityDev.Services
                     profilesPage1 = profilesPage2;
                 }
 
-                await Task.Delay(2000);
+                Delay(2000);
 
                 var pointRowFriend = points.Pop();
                 ProfileMessage profile = new ProfileMessage();
-                if (Screen.InfoRect.Contains(pointRowFriend.Point) && await ClickToChatFriendAt(profile, pointRowFriend.Point, config))
+                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToChatFriendAt(profile, pointRowFriend.Point, config))
                 {
                     //save
                     //Add Log
@@ -489,39 +510,39 @@ namespace ZaloCommunityDev.Services
             }
         }
 
-        private async Task<bool> ClickToChatFriendAt(ProfileMessage profile, ScreenPoint point, MessageToFriendConfig config)
+        private bool ClickToChatFriendAt(ProfileMessage profile, ScreenPoint point, Filter config)
         {
-            await TouchAt(point);
-            await Task.Delay(2000);//wait to navigate chat screen
+            TouchAt(point);
+            Delay(2000);//wait to navigate chat screen
 
             //GrabInfomation
-            await TouchAtIconTopRight();
-            await Task.Delay(200);
-            await TouchAt(Screen.ChatScreenProfileAvartar);
-            await Task.Delay(200);
+            TouchAtIconTopRight();
+            Delay(200);
+            TouchAt(Screen.ChatScreenProfileAvartar);
+            Delay(200);
 
-            var infoGrab = await GrabProfileInfo(profile.Name);
+            var infoGrab = GrabProfileInfo(profile.Name);
             CopyProfile(profile, infoGrab);
 
-            await TouchAtIconTopLeft();//Back to chat screen
-            await TouchAtIconTopLeft();//Close sidebar
+            TouchAtIconTopLeft();//Back to chat screen
+            TouchAtIconTopLeft();//Close sidebar
             //End friend
-            await TouchAt(Screen.ChatScreenTextField);
-            await Task.Delay(300);
-            await SendText(config.TextToFemale);
-            await Task.Delay(500);
-            //await TouchAt(Screen.ChatScreenSendButton);
+            TouchAt(Screen.ChatScreenTextField);
+            Delay(300);
+            SendText(config.TextGreetingForFemale);
+            Delay(500);
+            //TouchAt(Screen.ChatScreenSendButton);
 
-            await Task.Delay(1000);
+            Delay(1000);
 
-            await TouchAt(Screen.IconTopLeft);//Go Back
+            TouchAt(Screen.IconTopLeft);//Go Back
 
             //_dbContext.LogSpamFriend(friendName);
 
             return true;
         }
 
-        public async Task SpamFriend2(MessageToFriendConfig config)
+        public void SpamFriend2(Filter config)
         {
             Thread.Sleep((int)(delaynet + delay));
             InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.MainTabActivity");
@@ -529,7 +550,7 @@ namespace ZaloCommunityDev.Services
             bool finish = false;
             while (!finish)
             {
-                var fileCapture = await CaptureScreenNow();
+                var fileCapture = CaptureScreenNow();
                 var points = _zaloImageProcessing.GetFriendProfileList(fileCapture, Screen);
                 var stack = new Stack<FriendPositionMessage>(points.OrderByDescending(x => x.Point.Y));
 
@@ -542,29 +563,29 @@ namespace ZaloCommunityDev.Services
                 {
                     var pos = stack.Pop();
 
-                    await TouchAt(pos.Point);
-                    await Task.Delay(2000);//wait to navigate chat screen
+                    TouchAt(pos.Point);
+                    Delay(2000);//wait to navigate chat screen
 
-                    await TouchAt(Screen.ChatScreenTextField);
-                    await Task.Delay(300);
-                    await SendText(config.TextToFemale);
-                    await Task.Delay(500);
-                    //await TouchAt(Screen.ChatScreenSendButton);
+                    TouchAt(Screen.ChatScreenTextField);
+                    Delay(300);
+                    SendText(config.TextGreetingForFemale);
+                    Delay(500);
+                    //TouchAt(Screen.ChatScreenSendButton);
 
-                    await Task.Delay(1000);
+                    Delay(1000);
 
-                    await TouchAt(Screen.IconTopLeft);//Go Back
+                    TouchAt(Screen.IconTopLeft);//Go Back
                 }
             }
         }
 
-        public async Task ChatAllfriends(string text, string path)
+        public void ChatAllfriends(string text, string path)
         {
 
             Thread.Sleep((int)(delaynet + delay));
             InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.MainTabActivity");
 
-            await TouchAt(0x159, 0x4b, 2);
+            TouchAt(0x159, 0x4b, 2);
             Bitmap bitmap = new Bitmap(Screencapture("chatfr").FullName);
             new List<string>();
             int num = 0;
@@ -572,7 +593,6 @@ namespace ZaloCommunityDev.Services
             {
                 if (HexConverter(bitmap.GetPixel(0x2ac, i)) == "#158FC2")
                 {
-                    istop = true;
                     return;
                 }
             }
@@ -587,10 +607,7 @@ namespace ZaloCommunityDev.Services
                 {
                     for (int j = 0; j < 10; j++)
                     {
-                        if (istop)
-                        {
-                            return;
-                        }
+
                         SendKey(KeyCode.AkeycodeDpadDown, 2);
                         SendKey(KeyCode.AkeycodeEnter, 1);
                         Thread.Sleep(delay);
@@ -660,7 +677,7 @@ namespace ZaloCommunityDev.Services
                     TouchAt(440, 0xd4, 1);
                     break;
             }
-            for (int i = 0; !istop && (i < numFriends); i++)
+            for (int i = 0; (i < numFriends); i++)
             {
                 Thread.Sleep(delay);
                 SendKey(KeyCode.AkeycodeDpadDown, 2);
@@ -694,7 +711,7 @@ namespace ZaloCommunityDev.Services
             int num = 0;
             UpImageChat(path);
             var total_action = 0;
-            while (!istop && (num < numfriends))
+            while ((num < numfriends))
             {
 
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
@@ -746,18 +763,17 @@ namespace ZaloCommunityDev.Services
             Thread.Sleep(500);
         }
 
-        public bool getStop() => istop;
 
         private static string HexConverter(Color c) => ("#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2"));
 
-        public async Task SendKey(KeyCode keycode, int times = 1)
+        public void SendKey(KeyCode keycode, int times = 1)
         {
             if ((_device != null) && (_device.State == DeviceState.Online))
             {
                 for (int i = 0; i < times; i++)
                 {
                     _device.ExecuteShellCommand("input keyevent " + (int)keycode, _receiver);
-                    await Task.Delay(_settings.Delay.PressedKeyEvent);
+                    Delay(_settings.Delay.PressedKeyEvent);
                 }
             }
             else
@@ -767,40 +783,40 @@ namespace ZaloCommunityDev.Services
             }
         }
 
-        public async Task Login(string account, string password, string region)
+        public void Login(string account, string password, string region)
         {
             enableKeyBoard();
             try
             {
                 InvokeProc("/c adb shell am force-stop com.zing.zalo");
 
-                await Task.Delay(_settings.Delay.WaitForceCloseApp);
+                Delay(_settings.Delay.WaitForceCloseApp);
 
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.LoginUsingPWActivity");
 
-                await Task.Delay(_settings.Delay.WaitLoginScreenOpened);
+                Delay(_settings.Delay.WaitLoginScreenOpened);
 
                 //Open regions
-                await TouchAt(90, 160, 1);
+                TouchAt(90, 160, 1);
                 Thread.Sleep((int)(delaynet + delay));
-                await TouchAt(760, 0x4b, 2);
-                await SendText(region);
+                TouchAt(760, 0x4b, 2);
+                SendText(region);
 
                 //Open username
-                await TouchAt(90, 0xd4, 1);
-                await TouchAt(650, 260, 1);
+                TouchAt(90, 0xd4, 1);
+                TouchAt(650, 260, 1);
                 for (int i = 0; i < 12; i++)
                 {
-                    await SendKey(KeyCode.AkeycodeDel);
+                    SendKey(KeyCode.AkeycodeDel);
                 }
-                await SendText(account);
+                SendText(account);
 
 
-                await TouchAt(640, 0x14f, 1);
-                await SendText(password);
-                await SendKey(KeyCode.AkeycodeEnter, 2);
+                TouchAt(640, 0x14f, 1);
+                SendText(password);
+                SendKey(KeyCode.AkeycodeEnter, 2);
 
-                await Task.Delay(_settings.Delay.WaitLogin);
+                Delay(_settings.Delay.WaitLogin);
             }
             catch (Exception ex)
             {
@@ -808,24 +824,24 @@ namespace ZaloCommunityDev.Services
 
                 log.Error(ex);
             }
-            await TouchAt(100, 0x4b, 1);
-            await TouchAt(700, 610, 1);
-            await TouchAt(100, 0x4b, 1);
+            TouchAt(100, 0x4b, 1);
+            TouchAt(700, 610, 1);
+            TouchAt(100, 0x4b, 1);
         }
 
-        public async Task Post(string text, string path)
+        public void Post(string text, string path)
         {
             InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.MyInfoActivity");
 
             Thread.Sleep((int)(delay + delaynet));
-            await TouchAt(0x2ff, 0x492, 1);
+            TouchAt(0x2ff, 0x492, 1);
             Thread.Sleep(delay);
             if (path.Length != 0)
             {
-                await TouchAt(110, 320, 1);
-                await TouchAt(250, 600, 1);
+                TouchAt(110, 320, 1);
+                TouchAt(250, 600, 1);
                 Thread.Sleep(delay);
-                await TouchAt(200, 200, 1);
+                TouchAt(200, 200, 1);
                 //if ((mainForm.pack == "basic") || (mainForm.pack == "free"))
                 //{
                 //    Touch(230, 0x9b, 1);
@@ -834,35 +850,35 @@ namespace ZaloCommunityDev.Services
                 //else 
                 if (NoImg > 4)
                 {
-                    await TouchAt(230, 0x9b, 1);
-                    await TouchAt(500, 0x9b, 1);
-                    await TouchAt(0x2fd, 0x9b, 1);
-                    await TouchAt(230, 420, 1);
-                    await TouchAt(500, 420, 1);
-                    await TouchAt(0x2fd, 420, 1);
-                    await TouchAt(230, 0x2ad, 1);
-                    await TouchAt(500, 0x2ad, 1);
-                    await TouchAt(0x2fd, 0x2ad, 1);
+                    TouchAt(230, 0x9b, 1);
+                    TouchAt(500, 0x9b, 1);
+                    TouchAt(0x2fd, 0x9b, 1);
+                    TouchAt(230, 420, 1);
+                    TouchAt(500, 420, 1);
+                    TouchAt(0x2fd, 420, 1);
+                    TouchAt(230, 0x2ad, 1);
+                    TouchAt(500, 0x2ad, 1);
+                    TouchAt(0x2fd, 0x2ad, 1);
                 }
                 else
                 {
-                    await TouchAt(230, 0x9b, 1);
-                    await TouchAt(500, 0x9b, 1);
-                    await TouchAt(0x2fd, 0x9b, 1);
-                    await TouchAt(230, 420, 1);
+                    TouchAt(230, 0x9b, 1);
+                    TouchAt(500, 0x9b, 1);
+                    TouchAt(0x2fd, 0x9b, 1);
+                    TouchAt(230, 420, 1);
                 }
-                await TouchAt(720, 0x492, 1);
+                TouchAt(720, 0x492, 1);
                 Thread.Sleep(delay);
-                await TouchAt(700, 150, 1);
-                await SendText(text);
-                await TouchAt(0x2ff, 0x45, 1);
+                TouchAt(700, 150, 1);
+                SendText(text);
+                TouchAt(0x2ff, 0x45, 1);
             }
             else
             {
                 Thread.Sleep(delay);
-                await TouchAt(700, 150, 1);
-                await SendText(text);
-                await TouchAt(0x2ff, 0x45, 1);
+                TouchAt(700, 150, 1);
+                SendText(text);
+                TouchAt(0x2ff, 0x45, 1);
             }
         }
 
@@ -872,17 +888,17 @@ namespace ZaloCommunityDev.Services
             return Spintext(rnd, str);
         }
 
-        public async Task<string> CaptureScreenNow()
+        public string CaptureScreenNow()
         {
             var fileName = DateTime.Now.Ticks.ToString();
 
             InvokeProc($"/c adb shell screencap -p sdcard/DCIM/{fileName}.png");
 
-            await Task.Delay(3000);
+            Delay(3000);
 
             InvokeProc($"/c adb pull sdcard/DCIM/{fileName}.png d:/{fileName}.png");
 
-            await Task.Delay(3000);
+            Delay(3000);
 
             return $@"d:\{fileName}.png";
         }
@@ -920,7 +936,7 @@ namespace ZaloCommunityDev.Services
             }
         }
 
-        public async Task SendText(string text)
+        public void SendText(string text)
         {
             if (_device == null || _device.State != DeviceState.Online)
             {
@@ -941,30 +957,30 @@ namespace ZaloCommunityDev.Services
                 }
             }
 
-            await Task.Delay(_settings.Delay.PressedKeyEvent);
+            Delay(_settings.Delay.PressedKeyEvent);
         }
 
-        public async Task SetGPS(string lat, string longt)
+        public void SetGPS(string lat, string longt)
         {
             InvokeProc("/c adb shell am force-stop com.cxdeberry.geotag");
 
-            await Task.Delay(_settings.Delay.CloseMap);
+            Delay(_settings.Delay.CloseMap);
 
 
             InvokeProc("/c adb shell am start -n com.cxdeberry.geotag/.MainActivity");
 
-            await Task.Delay(_settings.Delay.OpenMap);
+            Delay(_settings.Delay.OpenMap);
 
-            await TouchAt(750, 50, 1);
+            TouchAt(750, 50, 1);
 
-            await SendText(lat + "," + longt);
-            await SendKey(KeyCode.AkeycodeEnter);
+            SendText(lat + "," + longt);
+            SendKey(KeyCode.AkeycodeEnter);
 
-            await TouchAt(750, 50, 1);
+            TouchAt(750, 50, 1);
 
-            await Task.Delay(_settings.Delay.CloseMap);
+            Delay(_settings.Delay.CloseMap);
 
-            await TouchAt(200, 0x438, 1);
+            TouchAt(200, 0x438, 1);
         }
 
         public void setKeyBoardTelex(bool check)
@@ -998,44 +1014,44 @@ namespace ZaloCommunityDev.Services
 
 
         #region Touches
-        public async Task TouchAtIconTopLeft()
+        public void TouchAtIconTopLeft()
         {
-            await TouchAt(_settings.Screen.IconTopLeft);
+            TouchAt(Screen.IconTopLeft);
         }
 
-        public async Task TouchAtIconTopRight()
+        public void TouchAtIconTopRight()
         {
-            await TouchAt(_settings.Screen.IconTopRight);
+            TouchAt(Screen.IconTopRight);
         }
 
-        public async Task TouchAtIconBottomLeft()
+        public void TouchAtIconBottomLeft()
         {
-            await TouchAt(_settings.Screen.IconBottomLeft);
+            TouchAt(Screen.IconBottomLeft);
         }
 
-        public async Task TouchAtIconBottomRight()
+        public void TouchAtIconBottomRight()
         {
-            await TouchAt(_settings.Screen.IconBottomRight);
+            TouchAt(Screen.IconBottomRight);
         }
 
-        public async Task TouchAt(ScreenPoint point, int times = 1)
+        public void TouchAt(ScreenPoint point, int times = 1)
         {
-            await TouchAt(point.X, point.Y, times);
+            TouchAt(point.X, point.Y, times);
         }
 
-        public async Task TouchSwipe(ScreenPoint point1, ScreenPoint point2, int times = 1)
+        public void TouchSwipe(ScreenPoint point1, ScreenPoint point2, int times = 1)
         {
-            await TouchSwipe(point1.X, point1.Y, point2.X, point2.Y, times);
+            TouchSwipe(point1.X, point1.Y, point2.X, point2.Y, times);
         }
 
-        public async Task TouchAt(int x, int y, int times = 1)
+        public void TouchAt(int x, int y, int times = 1)
         {
             if ((_device != null) && (_device.State == DeviceState.Online))
             {
                 for (int i = 0; i < times; i++)
                 {
                     _device.ExecuteShellCommand($"input tap {x} {y}", _receiver);
-                    await Task.Delay(_settings.Delay.TouchEvent);
+                    Delay(_settings.Delay.TouchEvent);
                 }
             }
             else
@@ -1044,14 +1060,14 @@ namespace ZaloCommunityDev.Services
             }
         }
 
-        public async Task TouchSwipe(int x1, int y1, int x2, int y2, int times = 1)
+        public void TouchSwipe(int x1, int y1, int x2, int y2, int times = 1)
         {
             if ((_device != null) && (_device.State == DeviceState.Online))
             {
                 for (int i = 0; i < times; i++)
                 {
                     InvokeProc($"/c adb shell input swipe {x1} {y1} {x2} {y2}");
-                    await Task.Delay(_settings.Delay.ScrollEvent);
+                    Delay(_settings.Delay.ScrollEvent);
                 }
             }
             else
@@ -1060,6 +1076,11 @@ namespace ZaloCommunityDev.Services
             }
         }
         #endregion
+
+        public void Delay(int milisecond)
+        {
+            Thread.Sleep(milisecond);
+        }
 
         public void UpImage(string path)
         {

@@ -41,7 +41,7 @@
         </ScrollViewer>
 
         <TextBlock Grid.Row="0"
-                   Text="THÊM BẠN TỰ ĐỘNG"
+                   Text="TÙY CHỈNH CHUNG"
                    Margin="20,20,0,0"
                    FontSize="20"
                    VerticalAlignment="Center" />

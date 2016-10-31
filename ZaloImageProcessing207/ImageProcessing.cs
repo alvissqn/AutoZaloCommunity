@@ -247,9 +247,6 @@ namespace ZaloImageProcessing207
 
         private Rectangle[] DetectTemplate(string sourceFile, string[] templateFiles, double matchPercent = 0.98d)
         {
-
-
-
             var centerPoints = new List<Rectangle>();
 
             using (var imgSrc = new Image<Bgr, byte>(sourceFile))

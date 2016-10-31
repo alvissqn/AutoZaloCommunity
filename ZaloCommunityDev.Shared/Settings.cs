@@ -1,10 +1,8 @@
-﻿using GalaSoft.MvvmLight;
-using ZaloCommunityDev.Shared;
-
-namespace ZaloCommunityDev.ViewModel
+﻿namespace ZaloCommunityDev.Shared
 {
-    public class SettingViewModel : ViewModelBase
+    public class Settings
     {
+
         public string AndroidDebugBridgeOsLocation { get; set; } = @"C:\Program Files\Leapdroid\VM";
 
         public ScreenInfo Screen { get; } = new ScreenInfo();
@@ -12,5 +10,8 @@ namespace ZaloCommunityDev.ViewModel
         public Delay Delay { get; set; } = new Delay();
 
         public int MaxFriendAddedPerDay { get; set; } = 30;
+
+        public int AddedFriendTodayCount { get; set; } = 0;
+
     }
 }

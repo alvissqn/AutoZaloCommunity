@@ -1,8 +1,8 @@
 ﻿namespace ZaloCommunityDev.Pages
 {
-    public partial class AutoAddFriendPage
+    public partial class AutoAddFriendByPhonePage
     {
-        public AutoAddFriendPage()
+        public AutoAddFriendByPhonePage()
         {
             InitializeComponent();
         }

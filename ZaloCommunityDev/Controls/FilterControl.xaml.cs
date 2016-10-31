@@ -2,36 +2,28 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using ZaloCommunityDev.Models;
 
 namespace ZaloCommunityDev.Controls
 {
     public partial class FilterControl
     {
-        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register("ItemsSource", typeof(IEnumerable<>), typeof(FilterControl), (PropertyMetadata)new FrameworkPropertyMetadata((object)null, new PropertyChangedCallback(OnItemsSourceChanged)));
+        public static readonly DependencyProperty SourcesProperty = DependencyProperty.Register(nameof(Sources), typeof(IEnumerable<Filter>), typeof(FilterControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty SelectedFilterProperty = DependencyProperty.Register(nameof(SelectedFilter), typeof(Filter), typeof(FilterControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty RefreshCommandProperty = DependencyProperty.Register(nameof(RefreshCommand), typeof(ICommand), typeof(FilterControl), new PropertyMetadata(null));
 
-        public IEnumerable ItemsSource
+
+        public IEnumerable<Filter> Sources
         {
-            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
+            get { return (IEnumerable<Filter>)GetValue(SourcesProperty); }
+            set { SetValue(SourcesProperty, value); }
         }
 
-        private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public Filter SelectedFilter
         {
-            var itemsControl = (FilterControl)d;
+            get { return (Filter)GetValue(SelectedFilterProperty); }
+            set { SetValue(SelectedFilterProperty, value); }
         }
-
-
-
-        public object SelectedItem
-        {
-            get { return (object)GetValue(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(object), typeof(FilterControl), new PropertyMetadata(null));
-
 
 
         public ICommand RefreshCommand
@@ -39,11 +31,6 @@ namespace ZaloCommunityDev.Controls
             get { return (ICommand)GetValue(RefreshCommandProperty); }
             set { SetValue(RefreshCommandProperty, value); }
         }
-
-        public static readonly DependencyProperty RefreshCommandProperty =
-            DependencyProperty.Register("RefreshCommand", typeof(ICommand), typeof(FilterControl), new PropertyMetadata(null));
-
-
 
         public FilterControl()
         {
