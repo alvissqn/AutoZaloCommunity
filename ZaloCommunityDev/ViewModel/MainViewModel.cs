@@ -13,12 +13,12 @@ namespace ZaloCommunityDev.ViewModel
         private readonly DatabaseContext _databaseContext;
         private readonly ZaloCommunityService _zaloCommunityService;
 
-        private AddFriendNearByConfig[] _addingFriendConfigs;
+        private AddFriendNearByConfig[] _addFriendNearByConfigs;
         private MessageToFriendConfig[] _autoPostToFriendSessionConfigs;
         private string[] _onlineDevices;
 
         public ICommand AutoAddFriendCommand { get; }
-        public ICommand RefreshAutoAddFriendConfigListCommand { get; }
+        public ICommand RefreshAddFriendNearByConfigListCommand { get; }
 
         public ICommand AutoSpamFriendCommand { get; }
         public ICommand RefreshAutoPostToFriendSessionConfigCommand { get; }
@@ -38,16 +38,16 @@ namespace ZaloCommunityDev.ViewModel
             RefreshAvdListCommand = new RelayCommand(() => OnlineDevices = _zaloCommunityService.OnlineDevices);
 
             AutoAddFriendCommand = new RelayCommand<AddFriendNearByConfig>(x => AddFriendAuto(x));
-            RefreshAutoAddFriendConfigListCommand = new RelayCommand(() => AddingFriendConfigs = _databaseContext.GetAddingFriendConfig());
+            RefreshAddFriendNearByConfigListCommand = new RelayCommand(() => AddFriendNearByConfigs = _databaseContext.GetAddingFriendConfig());
             RefreshAutoPostToFriendSessionConfigCommand = new RelayCommand(() => AutoPostToFriendSessionConfigs = _databaseContext.GetAutoSpamConfigs());
 
             AutoSpamFriendCommand = new RelayCommand<MessageToFriendConfig>(x => SpamFriendNow(x));
         }
 
-        public AddFriendNearByConfig[] AddingFriendConfigs
+        public AddFriendNearByConfig[] AddFriendNearByConfigs
         {
-            get { return _addingFriendConfigs; }
-            set { Set(ref _addingFriendConfigs, value); }
+            get { return _addFriendNearByConfigs; }
+            set { Set(ref _addFriendNearByConfigs, value); }
         }
 
         public MessageToFriendConfig[] AutoPostToFriendSessionConfigs
@@ -65,7 +65,7 @@ namespace ZaloCommunityDev.ViewModel
         public void Load()
         {
             OnlineDevices = _zaloCommunityService.OnlineDevices;
-            AddingFriendConfigs = _databaseContext.GetAddingFriendConfig();
+            AddFriendNearByConfigs = _databaseContext.GetAddingFriendConfig();
             AutoPostToFriendSessionConfigs = _databaseContext.GetAutoSpamConfigs();
         }
 

@@ -23,11 +23,13 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="FilterSelection"
+                      SelectedItem="{Binding ElementName=This,Path=SelectedItem}"
                       ItemsSource="{Binding ElementName=This,Path=ItemsSource}" />
             <Button Grid.Column="1"
                     Margin="10,0,0,0"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
                     Content="TẢI LẠI"
-                    Command="{Binding RefreshCommand}" />
+                    Command="{Binding ElementName=This,Path=RefreshCommand}" />
         </Grid>
 
         <ScrollViewer Grid.Row="2"
@@ -35,7 +37,7 @@
             <StackPanel DataContext="{Binding ElementName=FilterSelection, Path=SelectedItem}">
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50" Width="220"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Tên cấu hình"
@@ -46,7 +48,8 @@
 
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Tên những người nhận"
@@ -57,7 +60,8 @@
 
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Loại trừ tên những người nhận"
@@ -68,7 +72,8 @@
 
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Độ tuổi"
@@ -79,7 +84,8 @@
 
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Giới tính"
@@ -90,7 +96,8 @@
 
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Lời chào bạn nữ"
@@ -100,7 +107,8 @@
                 </Grid>
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Lời chào bạn nam"
@@ -111,7 +119,8 @@
 
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Vị trí địa lý"
@@ -121,7 +130,8 @@
                 </Grid>
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="120" />
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Số lần thực hiện"

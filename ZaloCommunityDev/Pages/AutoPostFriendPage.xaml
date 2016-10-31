@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:controls="clr-namespace:ZaloCommunityDev.Controls"
       DataContext="{Binding Main,Source={StaticResource Locator}}"
       mc:Ignorable="d"
       d:DesignHeight="700"
@@ -17,71 +18,11 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto">
-
-            <StackPanel Margin="20,10,0,0">
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="Cấu hình "
-                               FontWeight="Bold"
-                               Width="66" />
-                    <ComboBox ItemsSource="{Binding AutoPostToFriendSessionConfigs}"
-                              x:Name="AutoPostToFriendSessionConfigs"
-                              Width="535" />
-
-                    <Button Content="Tải lại"
-                            Style="{DynamicResource MaterialDesignFlatButton}"
-                            VerticalAlignment="Top"
-                            Margin="10,0,0,0"
-                            Command="{Binding RefreshAutoAddFriendConfigListCommand}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="Nội dung spam bạn nam: "
-                               MinWidth="250"
-                               VerticalAlignment="Bottom" />
-                    <TextBox Text="{Binding ElementName=AutoPostToFriendSessionConfigs, Path=SelectedItem.TextToMale}"
-                             MinWidth="350" />
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="Nội dung spam bạn nữ: "
-                               MinWidth="250"
-                               VerticalAlignment="Bottom" />
-                    <TextBox Text="{Binding ElementName=AutoPostToFriendSessionConfigs, Path=SelectedItem.TextToFemale}"
-                             MinWidth="350" />
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="Chỉ spam các bạn (cách nhau dấu ;)"
-                               MinWidth="250"
-                               VerticalAlignment="Bottom" />
-                    <TextBox Text="{Binding ElementName=AutoPostToFriendSessionConfigs, Path=SelectedItem.OnlySpamPeopleNames}"
-                             MinWidth="350" />
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="Không spam các bạn (cách nhau dấu ;)"
-                               MinWidth="250"
-                               VerticalAlignment="Bottom" />
-                    <TextBox Text="{Binding ElementName=AutoPostToFriendSessionConfigs, Path=SelectedItem.ExceptSpamPeopleNames}"
-                             MinWidth="350" />
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="Số lượng bạn spam (để trống để spam tất cả)"
-                               MinWidth="250"
-                               VerticalAlignment="Bottom" />
-                    <TextBox Text="{Binding ElementName=AutoPostToFriendSessionConfigs, Path=SelectedItem.NumberOfSpamMail}"
-                             MinWidth="350" />
-                </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
+        <controls:FilterControl Grid.Row="1"
+                                x:Name="FilterBox"
+                                ItemsSource="{Binding AddFriendNearByConfigs}"
+                                Margin="20"
+                                RefreshCommand="{Binding RefreshAddFriendNearByConfigListCommand}" />
 
         <TextBlock Grid.Row="0"
                    Text="GỬI TIN CHO BẠN BÈ"
@@ -91,14 +32,14 @@
 
         <materialDesign:Card Grid.Row="2"
                              Margin="5">
-
-            <Button Content="Gửi ngay"
-                    Style="{DynamicResource MaterialDesignFlatButton}"
+            <Button Content="BẮT ĐẦU GỬI TIN CHO BẠN BÈ"
                     Margin="10"
-                    Command="{Binding AutoSpamFriendCommand}"
-                    VerticalAlignment="Top"
-                    CommandParameter="{Binding ElementName=AutoPostToFriendSessionConfigs, Path=SelectedItem}"
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{Binding AutoAddFriendCommand}"
+                    CommandParameter="{Binding ElementName=FilterBox, Path=SelectedItem}"
                     HorizontalAlignment="Right" />
         </materialDesign:Card>
     </Grid>
+
 </Page>
