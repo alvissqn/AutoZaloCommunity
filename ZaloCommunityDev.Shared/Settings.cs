@@ -12,6 +12,6 @@
         public int MaxFriendAddedPerDay { get; set; } = 30;
 
         public int AddedFriendTodayCount { get; set; } = 0;
-
+        public bool IsDebug { get; set; } = true;
     }
 }

@@ -284,13 +284,6 @@
       <Name>ZaloImageProcessing207</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Data\db1.accdb" />
-    <None Include="Data\Database.accdb" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Data\Database - Copy - Copy.accdb" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

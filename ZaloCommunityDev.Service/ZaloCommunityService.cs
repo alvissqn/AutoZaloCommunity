@@ -43,6 +43,8 @@ namespace ZaloCommunityDev.Services
 
         private Settings _settings;
 
+        private bool IsDebug => _settings.IsDebug;
+
         private void InvokeProc(string args)
         {
             var _process = new Process();
@@ -83,21 +85,18 @@ namespace ZaloCommunityDev.Services
             }
         }
 
-
-        public string[] OnlineDevices => _adb?.Devices.Where(x => x.IsOnline).Select(x => x.SerialNumber).ToArray();
-
-        public void StartAvd(string nameOrIndex)
+        public void StartAvd(string serialNumberOrIndex)
         {
             try
             {
                 int value = 0;
-                if (int.TryParse(nameOrIndex, out value))
+                if (int.TryParse(serialNumberOrIndex, out value))
                 {
                     _device = _adb.Devices.FirstOrDefault(x => x.IsOnline);
                 }
                 else
                 {
-                    _device = _adb.Devices.First(x => x.SerialNumber == nameOrIndex && x.IsOnline);
+                    _device = _adb.Devices.First(x => x.SerialNumber == serialNumberOrIndex && x.IsOnline);
                 }
             }
             catch (Exception ex)
@@ -135,7 +134,7 @@ namespace ZaloCommunityDev.Services
 
         }
 
-        private void ScrollFriendList(int times)
+        private void ScrollList(int times)
         {
             TouchSwipe(Screen.WorkingRect.Center.X, Screen.WorkingRect.Center.Y, Screen.WorkingRect.Center.X, Screen.WorkingRect.Center.Y - Screen.FriendRowHeight, times);
         }
@@ -188,7 +187,7 @@ namespace ZaloCommunityDev.Services
                 while (points.Count == 0)
                 {
                     Console.WriteLine("!đang cuộn danh sách bạn");
-                    ScrollFriendList(9);
+                    ScrollList(9);
 
                     Console.WriteLine("!đang tìm thông tin các bạn");
 
@@ -480,7 +479,7 @@ namespace ZaloCommunityDev.Services
 
                 while (points.Count == 0)
                 {
-                    ScrollFriendList(9);
+                    ScrollList(9);
 
                     fileCapture = CaptureScreenNow();
                     friends = _zaloImageProcessing.GetFriendProfileList(fileCapture, Screen);
@@ -757,14 +756,11 @@ namespace ZaloCommunityDev.Services
             Thread.Sleep(0x3e8);
         }
 
-        public void enableKeyBoard()
+        public void EnableAbdKeyoard()
         {
             InvokeProc("/c adb shell ime set com.android.adbkeyboard/.AdbIME");
             Thread.Sleep(500);
         }
-
-
-        private static string HexConverter(Color c) => ("#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2"));
 
         public void SendKey(KeyCode keycode, int times = 1)
         {
@@ -785,7 +781,7 @@ namespace ZaloCommunityDev.Services
 
         public void Login(string account, string password, string region)
         {
-            enableKeyBoard();
+            EnableAbdKeyoard();
             try
             {
                 InvokeProc("/c adb shell am force-stop com.zing.zalo");
@@ -797,36 +793,34 @@ namespace ZaloCommunityDev.Services
                 Delay(_settings.Delay.WaitLoginScreenOpened);
 
                 //Open regions
-                TouchAt(90, 160, 1);
-                Thread.Sleep((int)(delaynet + delay));
-                TouchAt(760, 0x4b, 2);
+                TouchAt(Screen.LoginScreenCountryCombobox);
+                Delay((delaynet + delay));
+                TouchAt(Screen.IconTopRight);
                 SendText(region);
+                TouchAt(Screen.LoginScreenFirstCountryItem);
+                Delay(100);
 
-                //Open username
-                TouchAt(90, 0xd4, 1);
-                TouchAt(650, 260, 1);
+                //Enter username
+                TouchAt(Screen.LoginScreenPhoneTextField);
                 for (int i = 0; i < 12; i++)
                 {
                     SendKey(KeyCode.AkeycodeDel);
                 }
                 SendText(account);
 
-
-                TouchAt(640, 0x14f, 1);
+                //Enter Password
+                Delay(100);
+                TouchAt(Screen.LoginScreenPasswordTextField);
                 SendText(password);
-                SendKey(KeyCode.AkeycodeEnter, 2);
+                TouchAt(Screen.LoginScreenOkButton);
+                //SendKey(KeyCode.AkeycodeEnter, 2);
 
                 Delay(_settings.Delay.WaitLogin);
             }
             catch (Exception ex)
             {
-                //Login(account, password, region);
-
                 log.Error(ex);
             }
-            TouchAt(100, 0x4b, 1);
-            TouchAt(700, 610, 1);
-            TouchAt(100, 0x4b, 1);
         }
 
         public void Post(string text, string path)

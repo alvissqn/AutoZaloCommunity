@@ -69,11 +69,17 @@
         #endregion Friend Tab
 
         #region Chat Screen
-
         public ScreenPoint ChatScreenTextField { get; set; } = new ScreenPoint(272, 1875);
         public ScreenPoint ChatScreenSendButton => IconBottomRight;
         public ScreenPoint ChatScreenProfileAvartar { get; set; } = new ScreenPoint(835, 160);
-
         #endregion Chat Screen
+
+        #region Login Screen
+        public ScreenPoint LoginScreenCountryCombobox { get; set; } = new ScreenPoint(250, 270);
+        public ScreenPoint LoginScreenFirstCountryItem { get; set; } = new ScreenPoint(250, 270);
+        public ScreenPoint LoginScreenPhoneTextField{ get; set; } = new ScreenPoint(250, 400);
+        public ScreenPoint LoginScreenPasswordTextField { get; set; } = new ScreenPoint(250, 550);
+        public ScreenPoint LoginScreenOkButton { get; set; } = new ScreenPoint(650, 760);
+        #endregion
     }
 }
