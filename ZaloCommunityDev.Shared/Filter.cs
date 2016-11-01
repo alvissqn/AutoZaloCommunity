@@ -1,8 +1,6 @@
-﻿using GalaSoft.MvvmLight;
-
-namespace ZaloCommunityDev.Shared
+﻿namespace ZaloCommunityDev.Shared
 {
-    public class Filter : ViewModelBase
+    public class Filter : NotifyPropertyChanged
     {
         private string _accountName;
         private string _configName;
