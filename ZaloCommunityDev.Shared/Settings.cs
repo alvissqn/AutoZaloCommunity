@@ -13,10 +13,8 @@
         public int AddedFriendTodayCount { get; set; } = 0;
         public bool IsDebug { get; set; } = true;
 
-        public User User { get; set; } = new User
-        {
-            Username = "0979864903",
-            Password = "kimngan12345"
-        };
+        public User User { get; set; }
+
+        public string DeviceNumber { get; set; }
     }
 }

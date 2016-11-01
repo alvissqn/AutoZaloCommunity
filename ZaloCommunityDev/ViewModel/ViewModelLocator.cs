@@ -18,7 +18,7 @@ namespace ZaloCommunityDev.ViewModel
 
         }
 
-        //public ZaloCommunityService Service => ServiceLocator.Current.GetInstance<ZaloCommunityService>();
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public Settings Settings => ServiceLocator.Current.GetInstance<Settings>();
     }
 }

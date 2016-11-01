@@ -7,6 +7,7 @@ using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
 using System;
+using ZaloCommunityDev.Service.Models;
 
 namespace ZaloCommunityDev.Service
 {
@@ -53,8 +54,10 @@ namespace ZaloCommunityDev.Service
                 Delay(2000);
 
                 var pointRowFriend = points.Pop();
-                var profile = new ProfileMessage();
-                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToChatFriendAt(profile, pointRowFriend.Point, filter))
+
+                var request = new ChatRequest() { Profile = new ProfileMessage() { Name = pointRowFriend.Name }, Objective = ChatObjective.FriendInContactList };
+
+                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToChatFriendAt(request, pointRowFriend.Point, filter))
                 {
                     countSuccess++;
                 }
@@ -76,13 +79,14 @@ namespace ZaloCommunityDev.Service
                 bool success = false;
                 while (!success)
                 {
+                    var phoneNumber = phonelist[count++];
                     Thread.Sleep(100);
-                    SendText(phonelist[count++].ToString());
+                    SendText(phoneNumber);
                     SendKey(KeyCode.AkeycodeEnter);
                     Thread.Sleep(4000);
                     //check is not available
 
-                    if (ZaloImageProcessing.HasFindButton())
+                    if (ZaloImageProcessing.HasFindButton(CaptureScreenNow(), Screen))
                     {
                         Console.WriteLine("!Lỗi, số đt không có");
                     }
@@ -90,8 +94,9 @@ namespace ZaloCommunityDev.Service
                     {
                         TouchAt(Screen.IconBottomLeft);
                         Delay(800);
-                        ProfileMessage profile = new ProfileMessage();
-                        Chat(profile, filter);
+
+                        var request = new ChatRequest { Profile = new ProfileMessage { PhoneNumber = phoneNumber }, Objective = ChatObjective.StrangerByPhone };
+                        Chat(request, filter);
                     }
                 }
             }
@@ -117,7 +122,7 @@ namespace ZaloCommunityDev.Service
             if (maxFriendToday < 0)
                 maxFriendToday = 0;
 
-            ChatFriendInList(maxFriendToday, filter);
+            ChatFriendNearBy(maxFriendToday, filter);
         }
 
         private FriendPositionMessage[] GetPositionAccountNotSent(Action<string[]> allPrrofiles)
@@ -125,13 +130,14 @@ namespace ZaloCommunityDev.Service
             var captureFiles = CaptureScreenNow();
             var names = ZaloImageProcessing.GetListFriendName(captureFiles, Screen);
 
-            var t = names.Where(v => DbContext.ProfileSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
+            var t = names.Where(v => DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
+            var t2 = t.Where(v => DbContext.LogMessageSentToStrangerSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
 
             allPrrofiles(names.Select(x => x.Name).ToArray());
-            return t.ToArray();
+            return t2.ToArray();
         }
 
-        private void ChatFriendInList(int maxFriendToday, Filter filter)
+        private void ChatFriendNearBy(int maxFriendToday, Filter filter)
         {
             Console.WriteLine($"!bắt đầu gửi tin cho bạn gần đây. Số bạn yêu cầu tối đa trong ngày hôm nay là {maxFriendToday}");
             var finish = false;
@@ -177,26 +183,26 @@ namespace ZaloCommunityDev.Service
 
                 var pointRowFriend = points.Pop();
 
-                var profile = new ProfileMessage() { Name = pointRowFriend.Name };
-                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToChatFriendAt(profile, pointRowFriend.Point, filter))
+                var request = new ChatRequest { Profile = new ProfileMessage() { Name = pointRowFriend.Name }, Objective = ChatObjective.StrangerNearBy };
+                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToChatFriendAt(request, pointRowFriend.Point, filter))
                 {
-                    DbContext.AddProfile(profile);
+                    DbContext.AddProfile(request.Profile);
                     countSuccess++;
-                    Console.WriteLine($"!gửi tin nhắn tới: {profile.Name} thành công. Số bạn đã gửi thành công trong phiên này là: {countSuccess}");
+                    Console.WriteLine($"!gửi tin nhắn tới: {request.Profile.Name} thành công. Số bạn đã gửi thành công trong phiên này là: {countSuccess}");
                 }
 
                 finish = countSuccess == maxFriendToday;
             }
         }
 
-        private bool ClickToChatFriendAt(ProfileMessage profile, ScreenPoint point, Filter filter)
+        private bool ClickToChatFriendAt(ChatRequest profile, ScreenPoint point, Filter filter)
         {
             TouchAt(point);
             Delay(2000);//wait to navigate chat screen
             return Chat(profile, filter);
         }
 
-        private bool Chat(ProfileMessage profile, Filter filter)
+        private bool Chat(ChatRequest profile, Filter filter)
         {
             //GrabInfomation
             TouchAtIconTopRight();
@@ -204,8 +210,8 @@ namespace ZaloCommunityDev.Service
             TouchAt(Screen.ChatScreenProfileAvartar);
             Delay(200);
 
-            var infoGrab = GrabProfileInfo(profile.Name);
-            ZaloHelper.CopyProfile(profile, infoGrab);
+            var infoGrab = GrabProfileInfo(profile.Profile.Name);
+            ZaloHelper.CopyProfile(profile.Profile, infoGrab);
 
             TouchAtIconTopLeft();//Back to chat screen
             TouchAtIconTopLeft();//Close sidebar
@@ -213,7 +219,8 @@ namespace ZaloCommunityDev.Service
 
             TouchAt(Screen.ChatScreenTextField);
             Delay(300);
-            SendText(filter.TextGreetingForFemale);
+            var textGreeting = filter.TextGreetingForFemale;
+            SendText(textGreeting);
             Delay(500);
 
             if (!IsDebug)
@@ -224,6 +231,19 @@ namespace ZaloCommunityDev.Service
             Delay(1000);
 
             TouchAt(Screen.IconTopLeft);//Go Back
+
+            switch (profile.Objective)
+            {
+                case ChatObjective.FriendInContactList:
+                    DbContext.AddLogMessageSentToFriend(profile.Profile, textGreeting);
+
+                    break;
+                case ChatObjective.StrangerByPhone:
+                case ChatObjective.StrangerNearBy:
+                    DbContext.AddLogMessageSentToStranger(profile.Profile, textGreeting);
+
+                    break;                    
+            }
 
             return true;
         }

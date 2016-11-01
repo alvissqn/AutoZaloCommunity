@@ -12,6 +12,6 @@ namespace ZaloCommunityDev.ImageProcessing
         bool IsShowDialogWaitAddedFriendConfirmWhenRequestAdd(string fileImage, ScreenInfo info);
         FriendPositionMessage[] GetListFriendName(string captureFiles, ScreenInfo screen);
         FriendPositionMessage[] GetFriendProfileList(string fileName, ScreenInfo screen);
-        bool HasFindButton();
+        bool HasFindButton(string fileName, ScreenInfo screen);
     }
 }

@@ -83,6 +83,7 @@ namespace ZaloCommunityDev.ViewModel
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.StartInfo.UseShellExecute = false;
+            process.StartInfo.WorkingDirectory = WorkingFolderPath;
 
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.RedirectStandardOutput = true;
@@ -120,8 +121,10 @@ namespace ZaloCommunityDev.ViewModel
                     message.AppendLine("Std output:");
                     message.AppendLine(stdOutput.ToString());
                 }
+                
+                textReceived(Format(Filename, arguments) + " finished with exit code = " + process.ExitCode + ": " + message);
 
-                throw new Exception(Format(Filename, arguments) + " finished with exit code = " + process.ExitCode + ": " + message);
+                return message.ToString();
             }
         }
 

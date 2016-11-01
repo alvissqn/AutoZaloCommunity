@@ -60,14 +60,15 @@ namespace ZaloCommunityDev.Service
                     SendKey(KeyCode.AkeycodeEnter);
                     Thread.Sleep(4000);
                     //check is not available
-
-                    if (ZaloImageProcessing.HasFindButton())
+                    Console.WriteLine("!Kiểm tra thông báo");
+                    if (ZaloImageProcessing.HasFindButton(CaptureScreenNow(), Screen))
                     {
                         Console.WriteLine("!Lỗi, số đt không có");
                     }
                     else
                     {
                         var profile = GrabProfileInfo();
+                        profile.PhoneNumber = phonelist[count];
                         var addSuccess = AddFriendViaIconButton(profile, filter);
                         Console.WriteLine($"!Thêm bạn bằng số đt: {phonelist[count]} thành công.");
                         if (addSuccess)
@@ -143,7 +144,7 @@ namespace ZaloCommunityDev.Service
             var captureFiles = CaptureScreenNow();
             var names = ZaloImageProcessing.GetListFriendName(captureFiles, Screen);
 
-            var t = names.Where(v => DbContext.ProfileSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
+            var t = names.Where(v => DbContext.LogRequestAddFriendSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
 
             allPrrofiles(names.Select(x => x.Name).ToArray());
             return t.ToArray();
@@ -214,6 +215,8 @@ namespace ZaloCommunityDev.Service
             Delay(300);
 
             TouchAtIconTopLeft(); //GoBack to friendList
+
+            DbContext.LogAddFriend(profile, textGreeting);
 
             return true;
         }

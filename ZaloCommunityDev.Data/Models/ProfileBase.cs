@@ -14,6 +14,8 @@ namespace ZaloCommunityDev.Data.Models
 
         public string BirthdayText { get; set; }
 
+        public string PhoneNumber { get; set; }
+
         [NotMapped]
         public Gender Gender { get; set; }
 

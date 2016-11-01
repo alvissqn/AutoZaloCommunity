@@ -28,6 +28,7 @@
                     <ComboBox x:Name="OnlineDevices"
                               MinWidth="250"
                               SelectedIndex="0"
+                              SelectedItem="{Binding SelectedDevice}"
                               ItemsSource="{Binding OnlineDevices}"
                               Margin="20,0,0,0"
                               Width="431" />
@@ -38,6 +39,8 @@
                             Command="{Binding RefreshAvdListCommand}" />
                 </StackPanel>
 
+                <CheckBox Content="Chế độ kiểm tra" Margin="5,10,5,20"
+                          IsChecked="{Binding Settings.IsDebug, Source={StaticResource Locator}}" />
                 <DataGrid ItemsSource="{Binding Users}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Tên đăng nhập"
@@ -46,7 +49,7 @@
                         <DataGridTextColumn Header="Mật khẩu"
                                             Binding="{Binding Password}" />
 
-                        <DataGridTextColumn Header="Quốc gia"
+                        <DataGridTextColumn Header="Quốc gia" IsReadOnly="True"
                                             Binding="{Binding Region}" />
                     </DataGrid.Columns>
                 </DataGrid>

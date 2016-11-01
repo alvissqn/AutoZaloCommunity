@@ -62,6 +62,10 @@
     <Compile Include="Migrations\201611011014127_code.Designer.cs">
       <DependentUpon>201611011014127_code.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611011246332_codeadd.cs" />
+    <Compile Include="Migrations\201611011246332_codeadd.Designer.cs">
+      <DependentUpon>201611011246332_codeadd.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AddFriendByPhoneConfigDto.cs" />
     <Compile Include="Models\AddFriendNearByConfigDto.cs" />
@@ -95,6 +99,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201611011014127_code.resx">
       <DependentUpon>201611011014127_code.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611011246332_codeadd.resx">
+      <DependentUpon>201611011246332_codeadd.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

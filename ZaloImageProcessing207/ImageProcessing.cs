@@ -221,6 +221,11 @@ namespace ZaloCommunityDev.ImageProcessing
             return centerPoints.ToArray();
         }
 
+        private bool ContainsTemplate(string sourceFile, string templateFile, double matchPercent = 0.98d)
+        {
+            return DetectTemplate(sourceFile, templateFile, matchPercent).Any();
+        }
+
         private Point[] DetectCenterPoints(string sourceFile, string templateFile, double matchPercent = 0.98d)
         {
             using (var source = new Image<Bgr, byte>(sourceFile))
@@ -230,9 +235,9 @@ namespace ZaloCommunityDev.ImageProcessing
             }
         }
 
-        public bool HasFindButton()
+        public bool HasFindButton(string fileName, ScreenInfo screen)
         {
-            return false;
+            return ContainsTemplate(fileName, $@".\ImageData\{screen.Name}\template\more_friend_pattern_template.png");
         }
 
         #endregion Functions

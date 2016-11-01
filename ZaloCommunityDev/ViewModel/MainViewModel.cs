@@ -32,11 +32,12 @@ namespace ZaloCommunityDev.ViewModel
                 RaisePropertyChanged();
             }
         }
-
-        public MainViewModel(ZaloCommunityService service, DatabaseContext dbContext)
+        Settings settings;
+        public MainViewModel(ZaloCommunityService service, DatabaseContext dbContext, Settings settings)
         {
             _zaloCommunityService = service;
             _databaseContext = dbContext;
+            this.settings = settings;
 
             Load();
 
@@ -79,6 +80,9 @@ namespace ZaloCommunityDev.ViewModel
             }
         }
 
+        string selectedDevice;
+        public string SelectedDevice { get { return selectedDevice; } set { Set(ref selectedDevice, value); } }
+
         public ObservableCollection<string> Logs
         {
             get { return _logs; }
@@ -91,13 +95,16 @@ namespace ZaloCommunityDev.ViewModel
         public void Load()
         {
             OnlineDevices = _zaloCommunityService.OnlineDevices;
-            Users = new ObservableCollection<User>(new User[] { new User { Username = "0979864903", Password = "****" } });
+            Users = new ObservableCollection<User>(new User[] { new User { Username = "0979864903", Password = "kimngan12345" } });
 
             CurrentUser = Users[0];
         }
 
         private async Task AddFriendAuto(Filter x)
         {
+            settings.User = CurrentUser;
+            settings.DeviceNumber = SelectedDevice;
+
             await _zaloCommunityService.AddFriendNearBy(x, t => { DispatcherHelper.CheckBeginInvokeOnUI(() => Logs.Add(t)); }, end => { });
         }
 

@@ -31,7 +31,13 @@ namespace ZaloCommunityDev.Data
 
         public void AddProfile(ProfileMessage profile)
         {
-            ProfileSet.Add(new ProfileDto { BirthdayText = profile.BirthdayText, Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female, Name = profile.Name });
+            ProfileSet.Add(new ProfileDto
+            {
+                BirthdayText = profile.BirthdayText,
+                Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
+                Name = profile.Name,
+                PhoneNumber = profile.PhoneNumber
+            });
 
             var item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText);
             if (item == null)
@@ -179,6 +185,43 @@ namespace ZaloCommunityDev.Data
             dbItemConfig.NumberOfAction = item.NumberOfAction;
             dbItemConfig.TextGreetingForFemale = item.TextGreetingForFemale;
             dbItemConfig.TextGreetingForMale = item.TextGreetingForMale;
+        }
+
+        public void LogAddFriend(ProfileMessage profile, string textGreeting)
+        {
+            LogRequestAddFriendSet.Add(new LogRequestAddFriendDto
+            {
+                BirthdayText = profile.BirthdayText,
+                Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
+                MessageText = textGreeting,
+                Name = profile.Name,
+                PhoneNumber = profile.PhoneNumber
+            });
+            SaveChanges();
+        }
+
+        public void AddLogMessageSentToFriend(ProfileMessage profile, string textGreeting)
+        {
+            LogMessageSentToFriendSet.Add(new LogMessageSentToFriendDto
+            {
+                BirthdayText = profile.BirthdayText,
+                Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
+                MessageText = textGreeting,
+                Name = profile.Name,
+                PhoneNumber = profile.PhoneNumber
+            });
+        }
+
+        public void AddLogMessageSentToStranger(ProfileMessage profile, string textGreeting)
+        {
+            LogMessageSentToStrangerSet.Add(new LogMessageSentToStrangerDto
+            {
+                BirthdayText = profile.BirthdayText,
+                Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
+                MessageText = textGreeting,
+                Name = profile.Name,
+                PhoneNumber = profile.PhoneNumber
+            });
         }
     }
 }
