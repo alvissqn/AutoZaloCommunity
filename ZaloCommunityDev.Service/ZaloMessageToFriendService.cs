@@ -6,6 +6,7 @@ using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
+using System;
 
 namespace ZaloCommunityDev.Service
 {
@@ -18,7 +19,7 @@ namespace ZaloCommunityDev.Service
         {
         }
 
-        public void SendMessageToFriend(Filter config)
+        public void SendMessageToFriendInList(Filter filter)
         {
             var finish = false;
 
@@ -53,7 +54,7 @@ namespace ZaloCommunityDev.Service
 
                 var pointRowFriend = points.Pop();
                 var profile = new ProfileMessage();
-                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToChatFriendAt(profile, pointRowFriend.Point, config))
+                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToChatFriendAt(profile, pointRowFriend.Point, filter))
                 {
                     countSuccess++;
                 }
@@ -62,11 +63,55 @@ namespace ZaloCommunityDev.Service
             }
         }
 
-        private bool ClickToChatFriendAt(ProfileMessage profile, ScreenPoint point, Filter config)
+        public void SendMessageByPhoneNumber(Filter filter)
+        {
+            var countSuccess = 0;
+            var count = 0;
+
+            string[] phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
+
+            while (countSuccess < filter.NumberOfAction)
+            {
+                InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
+                bool success = false;
+                while (!success)
+                {
+                    Thread.Sleep(100);
+                    SendText(phonelist[count++].ToString());
+                    SendKey(KeyCode.AkeycodeEnter);
+                    Thread.Sleep(4000);
+                    //check is not available
+
+                    if (ZaloImageProcessing.HasFindButton())
+                    {
+                        Console.WriteLine("!Lỗi, số đt không có");
+                    }
+                    else
+                    {
+                        TouchAt(Screen.IconBottomLeft);
+                        Delay(800);
+                        ProfileMessage profile = new ProfileMessage();
+                        Chat(profile, filter);
+                    }
+                }
+            }
+        }
+
+        public void SendMessageNearBy(Filter filter)
+        {
+
+        }
+
+        private bool ClickToChatFriendAt(ProfileMessage profile, ScreenPoint point, Filter filter)
         {
             TouchAt(point);
             Delay(2000);//wait to navigate chat screen
 
+            return Chat(profile, filter);
+        }
+
+        private bool Chat(ProfileMessage profile, Filter filter)
+        {
             //GrabInfomation
             TouchAtIconTopRight();
             Delay(200);
@@ -82,7 +127,7 @@ namespace ZaloCommunityDev.Service
 
             TouchAt(Screen.ChatScreenTextField);
             Delay(300);
-            SendText(config.TextGreetingForFemale);
+            SendText(filter.TextGreetingForFemale);
             Delay(500);
 
             if (!IsDebug)
@@ -93,8 +138,6 @@ namespace ZaloCommunityDev.Service
             Delay(1000);
 
             TouchAt(Screen.IconTopLeft);//Go Back
-
-            //_dbContext.LogSpamFriend(friendName);
 
             return true;
         }

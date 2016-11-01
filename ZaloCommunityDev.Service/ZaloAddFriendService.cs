@@ -46,28 +46,42 @@ namespace ZaloCommunityDev.Service
             AddFriend(maxFriendToday, filter);
         }
 
-        public void AddFriendByPhone(List<string> phonelist, int numfriends, string text)
+        public void AddFriendByPhone(Filter filter)
         {
-            numfriends = (numfriends < phonelist.Count) ? numfriends : phonelist.Count;
-            var num = 0;
-            var totalAction = 0;
-            while ((num < numfriends))
+            var countSuccess = 0;
+            var count = 0;
+
+            string[] phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
+
+            while (countSuccess < filter.NumberOfAction)
             {
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
-                Thread.Sleep(100);
-                SendText(phonelist[totalAction].ToString());
-                SendKey(KeyCode.AkeycodeEnter);
-                Thread.Sleep(100);
-                TouchAt(0x2fd, 70);
-                TouchAt(780, 200, 2);
-                SendText(text);
+                bool success = false;
+                while (!success)
+                {
+                    Thread.Sleep(100);
+                    SendText(phonelist[count++].ToString());
+                    SendKey(KeyCode.AkeycodeEnter);
+                    Thread.Sleep(4000);
+                    //check is not available
 
-                TouchAt(360, 340);
-
-                num++;
-                totalAction++;
+                    if (ZaloImageProcessing.HasFindButton())
+                    {
+                        Console.WriteLine("!Lỗi, số đt không có");
+                    }
+                    else
+                    {
+                        var profile = GrabProfileInfo();
+                        var addSuccess = AddFriendViaIconButton(profile, filter);
+                        Console.WriteLine($"!Thêm bạn bằng số đt: {phonelist[count]} thành công.");
+                        if (addSuccess)
+                        {
+                            countSuccess++;
+                            success = true;
+                        }
+                    }
+                }
             }
-            TouchAt(100, 0x4b, 5);
         }
 
         private void AddFriend(int maxFriendToday, Filter filter)
@@ -159,39 +173,11 @@ namespace ZaloCommunityDev.Service
             //I''m on profile page
 
             var info = GrabProfileInfo(profile.Name);
-            CopyProfile(profile, info);
+            ZaloHelper.CopyProfile(profile, info);
 
             if (!info.IsAddedToFriend)
             {
-                Console.WriteLine($"!tiến hành gửi yêu cầu kết bạn: {profile.Name}");
-                //Wait to navigate to profiles
-                TouchAtIconBottomRight();//Touch to AddFriends
-                                         //Wait to Navigate to new windows
-                Delay(3000);
-
-                var proccessedDialog = ProcessIfShowDialogWaitRequestedFriendConfirm();
-                if (proccessedDialog)
-                {
-                    Console.WriteLine($"!yêu cầu kết bạn: {profile.Name} bị từ chối. Lý do: đã gửi yêu cầu rồi");
-                    TouchAtIconTopLeft(); //GoBack to friendList
-                    return false;
-                }
-
-                TouchAt(Screen.AddFriendScreenGreetingTextField);
-
-                var textGreeting = info.Gender == "Nam" ? filter.TextGreetingForMale : filter.TextGreetingForFemale;
-
-                SendText(textGreeting);
-
-                //Debug:
-                TouchAtIconTopLeft();
-                //TouchAt(Screen.AddFriendScreenOkButton); //TouchToAddFriend then goto profile
-
-                Delay(300);
-
-                TouchAtIconTopLeft(); //GoBack to friendList
-
-                return true;
+                return AddFriendViaIconButton(profile, filter);
             }
             else
             {
@@ -201,6 +187,39 @@ namespace ZaloCommunityDev.Service
             }
         }
 
+        private bool AddFriendViaIconButton(ProfileMessage profile, Filter filter)
+        {
+            Console.WriteLine($"!tiến hành gửi yêu cầu kết bạn: {profile.Name}");
+            //Wait to navigate to profiles
+            TouchAtIconBottomRight();//Touch to AddFriends
+                                     //Wait to Navigate to new windows
+            Delay(3000);
+
+            var proccessedDialog = ProcessIfShowDialogWaitRequestedFriendConfirm();
+            if (proccessedDialog)
+            {
+                Console.WriteLine($"!yêu cầu kết bạn: {profile.Name} bị từ chối. Lý do: đã gửi yêu cầu rồi");
+                TouchAtIconTopLeft(); //GoBack to friendList
+                return false;
+            }
+
+            TouchAt(Screen.AddFriendScreenGreetingTextField);
+
+            var textGreeting = profile.Gender == "Nam" ? filter.TextGreetingForMale : filter.TextGreetingForFemale;
+
+            SendText(textGreeting);
+
+            //Debug:
+            TouchAtIconTopLeft();
+            //TouchAt(Screen.AddFriendScreenOkButton); //TouchToAddFriend then goto profile
+
+            Delay(300);
+
+            TouchAtIconTopLeft(); //GoBack to friendList
+
+            return true;
+
+        }
         private bool ProcessIfShowDialogWaitRequestedFriendConfirm()
         {
             var file = CaptureScreenNow();

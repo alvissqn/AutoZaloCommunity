@@ -230,6 +230,11 @@ namespace ZaloCommunityDev.ImageProcessing
             }
         }
 
+        public bool HasFindButton()
+        {
+            return false;
+        }
+
         #endregion Functions
     }
 }

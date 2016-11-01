@@ -13,6 +13,9 @@
         private string _textGreetingForFemale;
         private string _textGreetingForMale;
 
+        public string IncludePhoneNumbers { get; set; }
+        public string ExcludePhoneNumbers { get; set; }
+
         public string AccountName
         {
             get { return _accountName; }
