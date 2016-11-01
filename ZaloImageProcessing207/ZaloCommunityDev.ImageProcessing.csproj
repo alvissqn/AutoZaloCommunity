@@ -131,6 +131,9 @@
     <None Include="ImageData\1280x2048.dpi384\template\female_sign_pattern_template.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="ImageData\1280x2048.dpi384\template\find_friend_via_phone_pattern_template.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="ImageData\1280x2048.dpi384\template\info_button_pattern_template.png" />
     <Content Include="ImageData\1280x2048.dpi384\template\liked_paterrn_template.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

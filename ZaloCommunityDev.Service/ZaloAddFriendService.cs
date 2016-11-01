@@ -10,7 +10,7 @@ using ZaloCommunityDev.Shared.Structures;
 
 namespace ZaloCommunityDev.Service
 {
-    public class ZaloAddFriendService : ZaloCommunityDistributeServiceBase
+    public class ZaloAddFriendService : ZaloCommunityDistributeServiceBase, ISearchStrangerAction
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloAddFriendService));
 
