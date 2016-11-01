@@ -3,6 +3,7 @@ using log4net;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Shared;
+using ZaloCommunityDev.Service.Models;
 
 namespace ZaloCommunityDev.Service
 {
@@ -10,8 +11,8 @@ namespace ZaloCommunityDev.Service
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloLoginService));
 
-        public ZaloLoginService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing)
-            : base(settings, dbContext, zaloImageProcessing)
+        public ZaloLoginService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
+            : base(settings, dbContext, zaloImageProcessing, ZaloAdbRequest)
         {
         }
 
@@ -22,6 +23,7 @@ namespace ZaloCommunityDev.Service
             var region = user.Region;
 
             EnableAbdKeyoard();
+
             try
             {
                 InvokeProc("/c adb shell am force-stop com.zing.zalo");
@@ -34,14 +36,17 @@ namespace ZaloCommunityDev.Service
 
                 //Open regions
                 TouchAt(Screen.LoginScreenCountryCombobox);
-                Delay(100);
+                Delay(1000);
                 TouchAt(Screen.IconTopRight);
+                Delay(1100);
                 SendText(region);
+                Delay(1200);
                 TouchAt(Screen.LoginScreenFirstCountryItem);
-                Delay(100);
+                Delay(500);
 
                 //Enter username
                 TouchAt(Screen.LoginScreenPhoneTextField);
+                SendKey(KeyCode.AkeycodeMoveEnd);
                 for (var i = 0; i < 12; i++)
                 {
                     SendKey(KeyCode.AkeycodeDel);

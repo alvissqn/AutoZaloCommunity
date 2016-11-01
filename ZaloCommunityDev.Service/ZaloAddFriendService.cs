@@ -7,6 +7,7 @@ using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
+using ZaloCommunityDev.Service.Models;
 
 namespace ZaloCommunityDev.Service
 {
@@ -14,8 +15,8 @@ namespace ZaloCommunityDev.Service
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloAddFriendService));
 
-        public ZaloAddFriendService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing)
-            : base(settings, dbContext, zaloImageProcessing)
+        public ZaloAddFriendService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
+            : base(settings, dbContext, zaloImageProcessing, ZaloAdbRequest)
         {
         }
 
@@ -45,9 +46,8 @@ namespace ZaloCommunityDev.Service
         public void AddFriendByPhone(Filter filter)
         {
             var countSuccess = 0;
-            var count = 0;
 
-            var phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
+            var phonelist = new Stack<string>(filter.IncludePhoneNumbers.Split(";,|".ToArray()));
 
             while (countSuccess < filter.NumberOfAction)
             {
@@ -55,8 +55,24 @@ namespace ZaloCommunityDev.Service
                 var success = false;
                 while (!success)
                 {
+                    if (phonelist.Count == 0)
+                    {
+                        return;
+                    }
+
+                    var phoneNumber = phonelist.Pop();
+                    if (DbContext.LogRequestAddFriendSet.FirstOrDefault(x => x.PhoneNumber == phoneNumber)!= null){
+                        Console.WriteLine("Bạn này đã có tên trong danh sách");
+
+                        continue;
+                    }
                     Thread.Sleep(100);
-                    SendText(phonelist[count++]);
+                    for (var i = 0; i < 15; i++)
+                    {
+                        SendKey(KeyCode.AkeycodeDel);
+                    }
+
+                    SendText(phoneNumber);
                     SendKey(KeyCode.AkeycodeEnter);
                     Thread.Sleep(4000);
                     //check is not available
@@ -68,9 +84,10 @@ namespace ZaloCommunityDev.Service
                     else
                     {
                         var profile = GrabProfileInfo();
-                        profile.PhoneNumber = phonelist[count];
+
+                        profile.PhoneNumber = phoneNumber;
                         var addSuccess = AddFriendViaIconButton(profile, filter);
-                        Console.WriteLine($"!Thêm bạn bằng số đt: {phonelist[count]} thành công.");
+                        Console.WriteLine($"!Thêm bạn bằng số đt: {phoneNumber} thành công.");
                         if (addSuccess)
                         {
                             countSuccess++;
@@ -84,7 +101,6 @@ namespace ZaloCommunityDev.Service
         private void AddFriend(int maxFriendToday, Filter filter)
         {
             Console.WriteLine($"!bắt đầu thêm bạn. số bạn yêu cầu tối đa trong ngày hôm nay là {maxFriendToday}");
-            var finish = false;
 
             var countSuccess = 0;
             string[] profilesPage1 = null;
@@ -96,7 +112,7 @@ namespace ZaloCommunityDev.Service
             profilesPage1.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
             Console.WriteLine($"!--------------------");
             friendNotAdded.ToList().ForEach((x) => Console.WriteLine($"!các bạn chưa được gửi lời mời: {x}"));
-            while (!finish)
+            while (countSuccess < maxFriendToday)
             {
                 while (points.Count == 0)
                 {
@@ -134,8 +150,6 @@ namespace ZaloCommunityDev.Service
                     countSuccess++;
                     Console.WriteLine($"!yêu cầu kết bạn [{countSuccess}]: {profile.Name} bị thành công.");
                 }
-
-                finish = countSuccess == maxFriendToday;
             }
         }
 

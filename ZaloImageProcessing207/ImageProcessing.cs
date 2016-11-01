@@ -237,7 +237,7 @@ namespace ZaloCommunityDev.ImageProcessing
 
         public bool HasFindButton(string fileName, ScreenInfo screen)
         {
-            return ContainsTemplate(fileName, $@".\ImageData\{screen.Name}\template\more_friend_pattern_template.png");
+            return ContainsTemplate(fileName, $@".\ImageData\{screen.Name}\template\find_friend_via_phone_pattern_template.png");
         }
 
         #endregion Functions

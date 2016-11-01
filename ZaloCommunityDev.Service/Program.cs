@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Ninject;
 using System;
 using System.IO;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
+using ZaloCommunityDev.Service.Models;
 using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.Service
@@ -13,26 +15,63 @@ namespace ZaloCommunityDev.Service
 
         static void Main(string[] args)
         {
-            //args = new [] { "add-friend-near-by", "d71f70232b5949ae93754b1eb28e4b62", "0" };
+            args = new[] { "send-message-near-by", "6ce8be4569f24e2ea6c04bb4aa3ae0fc" };
             var sessionId = args[1];
-            var deviceNameOrIndex = args[2];
 
-            Console.WriteLine($"Request:{args[0]} .SessionId:{sessionId}. Device: {deviceNameOrIndex}");
+            var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\setting.json"));
+            var filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\filter.json"));
+
+            //IKernel kernal = new StandardKernel();
+
+            //kernal.Bind<IZaloImageProcessing>().To<ZaloImageProcessing>();
+            //kernal.Bind<DatabaseContext>().ToSelf();
+            //kernal.Bind<Settings>().ToConstant(settings);
+            //kernal.Bind<ZaloAdbRequest>().ToSelf();
+
+            var ZaloImageProcessing = new ZaloImageProcessing();
+            var DatabaseContext = new DatabaseContext();
+            var Settings = settings;
+            var ZaloAdbRequest = new ZaloAdbRequest(Settings);
+            ZaloAdbRequest.StartAvd(settings.DeviceNumber);
+
+            var ZaloLoginService = new ZaloLoginService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
+            ZaloLoginService.Login(settings.User);
+
+            Console.WriteLine($"Request:{args[0]} .SessionId:{sessionId}.");
             switch (args[0])
             {
                 case "add-friend-near-by":
-                    var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\setting.json"));
-                    var filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\filter.json"));
 
-                    var imageProcessing = new ZaloImageProcessing();
-                    var dbContext = new DatabaseContext();
+                    var ZaloAddFriendService = new ZaloAddFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
+                    ZaloAddFriendService.AddFriendNearBy(filter);
 
-                    var loginService = new ZaloLoginService(settings, dbContext, imageProcessing);
-                    loginService.Login(settings.User);
+                    break;
 
-                    var service = new ZaloAddFriendService(settings, dbContext, imageProcessing);
-                    service.StartAvd(deviceNameOrIndex);
-                    service.AddFriendNearBy(filter);
+                case "add-friend-by-phone":
+
+                    ZaloAddFriendService = new ZaloAddFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
+                    ZaloAddFriendService.AddFriendByPhone(filter);
+
+                    break;
+
+                case "send-message-near-by":
+
+                    var ZaloMessageToFriendService = new ZaloMessageToFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
+                    ZaloMessageToFriendService.SendMessageNearBy(filter);
+
+                    break;
+
+                case "send-message-by-phone-number":
+
+                    ZaloMessageToFriendService = new ZaloMessageToFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
+                    ZaloMessageToFriendService.SendMessageByPhoneNumber(filter);
+
+                    break;
+
+                case "send-message-to-friends-in-contacts":
+
+                    ZaloMessageToFriendService = new ZaloMessageToFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
+                    ZaloMessageToFriendService.SendMessageToFriendInList(filter);
 
                     break;
             }

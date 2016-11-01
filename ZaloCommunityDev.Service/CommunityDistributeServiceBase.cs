@@ -12,6 +12,7 @@ using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
+using ZaloCommunityDev.Service.Models;
 
 namespace ZaloCommunityDev.Service
 {
@@ -23,17 +24,14 @@ namespace ZaloCommunityDev.Service
         protected readonly DatabaseContext DbContext;
         protected readonly Settings Settings;
         protected readonly IZaloImageProcessing ZaloImageProcessing;
-        protected readonly AndroidDebugBridge Adb;
-        protected readonly string AdbPath;
 
-        private readonly ConsoleOutputReceiver _receiver;
+        protected readonly ZaloAdbRequest ZaloAdbRequest;
 
-        private Device _device;
 
         protected bool IsDebug => Settings.IsDebug;
         protected ScreenInfo Screen => Settings.Screen;
 
-        protected CommunityDistributeServiceBase(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing)
+         protected CommunityDistributeServiceBase(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -47,19 +45,7 @@ namespace ZaloCommunityDev.Service
 
             DbContext = dbContext;
 
-            _receiver = new ConsoleOutputReceiver();
-
-            AdbPath = settings.AndroidDebugBridgeOsLocation;
-
-            try
-            {
-                Adb = AndroidDebugBridge.CreateBridge(Path.Combine(Settings.AndroidDebugBridgeOsLocation, "adb.exe"), true);
-                Adb.Start();
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex);
-            }
+            this.ZaloAdbRequest = ZaloAdbRequest;
         }
 
         public string CaptureScreenNow()
@@ -79,26 +65,26 @@ namespace ZaloCommunityDev.Service
 
         public void ChangeDisplayDensity(int des)
         {
-            if (_device == null || _device.State == DeviceState.Online)
+            if (ZaloAdbRequest.Device == null || ZaloAdbRequest.Device.State == DeviceState.Online)
             {
                 _log.Error("Device null");
                 return;
             }
 
-            _device.ExecuteShellCommand("adb root", _receiver);
-            _device.ExecuteShellCommand($"adb shell am display-density {des}", _receiver);
+            ZaloAdbRequest.Device.ExecuteShellCommand("adb root", ZaloAdbRequest.ConsoleOutputReceiver);
+            ZaloAdbRequest.Device.ExecuteShellCommand($"adb shell am display-density {des}", ZaloAdbRequest.ConsoleOutputReceiver);
         }
 
         public void ChangeDisplaySize(int x, int y)
         {
-            if (_device == null || _device.State == DeviceState.Online)
+            if (ZaloAdbRequest.Device == null || ZaloAdbRequest.Device.State == DeviceState.Online)
             {
                 _log.Error("Device null");
                 return;
             }
 
-            _device.ExecuteShellCommand("adb root", _receiver);
-            _device.ExecuteShellCommand($@"adb shell am display-size {x}x{y}", _receiver);
+            ZaloAdbRequest.Device.ExecuteShellCommand("adb root", ZaloAdbRequest.ConsoleOutputReceiver);
+            ZaloAdbRequest.Device.ExecuteShellCommand($@"adb shell am display-size {x}x{y}", ZaloAdbRequest.ConsoleOutputReceiver);
         }
 
         public void Delay(int milisecond) => Thread.Sleep(milisecond);
@@ -111,11 +97,11 @@ namespace ZaloCommunityDev.Service
 
         public void SendKey(KeyCode keycode, int times = 1)
         {
-            if ((_device != null) && (_device.State == DeviceState.Online))
+            if ((ZaloAdbRequest.Device != null) && (ZaloAdbRequest.Device.State == DeviceState.Online))
             {
                 for (var i = 0; i < times; i++)
                 {
-                    _device.ExecuteShellCommand("input keyevent " + (int)keycode, _receiver);
+                    ZaloAdbRequest.Device.ExecuteShellCommand("input keyevent " + (int)keycode, ZaloAdbRequest.ConsoleOutputReceiver);
                     Delay(Settings.Delay.PressedKeyEvent);
                 }
             }
@@ -127,7 +113,7 @@ namespace ZaloCommunityDev.Service
 
         public void SendText(string text)
         {
-            if (_device == null || _device.State != DeviceState.Online)
+            if (ZaloAdbRequest.Device == null || ZaloAdbRequest.Device.State != DeviceState.Online)
             {
                 _log.Error("Device null");
 
@@ -136,13 +122,13 @@ namespace ZaloCommunityDev.Service
 
             if (Encoding.UTF8.GetBytes(text).Length <= 0x3d0)
             {
-                _device.ExecuteShellCommand("am broadcast -a ADB_INPUT_TEXT --es msg '" + text + "'", _receiver);
+                ZaloAdbRequest.Device.ExecuteShellCommand("am broadcast -a ADB_INPUT_TEXT --es msg '" + text + "'", ZaloAdbRequest.ConsoleOutputReceiver);
             }
             else
             {
                 foreach (var buffer2 in SplitIntoChunks(Encoding.UTF8.GetBytes(text), 0x3d0))
                 {
-                    _device.ExecuteShellCommand("am broadcast -a ADB_INPUT_TEXT --es msg '" + Encoding.UTF8.GetString(buffer2) + "'", _receiver);
+                    ZaloAdbRequest.Device.ExecuteShellCommand("am broadcast -a ADB_INPUT_TEXT --es msg '" + Encoding.UTF8.GetString(buffer2) + "'", ZaloAdbRequest.ConsoleOutputReceiver);
                 }
             }
 
@@ -173,13 +159,13 @@ namespace ZaloCommunityDev.Service
 
         public void SetKeyBoardTelex(bool check)
         {
-            if (_device == null || _device.State == DeviceState.Online)
+            if (ZaloAdbRequest.Device == null || ZaloAdbRequest.Device.State == DeviceState.Online)
             {
                 _log.Error("Device null");
                 return;
             }
 
-            _device.ExecuteShellCommand("adb shell ime set com.android.adbkeyboard/.AdbIME", _receiver);
+            ZaloAdbRequest.Device.ExecuteShellCommand("adb shell ime set com.android.adbkeyboard/.AdbIME", ZaloAdbRequest.ConsoleOutputReceiver);
             Thread.Sleep(500);
         }
 
@@ -195,28 +181,6 @@ namespace ZaloCommunityDev.Service
             }
             Thread.Sleep(0x3e8);
         }
-
-        public void StartAvd(string serialNumberOrIndex)
-        {
-            try
-            {
-                var value = 0;
-                if (int.TryParse(serialNumberOrIndex, out value))
-                {
-                    _device = Adb.Devices.FirstOrDefault(x => x.IsOnline);
-                }
-                else
-                {
-                    _device = Adb.Devices.First(x => x.SerialNumber == serialNumberOrIndex && x.IsOnline);
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex);
-            }
-        }
-
-        public void StopAdb() => Adb.Stop();
 
         public void UpImage(string path)
         {
@@ -259,7 +223,7 @@ namespace ZaloCommunityDev.Service
             {
                 StartInfo = {
                                UseShellExecute = true,
-                               WorkingDirectory = AdbPath,
+                               WorkingDirectory = ZaloAdbRequest.AdbPath,
                                FileName = @"C:\Windows\System32\cmd.exe",
                                Arguments = args,
                                WindowStyle = ProcessWindowStyle.Hidden
@@ -304,11 +268,11 @@ namespace ZaloCommunityDev.Service
 
         public void TouchAt(int x, int y, int times = 1)
         {
-            if ((_device != null) && (_device.State == DeviceState.Online))
+            if ((ZaloAdbRequest.Device != null) && (ZaloAdbRequest.Device.State == DeviceState.Online))
             {
                 for (var i = 0; i < times; i++)
                 {
-                    _device.ExecuteShellCommand($"input tap {x} {y}", _receiver);
+                    ZaloAdbRequest.Device.ExecuteShellCommand($"input tap {x} {y}", ZaloAdbRequest.ConsoleOutputReceiver);
                     Delay(Settings.Delay.TouchEvent);
                 }
             }
@@ -335,7 +299,7 @@ namespace ZaloCommunityDev.Service
 
         public void TouchSwipe(int x1, int y1, int x2, int y2, int times = 1)
         {
-            if ((_device != null) && (_device.State == DeviceState.Online))
+            if ((ZaloAdbRequest.Device != null) && (ZaloAdbRequest.Device.State == DeviceState.Online))
             {
                 for (var i = 0; i < times; i++)
                 {

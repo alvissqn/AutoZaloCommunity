@@ -1,6 +1,7 @@
 ﻿using log4net;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
+using ZaloCommunityDev.Service.Models;
 using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.Service
@@ -15,8 +16,8 @@ namespace ZaloCommunityDev.Service
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloCommunityDistributeServiceBase));
 
-        protected ZaloCommunityDistributeServiceBase(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing)
-            : base(settings, dbContext, zaloImageProcessing)
+        protected ZaloCommunityDistributeServiceBase(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
+            : base(settings, dbContext, zaloImageProcessing, ZaloAdbRequest)
         {
         }
 
