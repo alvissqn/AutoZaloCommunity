@@ -85,7 +85,11 @@
     <Compile Include="KeyCode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZaloCommunityDistributeService.cs" />
+    <Compile Include="ZaloHelper.cs" />
+    <Compile Include="ZaloLoginService.cs" />
+    <Compile Include="ZaloMessageToFriendService.cs" />
+    <Compile Include="ZaloAddFriendService.cs" />
+    <Compile Include="ZaloCommunityDistributeServiceBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

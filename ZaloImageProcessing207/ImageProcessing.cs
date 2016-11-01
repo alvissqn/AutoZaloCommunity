@@ -12,13 +12,13 @@ using ZaloCommunityDev.Shared.Structures;
 
 namespace ZaloCommunityDev.ImageProcessing
 {
-    public class ImageProcessing : IZaloImageProcessing
+    public class ZaloImageProcessing : IZaloImageProcessing
     {
         const string TesseracOcrDataFolder = @"C:\Users\ngan\documents\visual studio 2015\Projects\ZaloCommunityDev\ZaloImageProcessing207\Tesseract-OCR\tessdata";
 
         public static void Main(string[] arrgs)
         {
-            var imageProcessing = new ImageProcessing();
+            var imageProcessing = new ZaloImageProcessing();
 
             imageProcessing.GetFriendProfileList(@"C:\Users\ngan\Desktop\Screenshot_20161030-181646.png", new ScreenInfo());
         }

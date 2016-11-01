@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using ZaloCommunityDev.Data;
+using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.Service
@@ -12,7 +13,7 @@ namespace ZaloCommunityDev.Service
 
         static void Main(string[] args)
         {
-            args = new string[] { "add-friend-near-by", "d71f70232b5949ae93754b1eb28e4b62", "0" };
+            //args = new [] { "add-friend-near-by", "d71f70232b5949ae93754b1eb28e4b62", "0" };
             var sessionId = args[1];
             var deviceNameOrIndex = args[2];
 
@@ -20,14 +21,19 @@ namespace ZaloCommunityDev.Service
             switch (args[0])
             {
                 case "add-friend-near-by":
-                    var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\WorkingSession\{sessionId}\setting.json"));
-                    var filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText($@".\WorkingSession\{sessionId}\filter.json"));
+                    var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\setting.json"));
+                    var filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\filter.json"));
 
-                    var imageProcessing = new ImageProcessing.ImageProcessing();
-                    var service = new ZaloCommunityDistributeService(settings, new DatabaseContext(), imageProcessing);
+                    var imageProcessing = new ZaloImageProcessing();
+                    var dbContext = new DatabaseContext();
 
+                    var loginService = new ZaloLoginService(settings, dbContext, imageProcessing);
+                    loginService.Login(settings.User);
+
+                    var service = new ZaloAddFriendService(settings, dbContext, imageProcessing);
                     service.StartAvd(deviceNameOrIndex);
                     service.AddFriendNearBy(filter);
+
                     break;
             }
         }
