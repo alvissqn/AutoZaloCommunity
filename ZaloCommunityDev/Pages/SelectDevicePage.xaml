@@ -17,9 +17,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer  Grid.Row="1"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel>
+            <StackPanel  Margin="20">
                 <StackPanel Orientation="Horizontal"
                             Margin="5">
                     <TextBlock Text="Chọn thiết bị đang online"
@@ -37,6 +37,19 @@
                             Margin="10,0,0,0"
                             Command="{Binding RefreshAvdListCommand}" />
                 </StackPanel>
+
+                <DataGrid ItemsSource="{Binding Users}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Tên đăng nhập"
+                                            Binding="{Binding Username}"/>
+
+                        <DataGridTextColumn Header="Mật khẩu"
+                                            Binding="{Binding Password}" />
+
+                        <DataGridTextColumn Header="Quốc gia"
+                                            Binding="{Binding Region}" />
+                    </DataGrid.Columns>
+                </DataGrid>
             </StackPanel>
         </ScrollViewer>
 
@@ -45,15 +58,5 @@
                    Margin="20,20,0,0"
                    FontSize="20"
                    VerticalAlignment="Center" />
-
-        <materialDesign:Card Grid.Row="2"
-                             Margin="5">
-            <Button Content="Khởi động"
-                    Style="{DynamicResource MaterialDesignFlatButton}"
-                    Margin="10"
-                    Command="{Binding StartAvdCommand}"
-                    CommandParameter="{Binding ElementName=OnlineDevices, Path=SelectedItem}"
-                    HorizontalAlignment="Right" />
-        </materialDesign:Card>
     </Grid>
 </Page>

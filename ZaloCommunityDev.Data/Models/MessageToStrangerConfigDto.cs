@@ -2,6 +2,9 @@
 
 namespace ZaloCommunityDev.Data.Models
 {
-    [Table("AutoPostToStrangerSessionConfig")]
-    public class MessageToStrangerConfigDto : FilterBase { }
+    [Table("MessageToStrangerNearByConfig")]
+    public class MessageToStrangerNearByConfigDto : FilterBase { }
+
+     [Table("MessageToStrangerByPhoneConfig")]
+    public class MessageToStrangerByPhoneConfigDto : FilterBase { }
 }

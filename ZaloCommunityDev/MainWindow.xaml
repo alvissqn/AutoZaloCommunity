@@ -29,7 +29,8 @@
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <ListBox x:Name="TaskListBox" Margin="0,20,0,0">
+                <ListBox x:Name="TaskListBox"
+                         Margin="0,20,0,0">
                     <ListBox.Items>
                         <ListBoxItem Tag="Pages\SelectDevicePage.xaml">
                             <StackPanel Orientation="Horizontal">
@@ -88,6 +89,7 @@
         <Frame x:Name="RootFrame"
                NavigationUIVisibility="Hidden"
                Source="{Binding ElementName=TaskListBox, Path=SelectedItem.Tag, Converter={x:Static uiAssists:UiConverterHelper.TextToUri}}"
-               Grid.Column="1" />
+               Grid.Column="1">
+        </Frame>
     </Grid>
 </controls:MetroWindow>

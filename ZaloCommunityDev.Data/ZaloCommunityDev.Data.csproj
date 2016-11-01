@@ -58,6 +58,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseContext.cs" />
+    <Compile Include="Migrations\201611011014127_code.cs" />
+    <Compile Include="Migrations\201611011014127_code.Designer.cs">
+      <DependentUpon>201611011014127_code.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AddFriendByPhoneConfigDto.cs" />
     <Compile Include="Models\AddFriendNearByConfigDto.cs" />
@@ -74,7 +78,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +91,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\db1.accdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201611011014127_code.resx">
+      <DependentUpon>201611011014127_code.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

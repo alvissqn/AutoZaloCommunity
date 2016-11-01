@@ -20,9 +20,8 @@
 
         <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
-                                Sources="{Binding AddFriendNearByConfigs,Mode=TwoWay}"
-                                Margin="20"
-                                RefreshCommand="{Binding RefreshAddFriendNearByConfigListCommand}" />
+                                ConfigType="AutoAddFriendByPhonePage"
+                                Margin="20" />
 
         <TextBlock Grid.Row="0"
                    Text="THÊM BẠN TỰ ĐỘNG BẰNG SỐ ĐIỆN THOẠI"

@@ -47,16 +47,16 @@ namespace ZaloCommunityDev.Service
             var countSuccess = 0;
             var count = 0;
 
-            string[] phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
+            var phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
 
             while (countSuccess < filter.NumberOfAction)
             {
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
-                bool success = false;
+                var success = false;
                 while (!success)
                 {
                     Thread.Sleep(100);
-                    SendText(phonelist[count++].ToString());
+                    SendText(phonelist[count++]);
                     SendKey(KeyCode.AkeycodeEnter);
                     Thread.Sleep(4000);
                     //check is not available
@@ -150,14 +150,10 @@ namespace ZaloCommunityDev.Service
         }
 
         public bool ClickToAddFriendAtRowPosition(ProfileMessage profile, int position, Filter filter)
-        {
-            return ClickToAddFriendAt(profile, Screen.MenuPoint.Y * 2, (position - 1) * Screen.FriendRowHeight + Screen.FriendRowHeight / 2 + Screen.HeaderHeight, filter);
-        }
+            => ClickToAddFriendAt(profile, Screen.MenuPoint.Y * 2, (position - 1) * Screen.FriendRowHeight + Screen.FriendRowHeight / 2 + Screen.HeaderHeight, filter);
 
         public bool ClickToAddFriendAt(ProfileMessage profile, ScreenPoint point, Filter filter)
-        {
-            return ClickToAddFriendAt(profile, point.X, point.Y, filter);
-        }
+            => ClickToAddFriendAt(profile, point.X, point.Y, filter);
 
         public bool ClickToAddFriendAt(ProfileMessage profile, int x, int y, Filter filter)
         {
@@ -203,19 +199,25 @@ namespace ZaloCommunityDev.Service
 
             var textGreeting = profile.Gender == "Nam" ? filter.TextGreetingForMale : filter.TextGreetingForFemale;
 
+            Console.WriteLine($"!gửi: {textGreeting}");
             SendText(textGreeting);
 
-            //Debug:
-            TouchAtIconTopLeft();
-            //TouchAt(Screen.AddFriendScreenOkButton); //TouchToAddFriend then goto profile
+            if (Settings.IsDebug)
+            {
+                TouchAtIconTopLeft();
+            }
+            else
+            {
+                TouchAt(Screen.AddFriendScreenOkButton); //TouchToAddFriend then goto profile
+            }
 
             Delay(300);
 
             TouchAtIconTopLeft(); //GoBack to friendList
 
             return true;
-
         }
+
         private bool ProcessIfShowDialogWaitRequestedFriendConfirm()
         {
             var file = CaptureScreenNow();
@@ -229,7 +231,5 @@ namespace ZaloCommunityDev.Service
 
             return false;
         }
-
-        
     }
 }

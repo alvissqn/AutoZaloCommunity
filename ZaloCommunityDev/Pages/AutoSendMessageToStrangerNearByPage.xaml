@@ -20,9 +20,8 @@
 
         <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
-                                Sources="{Binding AddFriendNearByConfigs}"
-                                Margin="20"
-                                RefreshCommand="{Binding RefreshAddFriendNearByConfigListCommand}" />
+                                ConfigType="AutoSendMessageToStrangerNearByPage"
+                                Margin="20"/>
 
         <TextBlock Grid.Row="0"
                    Text="GỬI TIN CHO NGƯỜI LẠ GẦN ĐÂY"
@@ -37,7 +36,7 @@
                     VerticalAlignment="Center"
                     Style="{DynamicResource MaterialDesignFlatButton}"
                     Command="{Binding AutoAddFriendCommand}"
-                    CommandParameter="{Binding ElementName=FilterBox, Path=SelectedItem}"
+                    CommandParameter="{Binding ElementName=FilterBox, Path=SelectedFilter}"
                     HorizontalAlignment="Right" />
         </materialDesign:Card>
     </Grid>

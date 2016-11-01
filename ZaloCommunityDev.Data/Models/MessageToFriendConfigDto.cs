@@ -2,6 +2,6 @@
 
 namespace ZaloCommunityDev.Data.Models
 {
-    [Table("PostToFriendConfig")]
+    [Table("MessageToFriendConfig")]
     public class MessageToFriendConfigDto : FilterBase { }
 }

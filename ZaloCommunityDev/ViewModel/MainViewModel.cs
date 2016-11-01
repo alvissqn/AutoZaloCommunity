@@ -14,19 +14,24 @@ namespace ZaloCommunityDev.ViewModel
         private readonly DatabaseContext _databaseContext;
         private readonly ZaloCommunityService _zaloCommunityService;
 
-        private Filter[] _addFriendNearByConfigs;
-        private Filter[] _autoPostToFriendSessionConfigs;
+        private ObservableCollection<Filter> _addFriendNearByConfigs;
+        private ObservableCollection<Filter> _autoPostToFriendSessionConfigs;
         private string[] _onlineDevices;
 
         public ICommand AutoAddFriendCommand { get; }
-        public ICommand RefreshAddFriendNearByConfigListCommand { get; }
-
         public ICommand AutoSpamFriendCommand { get; }
-        public ICommand RefreshAutoPostToFriendSessionConfigCommand { get; }
 
         public ICommand RefreshAvdListCommand { get; }
-        public ICommand StartAvdCommand { get; }
 
+        public ObservableCollection<User> Users
+        {
+            get { return _users; }
+            set
+            {
+                _users = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public MainViewModel(ZaloCommunityService service, DatabaseContext dbContext)
         {
@@ -35,23 +40,20 @@ namespace ZaloCommunityDev.ViewModel
 
             Load();
 
-            //StartAvdCommand = new RelayCommand<string>(_zaloCommunityService.StartAvd);
             RefreshAvdListCommand = new RelayCommand(() => OnlineDevices = _zaloCommunityService.OnlineDevices);
 
             AutoAddFriendCommand = new RelayCommand<Filter>(x => AddFriendAuto(x));
-            RefreshAddFriendNearByConfigListCommand = new RelayCommand(() => AddFriendNearByConfigs = _databaseContext.GetAddingFriendConfig());
-            RefreshAutoPostToFriendSessionConfigCommand = new RelayCommand(() => AutoPostToFriendSessionConfigs = _databaseContext.GetAutoSpamConfigs());
 
             AutoSpamFriendCommand = new RelayCommand<Filter>(x => SpamFriendNow(x));
         }
 
-        public Filter[] AddFriendNearByConfigs
+        public ObservableCollection<Filter> AddFriendNearByConfigs
         {
             get { return _addFriendNearByConfigs; }
             set { Set(ref _addFriendNearByConfigs, value); }
         }
 
-        public Filter[] AutoPostToFriendSessionConfigs
+        public ObservableCollection<Filter> AutoPostToFriendSessionConfigs
         {
             get { return _autoPostToFriendSessionConfigs; }
             set { Set(ref _autoPostToFriendSessionConfigs, value); }
@@ -63,7 +65,20 @@ namespace ZaloCommunityDev.ViewModel
             set { Set(ref _onlineDevices, value); }
         }
 
-        ObservableCollection<string> _logs = new ObservableCollection<string>();
+        private ObservableCollection<string> _logs = new ObservableCollection<string>();
+        private ObservableCollection<User> _users;
+        private User _currentUser;
+
+        public User CurrentUser
+        {
+            get { return _currentUser; }
+            set
+            {
+                _currentUser = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ObservableCollection<string> Logs
         {
             get { return _logs; }
@@ -76,14 +91,14 @@ namespace ZaloCommunityDev.ViewModel
         public void Load()
         {
             OnlineDevices = _zaloCommunityService.OnlineDevices;
-            AddFriendNearByConfigs = _databaseContext.GetAddingFriendConfig();
-            AutoPostToFriendSessionConfigs = _databaseContext.GetAutoSpamConfigs();
+            Users = new ObservableCollection<User>(new User[] { new User { Username = "0979864903", Password = "****" } });
+
+            CurrentUser = Users[0];
         }
 
         private async Task AddFriendAuto(Filter x)
         {
-
-            await _zaloCommunityService.AddFriendNearBy(x, t => { DispatcherHelper.CheckBeginInvokeOnUI(()=> Logs.Add(t)); }, end => { });
+            await _zaloCommunityService.AddFriendNearBy(x, t => { DispatcherHelper.CheckBeginInvokeOnUI(() => Logs.Add(t)); }, end => { });
         }
 
         private async Task SpamFriendNow(Filter x)

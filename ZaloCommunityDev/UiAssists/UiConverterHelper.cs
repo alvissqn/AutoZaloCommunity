@@ -47,6 +47,8 @@ namespace ZaloCommunityDev.UiAssists
         public static IValueConverter TimeSpanNowConverter => Get((timespan) => DateTime.Now.Date.Add((TimeSpan)timespan), (dateTime) => ((DateTime)dateTime) - ((DateTime)dateTime).Date);
 
         public static IValueConverter IsNotWhiteSpace => Get(text => !string.IsNullOrWhiteSpace(text as string));
+        public static IValueConverter IsNotNull => Get(value => value != null);
+        public static IValueConverter NullToOpacity => Get(value => value != null ? 1 : 0.5);
 
         public static IValueConverter CountZeroToCollapsed => Get((index) => (int)index == 0 ? Visibility.Collapsed : Visibility.Visible);
         public static IValueConverter ZeroToColumnWidth => Get((value) => (int)value == 0 ? new GridLength(0, GridUnitType.Pixel) : DependencyProperty.UnsetValue);

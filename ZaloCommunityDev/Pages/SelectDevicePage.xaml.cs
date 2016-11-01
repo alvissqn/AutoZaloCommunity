@@ -1,11 +1,6 @@
-﻿using System.Windows.Controls;
-
-namespace ZaloCommunityDev.Pages
+﻿namespace ZaloCommunityDev.Pages
 {
-    /// <summary>
-    /// Interaction logic for SelectDevicePage.xaml
-    /// </summary>
-    public partial class SelectDevicePage : Page
+    public partial class SelectDevicePage
     {
         public SelectDevicePage()
         {

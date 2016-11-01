@@ -20,11 +20,19 @@ namespace ZaloCommunityDev.Data.Models
         [Column("FemaleGreeting")]
         public string TextGreetingForFemale { get; set; }
 
+        public string SentImageForMale { get; set; }
+
+        public string SentImageForFemale { get; set; }
+
         public string FilterAgeRange { get; set; }
 
         public string IncludedPeopleNames { get; set; }
 
-        public string ExceptPeopleNames { get; set; }
+        public string ExcludePeopleNames { get; set; }
+
+        public string IncludePhoneNumbers { get; set; }
+
+        public string ExcludePhoneNumbers { get; set; }
 
         public int NumberOfAction { get; set; }
 

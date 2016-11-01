@@ -21,9 +21,9 @@
 
             <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
-                                Sources="{Binding AddFriendNearByConfigs,Mode=TwoWay}"
+                                ConfigType="AutoAddFriendNearByPage"
                                 Margin="20"
-                                RefreshCommand="{Binding RefreshAddFriendNearByConfigListCommand}" />
+                                 />
         <Expander Grid.Row="2" Header="Kết quả">
             <ListBox ItemsSource="{Binding Logs}"/>
         </Expander>

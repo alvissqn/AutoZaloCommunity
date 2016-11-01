@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:shared="clr-namespace:ZaloCommunityDev.Shared;assembly=ZaloCommunityDev.Shared"
+             xmlns:ui="clr-namespace:ZaloCommunityDev.UiAssists"
              mc:Ignorable="d"
              x:Name="This"
              d:DesignHeight="700"
@@ -22,6 +24,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="FilterSelection"
                       SelectedItem="{Binding ElementName=This, Path=SelectedFilter, Mode=TwoWay}"
@@ -29,24 +32,35 @@
             <Button Grid.Column="1"
                     Margin="10,0,0,0"
                     Style="{DynamicResource MaterialDesignFlatButton}"
-                    
-                    Command="{Binding ElementName=This,Path=RefreshCommand}" >
+                    Command="{Binding ElementName=This,Path=RefreshCommand}">
                 <StackPanel Orientation="Horizontal">
 
-                    <wpf:PackIcon Kind="Refresh" Margin="8,0"/>
-                    <TextBlock Text="TẢI LẠI"/>
-
+                    <wpf:PackIcon Kind="Refresh"
+                                  Margin="8,0" />
+                    <TextBlock Text="TẢI LẠI" />
                 </StackPanel>
-                </Button>
-                    
+            </Button>
+            <Button Grid.Column="2"
+                    Margin="10,0,0,0"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{Binding ElementName=This,Path=NewFilterCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <wpf:PackIcon Kind="PlusBox"
+                                  Margin="8,0" />
+                    <TextBlock Text="THÊM CẤU HÌNH" />
+                </StackPanel>
+            </Button>
         </Grid>
 
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel DataContext="{Binding ElementName=This, Path=SelectedFilter}">
+            <StackPanel DataContext="{Binding ElementName=This, Path=SelectedFilter}"
+                        IsEnabled="{Binding Converter={x:Static ui:UiConverterHelper.IsNotNull}}"
+                        Opacity="{Binding Converter={x:Static ui:UiConverterHelper.NullToOpacity}}">
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="50" Width="220"/>
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Tên cấu hình"
@@ -55,19 +69,21 @@
                              Text="{Binding ConfigName}" />
                 </Grid>
 
-                <Grid Margin="5">
+                <Grid Margin="5"
+                      x:Name="IncludedPeopleNamesGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Tên những người nhận"
+                    <TextBlock Text="Bao gồm tên những người nhận"
                                VerticalAlignment="Bottom" />
                     <TextBox Grid.Column="1"
                              Text="{Binding IncludedPeopleNames}" />
                 </Grid>
 
-                <Grid Margin="5">
+                <Grid Margin="5"
+                      x:Name="ExcludePeopleNamesGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
@@ -76,10 +92,37 @@
                     <TextBlock Text="Loại trừ tên những người nhận"
                                VerticalAlignment="Bottom" />
                     <TextBox Grid.Column="1"
-                             Text="{Binding ExceptPeopleNames}" />
+                             Text="{Binding ExcludePeopleNames}" />
                 </Grid>
 
-                <Grid Margin="5">
+                <Grid Margin="5"
+                      x:Name="IncludePhoneNumbersGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Bao gồm số điện thoại"
+                               VerticalAlignment="Bottom" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding IncludePhoneNumbers}" />
+                </Grid>
+
+                <Grid Margin="5"
+                      x:Name="ExcludePhoneNumbersGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Loại trừ số điện thoại:"
+                               VerticalAlignment="Bottom" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding ExcludePhoneNumbers}" />
+                </Grid>
+
+                <Grid Margin="5"
+                      x:Name="FilterAgeRangeGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
@@ -91,7 +134,8 @@
                              Text="{Binding FilterAgeRange}" />
                 </Grid>
 
-                <Grid Margin="5">
+                <Grid Margin="5"
+                      x:Name="GenderSelectionGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
@@ -99,11 +143,14 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Giới tính"
                                VerticalAlignment="Bottom" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding GenderSelection}" />
+
+                    <ComboBox Grid.Column="1"
+                             ItemsSource="{x:Static shared:Helper.GenderSelectionList}"
+                             SelectedItem="{Binding GenderSelection}" />
                 </Grid>
 
-                <Grid Margin="5">
+                <Grid Margin="5"
+                      x:Name="TextGreetingForFemaleGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
@@ -114,7 +161,8 @@
                     <TextBox Grid.Column="1"
                              Text="{Binding TextGreetingForFemale}" />
                 </Grid>
-                <Grid Margin="5">
+                <Grid Margin="5"
+                      x:Name="TextGreetingForMaleGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
@@ -126,7 +174,33 @@
                              Text="{Binding TextGreetingForMale}" />
                 </Grid>
 
-                <Grid Margin="5">
+                <Grid Margin="5"
+                      x:Name="SentImageForFemaleGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Gửi hình cho bạn nữ"
+                               VerticalAlignment="Bottom" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding SentImageForFemale}" />
+                </Grid>
+                <Grid Margin="5"
+                      x:Name="SentImageForMaleGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="50"
+                                          Width="220" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Gửi hình cho bạn nam"
+                               VerticalAlignment="Bottom" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding SentImageForMale}" />
+                </Grid>
+
+                <Grid Margin="5"
+                      x:Name="LocationsGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
@@ -137,17 +211,30 @@
                     <TextBox Grid.Column="1"
                              Text="{Binding Locations}" />
                 </Grid>
-                <Grid Margin="5">
+                <Grid Margin="5"
+                      x:Name="NumberOfActionGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Số lần thực hiện"
+                    <TextBlock x:Name="NumberOfActionHeader" Text="Số lần thực hiện"
                                VerticalAlignment="Bottom" />
                     <TextBox Grid.Column="1"
                              Text="{Binding NumberOfAction}" />
                 </Grid>
+
+                <Button Margin="10,0,0,0"
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        Command="{Binding ElementName=This,Path=SaveConfigsCommand}"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <wpf:PackIcon Kind="ContentSave"
+                                      Margin="8,0" />
+                        <TextBlock Text="LƯU CẤU HÌNH" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </ScrollViewer>
     </Grid>
