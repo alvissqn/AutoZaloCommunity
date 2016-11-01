@@ -1,11 +1,11 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
-using ZaloCommunityDev.Models;
-using ZaloCommunityDev.DAL;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Threading;
+using ZaloCommunityDev.Data;
+using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.ViewModel
 {

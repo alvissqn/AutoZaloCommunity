@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ZaloCommunityDev.Service.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Camalot.Common, Version=1.0.5937.17275, Culture=neutral, PublicKeyToken=02434577b8ec3216, processorArchitecture=MSIL">
       <HintPath>..\packages\Camalot.Common.1.0.5937.17275\lib\net45\Camalot.Common.dll</HintPath>
@@ -82,7 +85,7 @@
     <Compile Include="KeyCode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZaloCommunityService.cs" />
+    <Compile Include="ZaloCommunityDistributeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -97,9 +100,9 @@
       <Project>{c46869ab-da93-48e2-b1d4-694ce9a25ff5}</Project>
       <Name>ZaloCommunityDev.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ZaloImageProcessing207\ZaloImageProcessing207.csproj">
+    <ProjectReference Include="..\ZaloImageProcessing207\ZaloCommunityDev.ImageProcessing.csproj">
       <Project>{018e8827-2886-49ed-ba7d-d883fbd3dab6}</Project>
-      <Name>ZaloImageProcessing207</Name>
+      <Name>ZaloCommunityDev.ImageProcessing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

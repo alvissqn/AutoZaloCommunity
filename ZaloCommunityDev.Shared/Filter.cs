@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
-using ZaloCommunityDev.DAL.Models;
 
-namespace ZaloCommunityDev.Models
+namespace ZaloCommunityDev.Shared
 {
     public class Filter : ViewModelBase
     {

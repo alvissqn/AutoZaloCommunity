@@ -1,4 +1,4 @@
-﻿namespace ZaloCommunityDev.DAL.Models
+﻿namespace ZaloCommunityDev.Shared
 {
     public enum GenderSelection
     {

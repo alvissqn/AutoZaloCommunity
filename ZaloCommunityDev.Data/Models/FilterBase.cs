@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ZaloCommunityDev.Shared;
 
-namespace ZaloCommunityDev.DAL.Models
+namespace ZaloCommunityDev.Data.Models
 {
     public abstract class FilterBase
     {

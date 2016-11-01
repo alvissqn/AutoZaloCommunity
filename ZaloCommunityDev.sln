@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaloCommunityDev", "ZaloCommunityDev\ZaloCommunityDev.csproj", "{BD50218D-442A-492A-A596-60A525F4A9F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaloImageProcessing207", "ZaloImageProcessing207\ZaloImageProcessing207.csproj", "{018E8827-2886-49ED-BA7D-D883FBD3DAB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaloCommunityDev.ImageProcessing", "ZaloImageProcessing207\ZaloCommunityDev.ImageProcessing.csproj", "{018E8827-2886-49ED-BA7D-D883FBD3DAB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaloCommunityDev.Shared", "ZaloCommunityDev.Shared\ZaloCommunityDev.Shared.csproj", "{C46869AB-DA93-48E2-B1D4-694CE9A25FF5}"
 EndProject

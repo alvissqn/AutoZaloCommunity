@@ -1,6 +1,6 @@
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using ZaloCommunityDev.DAL;
+using ZaloCommunityDev.Data;
 using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.ViewModel

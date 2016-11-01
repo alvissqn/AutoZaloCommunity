@@ -1,7 +1,7 @@
 ﻿using ZaloCommunityDev.Shared;
-using ZaloImageProcessing207.Structures;
+using ZaloCommunityDev.Shared.Structures;
 
-namespace ZaloImageProcessing207
+namespace ZaloCommunityDev.ImageProcessing
 {
 
 

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using GalaSoft.MvvmLight.Threading;
 using System.Windows;
-using ZaloCommunityDev.DAL.Models;
-using ZaloCommunityDev.Models;
-using ZaloImageProcessing207.Structures;
+using ZaloCommunityDev.Data.Models;
+using ZaloCommunityDev.Shared;
+using ZaloCommunityDev.Shared.Structures;
 
 namespace ZaloCommunityDev
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using ZaloCommunityDev.Shared;
-
-namespace ZaloImageProcessing207.Structures
+﻿namespace ZaloCommunityDev.Shared.Structures
 {
     public struct FriendPositionMessage
     {

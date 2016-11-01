@@ -1,18 +1,16 @@
-﻿using Emgu.CV;
-using Emgu.CV.Structure;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Tesseract;
-using Emgu.CV.CvEnum;
-using ZaloImageProcessing207.Structures;
 using System.Text.RegularExpressions;
-using System.IO;
-using System.Text;
+using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+using Tesseract;
 using ZaloCommunityDev.Shared;
+using ZaloCommunityDev.Shared.Structures;
 
-namespace ZaloImageProcessing207
+namespace ZaloCommunityDev.ImageProcessing
 {
     public class ImageProcessing : IZaloImageProcessing
     {

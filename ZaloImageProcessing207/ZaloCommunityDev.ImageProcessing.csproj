@@ -8,8 +8,8 @@
     <ProjectGuid>{018E8827-2886-49ED-BA7D-D883FBD3DAB6}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ZaloImageProcessing207</RootNamespace>
-    <AssemblyName>ZaloImageProcessing207</AssemblyName>
+    <RootNamespace>ZaloCommunityDev.ImageProcessing</RootNamespace>
+    <AssemblyName>ZaloCommunityDev.ImageProcessing</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ZaloCommunityDev.DAL.Models
+namespace ZaloCommunityDev.Data.Models
 {
     [Table("LogActivity")]
     public class LogActivityDto

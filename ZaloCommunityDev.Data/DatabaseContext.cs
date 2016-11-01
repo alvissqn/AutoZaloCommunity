@@ -1,12 +1,12 @@
-﻿using AutoMapper;
+﻿using System;
 using System.Data.Entity;
 using System.Linq;
-using ZaloCommunityDev.DAL.Models;
-using ZaloCommunityDev.Models;
-using System;
-using ZaloImageProcessing207.Structures;
+using AutoMapper;
+using ZaloCommunityDev.Data.Models;
+using ZaloCommunityDev.Shared;
+using ZaloCommunityDev.Shared.Structures;
 
-namespace ZaloCommunityDev.DAL
+namespace ZaloCommunityDev.Data
 {
     public class DatabaseContext : DbContext
     {

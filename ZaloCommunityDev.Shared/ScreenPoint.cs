@@ -15,9 +15,6 @@ namespace ZaloCommunityDev.Shared
 
         public ScreenPoint Scale(double value) => new ScreenPoint(Convert.ToInt32(X * value), Convert.ToInt32(Y * value));
 
-        public override string ToString()
-        {
-            return $"{X}, {Y}";
-        }
+        public override string ToString() => $"{X}, {Y}";
     }
 }

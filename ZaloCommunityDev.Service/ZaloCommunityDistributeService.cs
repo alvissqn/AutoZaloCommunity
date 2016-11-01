@@ -1,6 +1,4 @@
-﻿using log4net;
-using Managed.Adb;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -10,14 +8,14 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using ZaloCommunityDev.DAL;
-using ZaloCommunityDev.DAL.Models;
-using ZaloCommunityDev.Models;
+using log4net;
+using Managed.Adb;
+using ZaloCommunityDev.Data;
+using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Shared;
-using ZaloImageProcessing207;
-using ZaloImageProcessing207.Structures;
+using ZaloCommunityDev.Shared.Structures;
 
-namespace ZaloCommunityDev.Services
+namespace ZaloCommunityDev.Service
 {
     public class ZaloCommunityDistributeService
     {

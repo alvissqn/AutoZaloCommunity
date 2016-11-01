@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZaloImageProcessing207.Structures
+namespace ZaloCommunityDev.Shared.Structures
 {
     public struct ProfileMessage
     {

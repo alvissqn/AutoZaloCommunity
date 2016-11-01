@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.IO;
-using ZaloCommunityDev.Models;
-using ZaloCommunityDev.Services;
+using ZaloCommunityDev.Data;
 using ZaloCommunityDev.Shared;
-using ZaloImageProcessing207;
 
 namespace ZaloCommunityDev.Service
 {
@@ -25,8 +23,8 @@ namespace ZaloCommunityDev.Service
                     var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\WorkingSession\{sessionId}\setting.json"));
                     var filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText($@".\WorkingSession\{sessionId}\filter.json"));
 
-                    var imageProcessing = new ImageProcessing();
-                    var service = new ZaloCommunityDistributeService(settings, new DAL.DatabaseContext(), imageProcessing);
+                    var imageProcessing = new ImageProcessing.ImageProcessing();
+                    var service = new ZaloCommunityDistributeService(settings, new DatabaseContext(), imageProcessing);
 
                     service.StartAvd(deviceNameOrIndex);
                     service.AddFriendNearBy(filter);

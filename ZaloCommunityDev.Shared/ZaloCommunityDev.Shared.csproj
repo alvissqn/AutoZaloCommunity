@@ -64,7 +64,6 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Filter.cs" />
-    <Compile Include="IScreenSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenInfo.cs" />
     <Compile Include="ScreenPoint.cs" />

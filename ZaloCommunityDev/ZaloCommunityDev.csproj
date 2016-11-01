@@ -198,7 +198,7 @@
     <Compile Include="UiAssists\UiConverterHelper.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="ViewModel\ZaloServive.cs" />
+    <Compile Include="ViewModel\ZaloCommunityService.cs" />
     <Page Include="Controls\FilterControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -279,9 +279,9 @@
       <Project>{c46869ab-da93-48e2-b1d4-694ce9a25ff5}</Project>
       <Name>ZaloCommunityDev.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ZaloImageProcessing207\ZaloImageProcessing207.csproj">
+    <ProjectReference Include="..\ZaloImageProcessing207\ZaloCommunityDev.ImageProcessing.csproj">
       <Project>{018e8827-2886-49ed-ba7d-d883fbd3dab6}</Project>
-      <Name>ZaloImageProcessing207</Name>
+      <Name>ZaloCommunityDev.ImageProcessing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

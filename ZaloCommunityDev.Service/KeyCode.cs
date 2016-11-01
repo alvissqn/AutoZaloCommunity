@@ -1,4 +1,4 @@
-﻿namespace ZaloCommunityDev.Models
+﻿namespace ZaloCommunityDev.Service
 {
     public enum KeyCode
     {

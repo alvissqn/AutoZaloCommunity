@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ZaloCommunityDev.DAL.Models
+namespace ZaloCommunityDev.Data.Models
 {
     [Table("PostToFriendConfig")]
     public class MessageToFriendConfigDto : FilterBase { }

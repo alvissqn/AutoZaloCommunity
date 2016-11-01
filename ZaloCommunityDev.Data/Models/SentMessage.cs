@@ -1,4 +1,4 @@
-﻿namespace ZaloCommunityDev.DAL.Models
+﻿namespace ZaloCommunityDev.Data.Models
 {
     public abstract class MessageToProfile : ProfileBase
     {
