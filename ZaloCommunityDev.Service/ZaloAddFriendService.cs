@@ -29,11 +29,7 @@ namespace ZaloCommunityDev.Service
 
             GotoActivity(Activity.UserNearbyList);
 
-            ConfigsSearchFriend(gender, ageFrom, ageTo);
-            //I'm on Search Page
-            TouchAt(Screen.IconTopRight);//Open Right SideBar
-            Delay(500);
-            TouchGenderOnSideBar(gender);
+            AddSettingSearchFriend(gender, ageFrom, ageTo);
 
             var maxFriendToday = Settings.MaxFriendAddedPerDay - Settings.AddedFriendTodayCount;
 
@@ -234,71 +230,6 @@ namespace ZaloCommunityDev.Service
             return false;
         }
 
-        public void ConfigsSearchFriend(GenderSelection gender, string ageFrom, string ageTo)
-        {
-            GotoActivity(Activity.UserNearbySettings);
-
-            TouchGender(gender);
-            TouchAgeRange(ageFrom, ageTo);
-            Delay(300);
-            TouchAt(Screen.ConfigSearchFriendUpdateButton);//TOUCH Update
-        }
-
-        private void TouchAgeRange(string ageFrom, string ageTo)
-        {
-            TouchAt(Screen.ConfigSearchFriendAgeCombobox);//touch to do tuoi
-            Delay(300);
-
-            TouchAt(Screen.ConfigSearchFriendAgeFromTextField);//touch to age to
-            SendText(ageFrom);
-
-            TouchAt(Screen.ConfigSearchFriendAgeToTextField);//Touch to age from
-            SendText(ageTo);
-
-            TouchAt(Screen.ConfigSearchFriendAgeFromTextField);//re-touch to age to
-
-            Delay(200);
-
-            TouchAt(Screen.ConfigSearchFriendAgeOkButton); //touch OK
-            Delay(300);
-        }
-
-        private void TouchGender(GenderSelection gender)
-        {
-            TouchAt(Screen.ConfigSearchFriendGenderCombobox);
-            Delay(200);
-            switch (gender)
-            {
-                case GenderSelection.OnlyMale:
-                    TouchAt(Screen.ConfigSearchFriendMaleOnlyComboboxItem);
-                    break;
-
-                case GenderSelection.OnlyFemale:
-                    TouchAt(Screen.ConfigSearchFriendFemaleOnlyComboboxItem);
-                    break;
-
-                default:
-                    TouchAt(Screen.ConfigSearchFriendBothGenderComboboxItem);
-                    break;
-            }
-        }
-
-        private void TouchGenderOnSideBar(GenderSelection gender)
-        {
-            switch (gender)
-            {
-                case GenderSelection.OnlyMale:
-                    TouchAt(Screen.SearchFriendSideBarMaleOnlyTextItem);
-                    break;
-
-                case GenderSelection.OnlyFemale:
-                    TouchAt(Screen.SearchFriendSideBarFemaleOnlyTextItem);
-                    break;
-
-                default:
-                    TouchAt(Screen.SearchFriendSideBarBothGenderTextItem);
-                    break;
-            }
-        }
+        
     }
 }

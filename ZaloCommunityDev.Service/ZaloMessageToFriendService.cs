@@ -99,14 +99,100 @@ namespace ZaloCommunityDev.Service
 
         public void SendMessageNearBy(Filter filter)
         {
+            var gender = filter.GenderSelection;
+            var ageValues = filter.FilterAgeRange.Split("-".ToArray());
+            var ageFrom = ageValues[0];
+            var ageTo = ageValues[1];
+            var numFriends = filter.NumberOfAction;
 
+            GotoActivity(Activity.UserNearbyList);
+
+            AddSettingSearchFriend(gender, ageFrom, ageTo);
+
+            var maxFriendToday = Settings.MaxFriendAddedPerDay - Settings.AddedFriendTodayCount;
+
+            if (maxFriendToday > numFriends)
+                maxFriendToday = numFriends;
+
+            if (maxFriendToday < 0)
+                maxFriendToday = 0;
+
+            ChatFriendInList(maxFriendToday, filter);
+        }
+
+        private FriendPositionMessage[] GetPositionAccountNotSent(Action<string[]> allPrrofiles)
+        {
+            var captureFiles = CaptureScreenNow();
+            var names = ZaloImageProcessing.GetListFriendName(captureFiles, Screen);
+
+            var t = names.Where(v => DbContext.ProfileSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
+
+            allPrrofiles(names.Select(x => x.Name).ToArray());
+            return t.ToArray();
+        }
+
+        private void ChatFriendInList(int maxFriendToday, Filter filter)
+        {
+            Console.WriteLine($"!bắt đầu gửi tin cho bạn gần đây. Số bạn yêu cầu tối đa trong ngày hôm nay là {maxFriendToday}");
+            var finish = false;
+
+            var countSuccess = 0;
+            string[] profilesPage1 = null;
+            string[] profilesPage2 = null;
+            Console.WriteLine("!đang tìm thông tin các bạn");
+            var friendNotAdded = (GetPositionAccountNotSent(x => profilesPage1 = x)).OrderByDescending(x => x.Point.Y);
+            var points = new Stack<FriendPositionMessage>(friendNotAdded);
+
+            profilesPage1.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
+            Console.WriteLine($"!--------------------");
+            friendNotAdded.ToList().ForEach((x) => Console.WriteLine($"!các bạn chưa được gửi lời mời: {x}"));
+            while (!finish)
+            {
+                while (points.Count == 0)
+                {
+                    Console.WriteLine("!đang cuộn danh sách bạn");
+                    ScrollList(9);
+
+                    Console.WriteLine("!đang tìm thông tin các bạn");
+
+                    friendNotAdded = (GetPositionAccountNotSent((x) => profilesPage2 = x)).OrderByDescending(x => x.Point.Y);
+                    points = new Stack<FriendPositionMessage>(friendNotAdded);
+
+                    profilesPage1.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
+                    Console.WriteLine($"!--------------------");
+                    friendNotAdded.ToList().ForEach((x) => Console.WriteLine($"!bạn chưa được gửi tin nhắn: {x}"));
+
+                    profilesPage2.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
+
+                    if (!profilesPage2.Except(profilesPage1).Any())
+                    {
+                        Console.WriteLine("!hết bạn trong danh sách.");
+                        return;
+                    }
+
+                    profilesPage1 = profilesPage2;
+                }
+
+                Delay(2000);
+
+                var pointRowFriend = points.Pop();
+
+                var profile = new ProfileMessage() { Name = pointRowFriend.Name };
+                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToChatFriendAt(profile, pointRowFriend.Point, filter))
+                {
+                    DbContext.AddProfile(profile);
+                    countSuccess++;
+                    Console.WriteLine($"!gửi tin nhắn tới: {profile.Name} thành công. Số bạn đã gửi thành công trong phiên này là: {countSuccess}");
+                }
+
+                finish = countSuccess == maxFriendToday;
+            }
         }
 
         private bool ClickToChatFriendAt(ProfileMessage profile, ScreenPoint point, Filter filter)
         {
             TouchAt(point);
             Delay(2000);//wait to navigate chat screen
-
             return Chat(profile, filter);
         }
 
@@ -140,53 +226,6 @@ namespace ZaloCommunityDev.Service
             TouchAt(Screen.IconTopLeft);//Go Back
 
             return true;
-        }
-
-        public void Post(string text, string path)
-        {
-            InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.MyInfoActivity");
-
-            Thread.Sleep(100);
-            TouchAt(0x2ff, 0x492);
-            Thread.Sleep(100);
-            if (path.Length != 0)
-            {
-                TouchAt(110, 320);
-                TouchAt(250, 600);
-                Thread.Sleep(100);
-                TouchAt(200, 200);
-                if (NoImg > 4)
-                {
-                    TouchAt(230, 0x9b);
-                    TouchAt(500, 0x9b);
-                    TouchAt(0x2fd, 0x9b);
-                    TouchAt(230, 420);
-                    TouchAt(500, 420);
-                    TouchAt(0x2fd, 420);
-                    TouchAt(230, 0x2ad);
-                    TouchAt(500, 0x2ad);
-                    TouchAt(0x2fd, 0x2ad);
-                }
-                else
-                {
-                    TouchAt(230, 155);
-                    TouchAt(500, 155);
-                    TouchAt(765, 155);
-                    TouchAt(230, 420);
-                }
-                TouchAt(720, 0x492);
-                Thread.Sleep(100);
-                TouchAt(700, 150);
-                SendText(text);
-                TouchAt(0x2ff, 0x45);
-            }
-            else
-            {
-                Thread.Sleep(100);
-                TouchAt(700, 150);
-                SendText(text);
-                TouchAt(0x2ff, 0x45);
-            }
         }
     }
 }
