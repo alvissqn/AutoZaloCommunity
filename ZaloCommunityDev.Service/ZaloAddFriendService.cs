@@ -22,34 +22,42 @@ namespace ZaloCommunityDev.Service
 
         public void AddFriendNearBy(Filter filter)
         {
+            var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount());
+            var numberOfAction = filter.NumberOfAction > canAddedFriendToday ? canAddedFriendToday : filter.NumberOfAction;
+            if (numberOfAction <= 0)
+            {
+                Console.WriteLine("Kết bạn tối đa trong ngày rồi");
+
+                return;
+            }
+
             var gender = filter.GenderSelection;
             var ageValues = filter.FilterAgeRange.Split("-".ToArray());
             var ageFrom = ageValues[0];
             var ageTo = ageValues[1];
-            var numFriends = filter.NumberOfAction;
 
             GotoActivity(Activity.UserNearbyList);
 
             AddSettingSearchFriend(gender, ageFrom, ageTo);
 
-            var maxFriendToday = Settings.MaxFriendAddedPerDay - Settings.AddedFriendTodayCount;
 
-            if (maxFriendToday > numFriends)
-                maxFriendToday = numFriends;
-
-            if (maxFriendToday < 0)
-                maxFriendToday = 0;
-
-            AddFriend(maxFriendToday, filter);
+            AddFriend(numberOfAction, filter);
         }
 
         public void AddFriendByPhone(Filter filter)
         {
+            var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount());
+            var numberOfAction = filter.NumberOfAction > canAddedFriendToday ? canAddedFriendToday : filter.NumberOfAction;
+            if (numberOfAction == 0)
+            {
+                Console.WriteLine("Kết bạn tối đa trong ngày rồi");
+
+                return;
+            }
+
             var countSuccess = 0;
-
-            var phonelist = new Stack<string>(filter.IncludePhoneNumbers.Split(";,|".ToArray()));
-
-            while (countSuccess < filter.NumberOfAction)
+            var phonelist = new Stack<string>(filter.IncludePhoneNumbers.Split(";,|".ToArray()));           
+            while (countSuccess < numberOfAction)
             {
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
                 var success = false;
@@ -98,9 +106,9 @@ namespace ZaloCommunityDev.Service
             }
         }
 
-        private void AddFriend(int maxFriendToday, Filter filter)
+        private void AddFriend(int numberOfAction, Filter filter)
         {
-            Console.WriteLine($"!bắt đầu thêm bạn. số bạn yêu cầu tối đa trong ngày hôm nay là {maxFriendToday}");
+            Console.WriteLine($"!bắt đầu thêm bạn. số bạn yêu cầu tối đa trong ngày hôm nay là {numberOfAction}");
 
             var countSuccess = 0;
             string[] profilesPage1 = null;
@@ -112,7 +120,7 @@ namespace ZaloCommunityDev.Service
             profilesPage1.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
             Console.WriteLine($"!--------------------");
             friendNotAdded.ToList().ForEach((x) => Console.WriteLine($"!các bạn chưa được gửi lời mời: {x}"));
-            while (countSuccess < maxFriendToday)
+            while (countSuccess < numberOfAction)
             {
                 while (points.Count == 0)
                 {

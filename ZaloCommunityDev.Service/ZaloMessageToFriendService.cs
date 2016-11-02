@@ -86,11 +86,19 @@ namespace ZaloCommunityDev.Service
 
         public void SendMessageByPhoneNumber(Filter filter)
         {
-            var countSuccess = 0;
+            var canSentToday = (Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount());
+            var numberOfAction = filter.NumberOfAction > canSentToday ? canSentToday : filter.NumberOfAction;
+            if (numberOfAction <= 0)
+            {
+                Console.WriteLine("đã gửi hết số bạn trong ngày rồi");
+
+                return;
+            }
 
             string[] phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
 
-            while (countSuccess < filter.NumberOfAction)
+            var countSuccess = 0;
+            while (countSuccess < numberOfAction)
             {
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
                 bool success = false;
@@ -142,25 +150,25 @@ namespace ZaloCommunityDev.Service
 
         public void SendMessageNearBy(Filter filter)
         {
+            var canSentToday = (Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount());
+            var numberOfAction = filter.NumberOfAction > canSentToday ? canSentToday : filter.NumberOfAction;
+            if (numberOfAction <= 0)
+            {
+                Console.WriteLine("đã gửi hết số bạn trong ngày rồi");
+
+                return;
+            }
+
             var gender = filter.GenderSelection;
             var ageValues = filter.FilterAgeRange.Split("-".ToArray());
             var ageFrom = ageValues[0];
             var ageTo = ageValues[1];
-            var numFriends = filter.NumberOfAction;
-
+           
             GotoActivity(Activity.UserNearbyList);
 
             AddSettingSearchFriend(gender, ageFrom, ageTo);
 
-            var maxFriendToday = Settings.MaxFriendAddedPerDay - Settings.AddedFriendTodayCount;
-
-            if (maxFriendToday > numFriends)
-                maxFriendToday = numFriends;
-
-            if (maxFriendToday < 0)
-                maxFriendToday = 0;
-
-            ChatFriendNearBy(maxFriendToday, filter);
+            ChatFriendNearBy(numberOfAction, filter);
         }
 
         private FriendPositionMessage[] GetPositionAccountNotSent(Action<string[]> allPrrofiles)

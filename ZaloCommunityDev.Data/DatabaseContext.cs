@@ -9,6 +9,12 @@ using ZaloCommunityDev.Shared.Structures;
 
 namespace ZaloCommunityDev.Data
 {
+    public enum LogType
+    {
+        AddedFriend = 0,
+        MessageFriend = 1,
+        MessageToStranger = 2
+    }
     public class DatabaseContext : DbContext
     {
         public DatabaseContext() : base("name=ZaloCommunityDb")
@@ -39,20 +45,41 @@ namespace ZaloCommunityDev.Data
                 PhoneNumber = profile.PhoneNumber
             });
 
-            var item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText);
-            if (item == null)
-            {
-                LogActivitySet.Add(new LogActivityDto { Date = TodayText, AddedFriendCount = 1 });
-            }
-            else
-            {
-                item.AddedFriendCount++;
-            }
-
             SaveChanges();
         }
 
+        public void LogActivityCount(ProfileMessage profile, LogType logtype)
+        {
+            var item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText);
+            if (item == null)
+            {
+                LogActivitySet.Add(new LogActivityDto { Date = TodayText });
+            }
+
+            SaveChanges();
+            item = LogActivitySet.First(x => x.Date == TodayText);
+
+            switch (logtype)
+            {
+                case LogType.AddedFriend:
+                    item.AddedFriendCount++;
+                    break;
+
+
+                case LogType.MessageFriend:
+                    item.PostFriendCount++;
+                    break;
+
+                case LogType.MessageToStranger:
+                    item.PostStrangerCount++;
+                    break;
+            }
+            SaveChanges();
+
+        }
+
         public int GetAddedFriendCount() => LogActivitySet.FirstOrDefault(x => x.Date == TodayText)?.AddedFriendCount ?? 0;
+        public int GetMessageToStragerCount() => LogActivitySet.FirstOrDefault(x => x.Date == TodayText)?.PostStrangerCount ?? 0;
 
         public Filter[] GetFilter(string key)
         {
@@ -198,6 +225,8 @@ namespace ZaloCommunityDev.Data
                 PhoneNumber = profile.PhoneNumber
             });
             SaveChanges();
+
+            LogActivityCount(profile, LogType.AddedFriend);
         }
 
         public void AddLogMessageSentToFriend(ProfileMessage profile, string textGreeting)
@@ -210,6 +239,8 @@ namespace ZaloCommunityDev.Data
                 Name = profile.Name,
                 PhoneNumber = profile.PhoneNumber
             });
+            LogActivityCount(profile, LogType.MessageFriend);
+
         }
 
         public void AddLogMessageSentToStranger(ProfileMessage profile, string textGreeting)
@@ -222,6 +253,8 @@ namespace ZaloCommunityDev.Data
                 Name = profile.Name,
                 PhoneNumber = profile.PhoneNumber
             });
+
+            LogActivityCount(profile, LogType.MessageToStranger);
         }
     }
 }

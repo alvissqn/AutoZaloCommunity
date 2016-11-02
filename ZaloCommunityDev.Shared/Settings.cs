@@ -9,6 +9,7 @@
         public Delay Delay { get; set; } = new Delay();
 
         public int MaxFriendAddedPerDay { get; set; } = 30;
+        public int MaxMessageStrangerPerDay { get; set; } = 30;
 
         public int AddedFriendTodayCount { get; set; } = 0;
         public bool IsDebug { get; set; } = true;
