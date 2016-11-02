@@ -49,6 +49,14 @@ namespace ZaloCommunityDev.UiAssists
         public static IValueConverter IsNotNull => Get(value => value != null);
         public static IValueConverter NullToOpacity => Get(value => value != null ? 1 : 0.5);
 
+        public static IValueConverter HideUsername => Get(value =>
+        {
+            var len = ((string)value).Length;
+            return "******" + ((string)value).Substring(len - 3, 3);
+        });
+
+        public static IValueConverter HidePassword => Get(value => ((string)value).Substring(0, 3) + "**********");
+
         public static IValueConverter CountZeroToCollapsed => Get((index) => (int)index == 0 ? Visibility.Collapsed : Visibility.Visible);
         public static IValueConverter ZeroToColumnWidth => Get((value) => (int)value == 0 ? new GridLength(0, GridUnitType.Pixel) : DependencyProperty.UnsetValue);
 

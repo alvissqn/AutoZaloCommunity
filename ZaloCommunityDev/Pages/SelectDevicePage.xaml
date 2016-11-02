@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:uiAssists="clr-namespace:ZaloCommunityDev.UiAssists"
       mc:Ignorable="d"
       DataContext="{Binding Main,Source={StaticResource Locator}}"
       d:DesignHeight="700"
@@ -17,7 +18,7 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer  Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto">
+                       VerticalScrollBarVisibility="Auto">
             <StackPanel  Margin="20">
                 <StackPanel Orientation="Horizontal"
                             Margin="5">
@@ -38,18 +39,32 @@
                             Command="{Binding RefreshAvdListCommand}" />
                 </StackPanel>
 
-                <CheckBox Content="Chế độ kiểm tra" Margin="5,10,5,20"
+                <CheckBox Content="Chế độ kiểm tra"
+                          Margin="5,10,5,20"
                           IsChecked="{Binding Settings.IsDebug, Source={StaticResource Locator}}" />
-                <DataGrid ItemsSource="{Binding Users}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                <DataGrid ItemsSource="{Binding Users}"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Tên đăng nhập"
-                                            Binding="{Binding Username}"/>
+                                            Binding="{Binding Username, Converter={x:Static uiAssists:UiConverterHelper.HideUsername}}"
+                                             />
 
                         <DataGridTextColumn Header="Mật khẩu"
-                                            Binding="{Binding Password}" />
+                                            Binding="{Binding Password, Converter={x:Static uiAssists:UiConverterHelper.HidePassword}}" />
 
-                        <DataGridTextColumn Header="Quốc gia" IsReadOnly="True"
+                        <DataGridTextColumn Header="Quốc gia"
+                                            IsReadOnly="True"
                                             Binding="{Binding Region}" />
+
+                        <DataGridTextColumn Header="Thứ tự chạy"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Order}" />
+
+                        <DataGridCheckBoxColumn Header="Hoạt động"
+                                            IsReadOnly="True"
+                                            Binding="{Binding IsActive}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
