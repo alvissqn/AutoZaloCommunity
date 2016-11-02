@@ -42,7 +42,7 @@ namespace ZaloCommunityDev.ViewModel
 
         private void WindowProcess_Exited(object sender, EventArgs e)
         {
-            //Exit
+            Received("Đã đóng tiến trình.");
         }
     }
 }

@@ -1,9 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight.Threading;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.Shared;
 
@@ -11,68 +9,41 @@ namespace ZaloCommunityDev.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly ConsoleOutputViewModel _consoleOutputViewModel;
+        private readonly Settings _settings;
         private readonly ZaloCommunityService _zaloCommunityService;
 
-        private ObservableCollection<Filter> _addFriendNearByConfigs;
-        private ObservableCollection<Filter> _autoPostToFriendSessionConfigs;
+        private User _currentUser;
         private string[] _onlineDevices;
 
-        public ICommand AutoAddFriendCommand { get; }
-        public ICommand AutoSpamFriendCommand { get; }
-
-        public ICommand RefreshAvdListCommand { get; }
-
-        public ObservableCollection<User> Users
-        {
-            get { return _users; }
-            set
-            {
-                _users = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private readonly Settings _settings;
-        private readonly ConsoleOutputViewModel _consoleOutputViewModel;
+        private string _selectedDevice;
+        private ObservableCollection<User> _users;
 
         public MainViewModel(ZaloCommunityService service, DatabaseContext dbContext, Settings settings, ConsoleOutputViewModel consoleOutputViewModel)
         {
             _zaloCommunityService = service;
-            _databaseContext = dbContext;
-            this._settings = settings;
+            _settings = settings;
             _consoleOutputViewModel = consoleOutputViewModel;
 
             Load();
 
             RefreshAvdListCommand = new RelayCommand(() => OnlineDevices = _zaloCommunityService.OnlineDevices);
 
-            AutoAddFriendCommand = new RelayCommand<Filter>(x => AddFriendAuto(x));
-
-            AutoSpamFriendCommand = new RelayCommand<Filter>(x => SpamFriendNow(x));
+            AutoAddFriendByPhoneCommand = new RelayCommand<Filter>(AutoAddFriendByPhoneInvoke);
+            AutoAddFriendNearByCommand = new RelayCommand<Filter>(AutoAddFriendNearByInvoke);
+            AutoSendMessageToFriendCommand = new RelayCommand<Filter>(AutoSendMessageToFriendInvoke);
+            AutoSendMessageToStrangerByPhoneCommand = new RelayCommand<Filter>(AutoSendMessageToStrangerByPhoneInvoke);
+            AutoSendMessageToStrangerNearByCommand = new RelayCommand<Filter>(AutoSendMessageToStrangerNearByInvoke);
         }
 
-        public ObservableCollection<Filter> AddFriendNearByConfigs
-        {
-            get { return _addFriendNearByConfigs; }
-            set { Set(ref _addFriendNearByConfigs, value); }
-        }
+        public ICommand AutoAddFriendByPhoneCommand { get; }
+        public ICommand AutoAddFriendNearByCommand { get; }
+        public ICommand AutoSendMessageToFriendCommand { get; }
+        public ICommand AutoSendMessageToStrangerByPhoneCommand { get; }
+        public ICommand AutoSendMessageToStrangerNearByCommand { get; }
+        public ICommand RefreshAvdListCommand { get; }
 
-        public ObservableCollection<Filter> AutoPostToFriendSessionConfigs
-        {
-            get { return _autoPostToFriendSessionConfigs; }
-            set { Set(ref _autoPostToFriendSessionConfigs, value); }
-        }
-
-        public string[] OnlineDevices
-        {
-            get { return _onlineDevices; }
-            set { Set(ref _onlineDevices, value); }
-        }
-
-        private ObservableCollection<string> _logs = new ObservableCollection<string>();
-        private ObservableCollection<User> _users;
-        private User _currentUser;
+        #region Properties
 
         public User CurrentUser
         {
@@ -84,7 +55,11 @@ namespace ZaloCommunityDev.ViewModel
             }
         }
 
-        private string _selectedDevice;
+        public string[] OnlineDevices
+        {
+            get { return _onlineDevices; }
+            set { Set(ref _onlineDevices, value); }
+        }
 
         public string SelectedDevice
         {
@@ -98,25 +73,64 @@ namespace ZaloCommunityDev.ViewModel
             }
         }
 
+        public ObservableCollection<User> Users
+        {
+            get { return _users; }
+            set
+            {
+                _users = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        #endregion Properties
+
         public void Load()
         {
             OnlineDevices = _zaloCommunityService.OnlineDevices;
-            Users = new ObservableCollection<User>(new [] { new User { Username = "0979864903", Password = "kimngan12345" } });
+            Users = new ObservableCollection<User>(new[] { new User { Username = "0979864903", Password = "kimngan12345" } });
 
             CurrentUser = Users[0];
         }
 
-        private async Task AddFriendAuto(Filter x)
+        private ConsoleOutput CreateConsoleOutput(string type)
         {
             _settings.User = CurrentUser;
             _settings.DeviceNumber = SelectedDevice;
-            var consoleOutput = new ConsoleOutput(_settings.User.Username, _settings.DeviceNumber, "Kết bạn theo vị trí");
+            var consoleOutput = new ConsoleOutput(_settings.User.Username, _settings.DeviceNumber, type);
             _consoleOutputViewModel.ConsoleOutputs.Add(consoleOutput);
 
-            await _zaloCommunityService.AddFriendNearBy(x, consoleOutput);
+            return consoleOutput;
         }
 
-        private async Task SpamFriendNow(Filter x)
-                    => await _zaloCommunityService.SpamFriend(x);
+        private async void AutoAddFriendByPhoneInvoke(Filter filter)
+        {
+            var consoleOutput = CreateConsoleOutput("Kết bạn theo số đt");
+            await _zaloCommunityService.AddFriendByPhone(filter, consoleOutput);
+        }
+
+        private async void AutoAddFriendNearByInvoke(Filter filter)
+        {
+            var consoleOutput = CreateConsoleOutput("Kết bạn theo vị trí");
+            await _zaloCommunityService.AddFriendNearBy(filter, consoleOutput);
+        }
+
+        private async void AutoSendMessageToFriendInvoke(Filter filter)
+        {
+            var consoleOutput = CreateConsoleOutput("Gửi tin nhắn cho bạn");
+            await _zaloCommunityService.SendMessageToFriend(filter, consoleOutput);
+        }
+
+        private async void AutoSendMessageToStrangerByPhoneInvoke(Filter filter)
+        {
+            var consoleOutput = CreateConsoleOutput("Gửi tin nhắn theo số đt");
+            await _zaloCommunityService.SendMessageToStrangerByPhone(filter, consoleOutput);
+        }
+
+        private async void AutoSendMessageToStrangerNearByInvoke(Filter filter)
+        {
+            var consoleOutput = CreateConsoleOutput("Gửi tin nhắn theo vị trí");
+            await _zaloCommunityService.SendMessageToStrangerNearBy(filter, consoleOutput);
+        }
     }
 }

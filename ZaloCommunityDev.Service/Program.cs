@@ -8,11 +8,11 @@ using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.Service
 {
-    class Program
+    internal class Program
     {
-        const string WorkingFolderPath = @"WorkingSession";
+        private const string WorkingFolderPath = @"WorkingSession";
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -42,7 +42,7 @@ namespace ZaloCommunityDev.Service
 
             switch (args[0])
             {
-                case "add-friend-near-by":
+                case RunnerConstants.addfriendnearby:
                 case "ket-ban-gan-day":
 
                     var zaloAddFriendService = new ZaloAddFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
@@ -50,28 +50,28 @@ namespace ZaloCommunityDev.Service
 
                     break;
 
-                case "add-friend-by-phone":
+                case RunnerConstants.addfriendbyphone:
                 case "ket-ban-qua-dien-thoai":
                     zaloAddFriendService = new ZaloAddFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
                     zaloAddFriendService.AddFriendByPhone(filter);
 
                     break;
 
-                case "send-message-near-by":
+                case RunnerConstants.sendmessagenearby:
                 case "gui-tin-nhan-gan-day":
                     var zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
                     zaloMessageToFriendService.SendMessageNearBy(filter);
 
                     break;
 
-                case "send-message-by-phone-number":
+                case RunnerConstants.sendmessagebyphonenumber:
                 case "gui-tin-nhan-qua-so-dien-thoai":
                     zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
                     zaloMessageToFriendService.SendMessageByPhoneNumber(filter);
 
                     break;
 
-                case "send-message-to-friends-in-contacts":
+                case RunnerConstants.sendmessagetofriendsincontacts:
                 case "gui-tin-nhan-trong-danh-ba":
                     zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
                     zaloMessageToFriendService.SendMessageToFriendInList(filter);

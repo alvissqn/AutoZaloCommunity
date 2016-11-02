@@ -42,26 +42,39 @@ namespace ZaloCommunityDev.ViewModel
 
         public string[] OnlineDevices => _adb?.Devices.Where(x => x.IsOnline).Select(x => x.SerialNumber).ToArray();
 
-        internal async Task AddFriendNearBy(Filter x, ConsoleOutput output)
+        public async Task AddFriendNearBy(Filter filter, ConsoleOutput consoleOutput)
         {
-            var sessionText = Guid.NewGuid().ToString("N").ToLower();
-            var newpath = Path.Combine(WorkingFolderPath, "WorkingSession", sessionText);
-            Directory.CreateDirectory(newpath);
+            var sessionId = CreateSession(filter);
 
-            var filterText = JsonConvert.SerializeObject(x, Formatting.Indented);
-            var settingsText = JsonConvert.SerializeObject(settings, Formatting.Indented);
-            File.WriteAllText(Path.Combine(newpath, "filter.json"), filterText);
-            File.WriteAllText(Path.Combine(newpath, "setting.json"), settingsText);
-
-            await Task.Factory.StartNew(() =>
-            {
-                RunZaloService("add-friend-near-by", sessionText, output);
-            });
+            await Task.Factory.StartNew(() => { RunZaloService(RunnerConstants.addfriendnearby, sessionId, consoleOutput); });
         }
 
-        internal async Task SpamFriend(Filter x)
+        public async Task AddFriendByPhone(Filter filter, ConsoleOutput consoleOutput)
         {
-            //throw new NotImplementedException();
+            var sessionId = CreateSession(filter);
+
+            await Task.Factory.StartNew(() => { RunZaloService(RunnerConstants.addfriendbyphone, sessionId, consoleOutput); });
+        }
+
+        public async Task SendMessageToFriend(Filter filter, ConsoleOutput consoleOutput)
+        {
+            var sessionId = CreateSession(filter);
+
+            await Task.Factory.StartNew(() => { RunZaloService(RunnerConstants.sendmessagetofriendsincontacts, sessionId, consoleOutput); });
+        }
+
+        public async Task SendMessageToStrangerByPhone(Filter filter, ConsoleOutput consoleOutput)
+        {
+            var sessionId = CreateSession(filter);
+
+            await Task.Factory.StartNew(() => { RunZaloService(RunnerConstants.sendmessagebyphonenumber, sessionId, consoleOutput); });
+        }
+
+        public async Task SendMessageToStrangerNearBy(Filter filter, ConsoleOutput consoleOutput)
+        {
+            var sessionId = CreateSession(filter);
+
+            await Task.Factory.StartNew(() => { RunZaloService(RunnerConstants.sendmessagenearby, sessionId, consoleOutput); });
         }
 
         public string RunZaloService(string type, string arguments, ConsoleOutput output)
@@ -122,6 +135,19 @@ namespace ZaloCommunityDev.ViewModel
             output.Received(Format(Filename, arguments) + " finished with exit code = " + process.ExitCode + ": " + message);
 
             return message.ToString();
+        }
+
+        private string CreateSession(Filter x)
+        {
+            var sessionText = Guid.NewGuid().ToString("N").ToLower();
+            var newpath = Path.Combine(WorkingFolderPath, "WorkingSession", sessionText);
+            Directory.CreateDirectory(newpath);
+
+            var filterText = JsonConvert.SerializeObject(x, Formatting.Indented);
+            var settingsText = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            File.WriteAllText(Path.Combine(newpath, "filter.json"), filterText);
+            File.WriteAllText(Path.Combine(newpath, "setting.json"), settingsText);
+            return sessionText;
         }
 
         private string Format(string filename, string arguments)

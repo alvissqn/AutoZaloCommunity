@@ -21,7 +21,7 @@
         <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
                                 ConfigType="AutoAddFriendNearByPage"
-                                StartCommand="{Binding AutoAddFriendCommand}"
+                                StartCommand="{Binding AutoAddFriendNearByCommand}"
                                 Margin="20"
                                 ExcludePeopleNamesVisibility="Collapsed"
                                 ExcludePhoneNumbersVisibility="Collapsed"
