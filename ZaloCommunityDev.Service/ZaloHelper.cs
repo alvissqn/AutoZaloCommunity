@@ -1,4 +1,5 @@
-﻿using ZaloCommunityDev.Shared;
+﻿using System;
+using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
 
 namespace ZaloCommunityDev.Service
@@ -14,6 +15,9 @@ namespace ZaloCommunityDev.Service
             profile.PhoneNumber = info.PhoneNumber;
         }
 
+        public static void Output(string text) => Console.WriteLine(text);
+        public static void SendCompletedTaskSignal() => Console.WriteLine("@TASK COMPLETED");
+
         public static string GetGreetingText(ProfileMessage profle, Filter filter)
         {
             if (profle.Gender == "Nam")
@@ -23,7 +27,7 @@ namespace ZaloCommunityDev.Service
             else
             {
                 return filter.TextGreetingForMale;
-            }                
+            }
         }
     }
 }

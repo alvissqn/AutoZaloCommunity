@@ -18,23 +18,23 @@ namespace ZaloCommunityDev.Service
 
         public void Login(User user)
         {
-            var account = user.Username;
-            var password = user.Password;
-            var region = user.Region;
-
-            //EnableAbdKeyoard();
-
             try
             {
-                InvokeProc("/c adb shell am force-stop com.zing.zalo");
+                //EnableAbdKeyoard();
+                var account = user.Username;
+                var password = user.Password;
+                var region = user.Region;
 
+                ZaloHelper.Output("Đóng quá trình trước: " + account);
+                InvokeProc("/c adb shell am force-stop com.zing.zalo");
                 Delay(Settings.Delay.WaitForceCloseApp);
 
+                ZaloHelper.Output("Tiến hành đăng nhập vào tài khoản: " + account);
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.LoginUsingPWActivity");
 
                 Delay(Settings.Delay.WaitLoginScreenOpened);
 
-                //Open regions
+                ZaloHelper.Output("Chọn khu vực trong cửa sổ mới" + region);
                 TouchAt(Screen.LoginScreenCountryCombobox);
                 Delay(1000);
                 TouchAt(Screen.IconTopRight);
@@ -44,7 +44,7 @@ namespace ZaloCommunityDev.Service
                 TouchAt(Screen.LoginScreenFirstCountryItem);
                 Delay(500);
 
-                //Enter username
+                ZaloHelper.Output("đang gửi tên đăng nhập");
                 TouchAt(Screen.LoginScreenPhoneTextField);
                 SendKey(KeyCode.AkeycodeMoveEnd);
                 for (var i = 0; i < 12; i++)
@@ -53,7 +53,7 @@ namespace ZaloCommunityDev.Service
                 }
                 SendText(account);
 
-                //Enter Password
+                 ZaloHelper.Output("đang gửi tên mật khẩu");
                 Delay(100);
                 TouchAt(Screen.LoginScreenPasswordTextField);
                 SendText(password);
@@ -61,10 +61,12 @@ namespace ZaloCommunityDev.Service
                 //SendKey(KeyCode.AkeycodeEnter, 2);
 
                 Delay(Settings.Delay.WaitLogin);
+                ZaloHelper.Output("đang gửi thông tin đăng nhập");
             }
             catch (Exception ex)
             {
                 _log.Error(ex);
+                ZaloHelper.Output("Có lỗi xảy ra");
             }
         }
     }

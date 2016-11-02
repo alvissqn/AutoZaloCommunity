@@ -11,7 +11,7 @@ using ZaloCommunityDev.Service.Models;
 
 namespace ZaloCommunityDev.Service
 {
-    public class ZaloAddFriendService : ZaloCommunityDistributeServiceBase, ISearchStrangerAction
+    public class ZaloAddFriendService : ZaloCommunityDistributeServiceBase
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloAddFriendService));
 
@@ -22,141 +22,166 @@ namespace ZaloCommunityDev.Service
 
         public void AddFriendNearBy(Filter filter)
         {
-            var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount());
-            var numberOfAction = filter.NumberOfAction > canAddedFriendToday ? canAddedFriendToday : filter.NumberOfAction;
-            if (numberOfAction <= 0)
+            try
             {
-                Console.WriteLine("Kết bạn tối đa trong ngày rồi");
+                ZaloHelper.Output("Tiến hành kết bạn theo vị trí địa lý");
 
-                return;
+                var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount());
+                var numberOfAction = filter.NumberOfAction > canAddedFriendToday ? canAddedFriendToday : filter.NumberOfAction;
+                if (numberOfAction <= 0)
+                {
+                    ZaloHelper.Output("Kết bạn tối đa trong ngày rồi");
+
+                    return;
+                }
+
+                var gender = filter.GenderSelection;
+                var ageValues = filter.FilterAgeRange.Split("-".ToArray());
+                var ageFrom = ageValues[0];
+                var ageTo = ageValues[1];
+
+                GotoActivity(Activity.UserNearbyList);
+
+                ZaloHelper.Output("Thiết lập tùy chỉnh nâng cao");
+                AddSettingSearchFriend(gender, ageFrom, ageTo);
+
+                AddFriend(numberOfAction, filter);
             }
-
-            var gender = filter.GenderSelection;
-            var ageValues = filter.FilterAgeRange.Split("-".ToArray());
-            var ageFrom = ageValues[0];
-            var ageTo = ageValues[1];
-
-            GotoActivity(Activity.UserNearbyList);
-
-            AddSettingSearchFriend(gender, ageFrom, ageTo);
-
-
-            AddFriend(numberOfAction, filter);
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+            finally
+            {
+                ZaloHelper.SendCompletedTaskSignal();
+            }
         }
 
         public void AddFriendByPhone(Filter filter)
         {
-            var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount());
-            var numberOfAction = filter.NumberOfAction > canAddedFriendToday ? canAddedFriendToday : filter.NumberOfAction;
-            if (numberOfAction == 0)
+            try
             {
-                Console.WriteLine("Kết bạn tối đa trong ngày rồi");
-
-                return;
-            }
-
-            var countSuccess = 0;
-            var phonelist = new Stack<string>(filter.IncludePhoneNumbers.Split(";,|".ToArray()));           
-            while (countSuccess < numberOfAction)
-            {
-                InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
-                var success = false;
-                while (!success)
+                var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount());
+                var numberOfAction = filter.NumberOfAction > canAddedFriendToday ? canAddedFriendToday : filter.NumberOfAction;
+                if (numberOfAction == 0)
                 {
-                    if (phonelist.Count == 0)
-                    {
-                        return;
-                    }
+                    ZaloHelper.Output("Kết bạn tối đa trong ngày rồi");
 
-                    var phoneNumber = phonelist.Pop();
-                    if (DbContext.LogRequestAddFriendSet.FirstOrDefault(x => x.PhoneNumber == phoneNumber)!= null){
-                        Console.WriteLine("Bạn này đã có tên trong danh sách");
+                    return;
+                }
 
-                        continue;
-                    }
-                    Thread.Sleep(100);
-                    for (var i = 0; i < 15; i++)
+                var countSuccess = 0;
+                var phonelist = new Stack<string>(filter.IncludePhoneNumbers.Split(";,|".ToArray()));
+                while (countSuccess < numberOfAction)
+                {
+                    InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
+                    var success = false;
+                    while (!success)
                     {
-                        SendKey(KeyCode.AkeycodeDel);
-                    }
-
-                    SendText(phoneNumber);
-                    SendKey(KeyCode.AkeycodeEnter);
-                    Thread.Sleep(4000);
-                    //check is not available
-                    Console.WriteLine("!Kiểm tra thông báo");
-                    if (ZaloImageProcessing.HasFindButton(CaptureScreenNow(), Screen))
-                    {
-                        Console.WriteLine("!Lỗi, số đt không có");
-                    }
-                    else
-                    {
-                        var profile = GrabProfileInfo();
-
-                        profile.PhoneNumber = phoneNumber;
-                        var addSuccess = AddFriendViaIconButton(profile, filter);
-                        Console.WriteLine($"!Thêm bạn bằng số đt: {phoneNumber} thành công.");
-                        if (addSuccess)
+                        if (phonelist.Count == 0)
                         {
-                            countSuccess++;
-                            success = true;
+                            return;
+                        }
+
+                        var phoneNumber = phonelist.Pop();
+                        if (DbContext.LogRequestAddFriendSet.FirstOrDefault(x => x.PhoneNumber == phoneNumber) != null)
+                        {
+                            ZaloHelper.Output($"Bỏ qua. Số điện thoại {phoneNumber} đã có tên trong danh sách");
+
+                            continue;
+                        }
+
+                        Thread.Sleep(100);
+
+                        DeleteWordInFocusedTextField();
+                        ZaloHelper.Output("đang nhập số điện thoại.");
+
+                        SendText(phoneNumber);
+                        SendKey(KeyCode.AkeycodeEnter);
+                        Thread.Sleep(4000);
+
+                        //check is not available
+                        ZaloHelper.Output("!Kiểm tra thông báo");
+
+                        if (ZaloImageProcessing.HasFindButton(CaptureScreenNow(), Screen))
+                        {
+                            ZaloHelper.Output("!Lỗi, số đt không có");
+                        }
+                        else
+                        {
+                            var profile = GrabProfileInfo();
+
+                            profile.PhoneNumber = phoneNumber;
+                            var addSuccess = AddFriendViaIconButton(profile, filter);
+                            ZaloHelper.Output($"!Thêm bạn bằng số đt: {phoneNumber} thành công.");
+                            if (addSuccess)
+                            {
+                                countSuccess++;
+                                success = true;
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+            finally
+            {
+                ZaloHelper.SendCompletedTaskSignal();
             }
         }
 
         private void AddFriend(int numberOfAction, Filter filter)
         {
-            Console.WriteLine($"!bắt đầu thêm bạn. số bạn yêu cầu tối đa trong ngày hôm nay là {numberOfAction}");
+            ZaloHelper.Output($"!bắt đầu thêm bạn. số bạn yêu cầu tối đa trong ngày hôm nay là {numberOfAction}");
 
             var countSuccess = 0;
             string[] profilesPage1 = null;
             string[] profilesPage2 = null;
-            Console.WriteLine("!đang tìm thông tin các bạn");
+            ZaloHelper.Output("!đang tìm thông tin các bạn");
             var friendNotAdded = (GetPositionAccountNotAdded((x) => profilesPage1 = x)).OrderByDescending(x => x.Point.Y);
-            var points = new Stack<FriendPositionMessage>(friendNotAdded);
+            var stack = new Stack<FriendPositionMessage>(friendNotAdded);
 
-            profilesPage1.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
-            Console.WriteLine($"!--------------------");
-            friendNotAdded.ToList().ForEach((x) => Console.WriteLine($"!các bạn chưa được gửi lời mời: {x}"));
+            profilesPage1.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+            ZaloHelper.Output($"!--------------------");
+            friendNotAdded.ToList().ForEach((x) => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x}"));
             while (countSuccess < numberOfAction)
             {
-                while (points.Count == 0)
+                while (stack.Count == 0)
                 {
-                    Console.WriteLine("!đang cuộn danh sách bạn");
+                    ZaloHelper.Output("!đang cuộn danh sách bạn");
                     ScrollList(9);
 
-                    Console.WriteLine("!đang tìm thông tin các bạn");
-
+                    ZaloHelper.Output("!đang tìm thông tin các bạn");
                     friendNotAdded = (GetPositionAccountNotAdded((x) => profilesPage2 = x)).OrderByDescending(x => x.Point.Y);
-                    points = new Stack<FriendPositionMessage>(friendNotAdded);
+                    stack = new Stack<FriendPositionMessage>(friendNotAdded);
 
-                    profilesPage1.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
-                    Console.WriteLine($"!--------------------");
-                    friendNotAdded.ToList().ForEach((x) => Console.WriteLine($"!các bạn chưa được gửi lời mời: {x}"));
+                    profilesPage1.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+                    ZaloHelper.Output($"!--------------------");
+                    friendNotAdded.ToList().ForEach((x) => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x}"));
 
-                    profilesPage2.ToList().ForEach((x) => Console.WriteLine($"!tìm thấy bạn trên màn hình: {x}"));
+                    profilesPage2.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
 
                     if (!profilesPage2.Except(profilesPage1).Any())
                     {
-                        Console.WriteLine("!hết bạn trong danh sách.");
+                        ZaloHelper.Output("!hết bạn trong danh sách.");
                         return;
                     }
-
                     profilesPage1 = profilesPage2;
                 }
 
                 Delay(2000);
 
-                var pointRowFriend = points.Pop();
+                var pointRowFriend = stack.Pop();
 
-                var profile = new ProfileMessage() { Name = pointRowFriend.Name };
+                var profile = new ProfileMessage { Name = pointRowFriend.Name };
                 if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToAddFriendAt(profile, pointRowFriend.Point, filter))
                 {
                     DbContext.AddProfile(profile);
                     countSuccess++;
-                    Console.WriteLine($"!yêu cầu kết bạn [{countSuccess}]: {profile.Name} bị thành công.");
+                    ZaloHelper.Output($"!yêu cầu kết bạn [{countSuccess}]: {profile.Name} bị thành công.");
                 }
             }
         }
@@ -180,7 +205,7 @@ namespace ZaloCommunityDev.Service
 
         public bool ClickToAddFriendAt(ProfileMessage profile, int x, int y, Filter filter)
         {
-            Console.WriteLine($"!đã nhấn vào bạn: {profile.Name}");
+            ZaloHelper.Output($"!đã nhấn vào bạn: {profile.Name}");
 
             TouchAt(x, y);//TOUCH TO ROW_INDEX
 
@@ -196,7 +221,7 @@ namespace ZaloCommunityDev.Service
             }
             else
             {
-                Console.WriteLine($"!yêu cầu kết bạn: {profile.Name} bị từ hủy. Lý do: đã có tên trong cơ sở dữ liệu");
+                ZaloHelper.Output($"!yêu cầu kết bạn: {profile.Name} bị từ hủy. Lý do: đã có tên trong cơ sở dữ liệu");
                 TouchAtIconTopLeft(); //GoBack to friendList
                 return false;
             }
@@ -204,7 +229,7 @@ namespace ZaloCommunityDev.Service
 
         private bool AddFriendViaIconButton(ProfileMessage profile, Filter filter)
         {
-            Console.WriteLine($"!tiến hành gửi yêu cầu kết bạn: {profile.Name}");
+            ZaloHelper.Output($"!tiến hành gửi yêu cầu kết bạn: {profile.Name}");
             //Wait to navigate to profiles
             TouchAtIconBottomRight();//Touch to AddFriends
                                      //Wait to Navigate to new windows
@@ -213,7 +238,7 @@ namespace ZaloCommunityDev.Service
             var proccessedDialog = ProcessIfShowDialogWaitRequestedFriendConfirm();
             if (proccessedDialog)
             {
-                Console.WriteLine($"!yêu cầu kết bạn: {profile.Name} bị từ chối. Lý do: đã gửi yêu cầu rồi");
+                ZaloHelper.Output($"!yêu cầu kết bạn: {profile.Name} bị từ chối. Lý do: đã gửi yêu cầu rồi");
                 TouchAtIconTopLeft(); //GoBack to friendList
                 return false;
             }
@@ -222,7 +247,7 @@ namespace ZaloCommunityDev.Service
 
             var textGreeting = ZaloHelper.GetGreetingText(profile, filter); ;
 
-            Console.WriteLine($"!gửi: {textGreeting}");
+            ZaloHelper.Output($"!gửi: {textGreeting}");
             SendText(textGreeting);
 
             if (Settings.IsDebug)

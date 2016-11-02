@@ -200,9 +200,17 @@ namespace ZaloCommunityDev.Service
             Thread.Sleep(100);
         }
 
+        protected void DeleteWordInFocusedTextField(int word = 15)
+        {
+            for (var i = 0; i < word; i++)
+            {
+                SendKey(KeyCode.AkeycodeDel);
+            }
+        }
+
         protected ProfileMessage GrabProfileInfo(string initName = null)
         {
-            Console.WriteLine($"!đang lấy thông tin bạn: {initName}");
+            ZaloHelper.Output($"!đang lấy thông tin bạn: {initName}");
 
             TouchAt(Screen.ProfileScreenTabInfo); //Touch tab Thong Tin
             Delay(300);
@@ -213,7 +221,7 @@ namespace ZaloCommunityDev.Service
             {
                 profile.Name = initName;
             }
-            Console.WriteLine($"!@: {profile.Name} {profile.BirthdayText} {profile.Gender} {profile.PhoneNumber}");
+            ZaloHelper.Output($"!@: {profile.Name} {profile.BirthdayText} {profile.Gender} {profile.PhoneNumber}");
             return profile;
         }
 
