@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using ZaloCommunityDev.Shared.Structures;
 
 namespace ZaloCommunityDev.Shared
 {
@@ -11,6 +13,37 @@ namespace ZaloCommunityDev.Shared
                 return v.ElementAt(at);
 
             return @default;
+        }
+
+        public static bool IsValidProfile(this Filter filter, ProfileMessage profile, out string reason)
+        {
+            reason = null;
+            if (string.IsNullOrWhiteSpace(filter.FilterAgeRange))
+            {
+                var ages = filter.FilterAgeRange.Split(";-=_ ".ToArray());
+
+                int from = int.Parse(ages[0]);
+                int to = int.Parse(ages[1]);
+
+                DateTime date;
+                if(DateTime.TryParse(profile.BirthdayText, out date))
+                {
+                    var profileAge = DateTime.Now.Year - date.Year;
+
+                    if(from <=profileAge && profileAge <= to)
+                    {
+
+                    }
+                    else
+                    {
+                        reason = $"Độ tuổi {profileAge} không trong khoảng [{from}-{to}]";
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

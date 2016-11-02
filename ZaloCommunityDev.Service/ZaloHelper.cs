@@ -26,7 +26,7 @@ namespace ZaloCommunityDev.Service
             }
             else
             {
-                return filter.TextGreetingForMale;
+                return filter.TextGreetingForFemale;
             }
         }
     }

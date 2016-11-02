@@ -20,7 +20,7 @@ namespace ZaloCommunityDev.Service
         {
         }
 
-        public void SendMessageToFriendInList(Filter filter)
+        public void SendMessageToFriendInContactList(Filter filter)
         {
             try
             {
@@ -62,18 +62,21 @@ namespace ZaloCommunityDev.Service
 
                     var pointRowFriend = stack.Pop();
 
-                    if (DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == pointRowFriend.Name) != null)
+                    if (DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == pointRowFriend.Name && x.Account==Settings.User.Username) != null)
                     {
                         ZaloHelper.Output($"Đã gửi tin cho bạn {pointRowFriend.Name} rồi");
 
                         continue;
                     }
 
+                    var profile = DbContext.ProfileSet.FirstOrDefault(x => x.Name == pointRowFriend.Name);
                     var request = new ChatRequest
                     {
                         Profile = new ProfileMessage
                         {
-                            Name = pointRowFriend.Name
+                            Name = pointRowFriend.Name,
+                            Location = profile?.Location,
+                            PhoneNumber =  profile?.PhoneNumber
                         },
                         Objective = ChatObjective.FriendInContactList
                     };
@@ -85,10 +88,19 @@ namespace ZaloCommunityDev.Service
 
                         NavigateToProfileScreenFromChatScreenToGetInfoThenGoBack(request);
 
-                        if (Chat(request, filter))
+
+                        string reason;
+                        if (!filter.IsValidProfile(request.Profile, out reason))
+                        {
+                            ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
+                        }
+                        else if (Chat(request, filter))
                         {
                             countSuccess++;
-                            DbContext.AddProfile(request.Profile, Settings.User.Username);
+                            if (profile == null)
+                            {
+                                DbContext.AddProfile(request.Profile, Settings.User.Username);
+                            }
                         }
                     }
                 }
@@ -104,7 +116,7 @@ namespace ZaloCommunityDev.Service
         {
             try
             {
-                var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount( Settings.User.Username);
+                var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount(Settings.User.Username);
                 var numberOfAction = filter.NumberOfAction > canSentToday ? canSentToday : filter.NumberOfAction;
                 if (numberOfAction <= 0)
                 {
@@ -130,7 +142,7 @@ namespace ZaloCommunityDev.Service
                         }
                         var phoneNumber = stack.Pop();
 
-                        if (DbContext.LogMessageSentToStrangerSet.First(x => x.PhoneNumber == phoneNumber) != null)
+                        if (DbContext.LogMessageSentToStrangerSet.First(x => x.PhoneNumber == phoneNumber && x.Account == Settings.User.Username) != null)
                         {
                             ZaloHelper.Output($"Đã gửi tin cho số đt {phoneNumber} rồi");
 
@@ -154,20 +166,32 @@ namespace ZaloCommunityDev.Service
 
                             var profile = GrabProfileInfo();
                             profile.PhoneNumber = phoneNumber;
-                            var request = new ChatRequest { Profile = profile, Objective = ChatObjective.StrangerByPhone };
 
-                            if (Chat(request, filter))
+                            string reason;
+                            if (!filter.IsValidProfile(profile, out reason))
                             {
-                                countSuccess++;
-                                DbContext.AddProfile(request.Profile, Settings.User.Username);
+                                ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
+                            }
+                            else
+                            {
+                                var request = new ChatRequest { Profile = profile, Objective = ChatObjective.StrangerByPhone };
 
-                                success = true;
+                                if (Chat(request, filter))
+                                {
+                                    countSuccess++;
+                                    DbContext.AddProfile(request.Profile, Settings.User.Username);
+
+                                    success = true;
+                                }
                             }
                         }
                     }
                 }
             }
-            catch (Exception ex) { _log.Error(ex); }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
             finally
             {
                 ZaloHelper.SendCompletedTaskSignal();
@@ -210,8 +234,8 @@ namespace ZaloCommunityDev.Service
             var captureFiles = CaptureScreenNow();
             var names = ZaloImageProcessing.GetListFriendName(captureFiles, Screen);
 
-            var t = names.Where(v => DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
-            var t2 = t.Where(v => DbContext.LogMessageSentToStrangerSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
+            var t = names.Where(v => DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == v.Name && x.Account == Settings.User.Username) == null).ToArray();
+            var t2 = t.Where(v => DbContext.LogMessageSentToStrangerSet.FirstOrDefault(x => x.Name == v.Name && x.Account == Settings.User.Username) == null).ToArray();
 
             allPrrofiles(names.Select(x => x.Name).ToArray());
 
@@ -263,7 +287,15 @@ namespace ZaloCommunityDev.Service
 
                 var pointRowFriend = points.Pop();
 
-                var request = new ChatRequest { Profile = new ProfileMessage() { Name = pointRowFriend.Name }, Objective = ChatObjective.StrangerNearBy };
+                var request = new ChatRequest
+                {
+                    Profile = new ProfileMessage()
+                    {
+                        Name = pointRowFriend.Name
+                    },
+                    Objective = ChatObjective.StrangerNearBy
+                };
+
                 if (Screen.InfoRect.Contains(pointRowFriend.Point))
                 {
                     TouchAt(pointRowFriend.Point);
@@ -272,13 +304,18 @@ namespace ZaloCommunityDev.Service
                     var infoGrab = GrabProfileInfo(pointRowFriend.Name);
                     ZaloHelper.CopyProfile(request.Profile, infoGrab);
 
-                    if (Chat(request, filter))
+                    string reason;
+                    if (!filter.IsValidProfile(request.Profile, out reason))
+                    {
+                        ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
+                    }
+                    else if (Chat(request, filter))
                     {
                         DbContext.AddProfile(request.Profile, Settings.User.Username);
                         countSuccess++;
+                        ZaloHelper.Output($"!gửi tin nhắn tới: {request.Profile.Name} thành công. Số bạn đã gửi thành công trong phiên này là: {countSuccess}");
                     }
 
-                    ZaloHelper.Output($"!gửi tin nhắn tới: {request.Profile.Name} thành công. Số bạn đã gửi thành công trong phiên này là: {countSuccess}");
                 }
             }
         }

@@ -74,7 +74,9 @@ namespace ZaloCommunityDev.Service
                 var phonelist = new Stack<string>(filter.IncludePhoneNumbers.Split(";,|".ToArray()));
                 while (countSuccess < numberOfAction)
                 {
+                    ZaloHelper.Output("Đang mở trang kết bạn qua số điện thoại");
                     GotoPage(Activity.FindFriendByPhoneNumber);
+
                     var success = false;
                     while (!success)
                     {
@@ -84,7 +86,7 @@ namespace ZaloCommunityDev.Service
                         }
 
                         var phoneNumber = phonelist.Pop();
-                        if (DbContext.LogRequestAddFriendSet.FirstOrDefault(x => x.PhoneNumber == phoneNumber) != null)
+                        if (DbContext.LogRequestAddFriendSet.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Account == Settings.User.Username) != null)
                         {
                             ZaloHelper.Output($"Bỏ qua. Số điện thoại {phoneNumber} đã có tên trong danh sách");
 
@@ -112,12 +114,22 @@ namespace ZaloCommunityDev.Service
                             var profile = GrabProfileInfo();
 
                             profile.PhoneNumber = phoneNumber;
-                            var addSuccess = AddFriendViaIconButton(profile, filter);
-                            ZaloHelper.Output($"!Thêm bạn bằng số đt: {phoneNumber} thành công.");
-                            if (addSuccess)
+                            string reason;
+                            if (!filter.IsValidProfile(profile, out reason))
                             {
-                                countSuccess++;
-                                success = true;
+                                ZaloHelper.Output("Bỏ qua bạn này, lý do: "+ reason);
+
+                                continue;
+                            }
+                            else
+                            {
+                                var addSuccess = AddFriendViaIconButton(profile, filter);
+                                ZaloHelper.Output($"!Thêm bạn bằng số đt: {phoneNumber} thành công.");
+                                if (addSuccess)
+                                {
+                                    countSuccess++;
+                                    success = true;
+                                }
                             }
                         }
                     }
@@ -176,7 +188,11 @@ namespace ZaloCommunityDev.Service
 
                 var pointRowFriend = stack.Pop();
 
-                var profile = new ProfileMessage { Name = pointRowFriend.Name };
+                var profile = new ProfileMessage
+                {
+                    Name = pointRowFriend.Name
+                };
+
                 if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToAddFriendAt(profile, pointRowFriend.Point, filter))
                 {
                     DbContext.AddProfile(profile, Settings.User.Username);
@@ -191,7 +207,7 @@ namespace ZaloCommunityDev.Service
             var captureFiles = CaptureScreenNow();
             var names = ZaloImageProcessing.GetListFriendName(captureFiles, Screen);
 
-            var t = names.Where(v => DbContext.LogRequestAddFriendSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
+            var t = names.Where(v => DbContext.LogRequestAddFriendSet.FirstOrDefault(x => x.Name == v.Name && x.Account == Settings.User.Username) == null).ToArray();
 
             allPrrofiles(names.Select(x => x.Name).ToArray());
             return t.ToArray();
@@ -215,6 +231,15 @@ namespace ZaloCommunityDev.Service
 
             var info = GrabProfileInfo(profile.Name);
             ZaloHelper.CopyProfile(profile, info);
+
+            string reason;
+            if (!filter.IsValidProfile(profile, out reason))
+            {
+                ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
+
+                return false;
+            }
+
 
             if (!info.IsAddedToFriend)
             {

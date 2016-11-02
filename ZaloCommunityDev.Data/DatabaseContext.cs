@@ -51,6 +51,7 @@ namespace ZaloCommunityDev.Data
                     Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                     Name = profile.Name,
                     PhoneNumber = profile.PhoneNumber,
+                    Location  = profile.Location,
                     Account  =account
                 });
 
@@ -237,12 +238,15 @@ namespace ZaloCommunityDev.Data
                 Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                 MessageText = textGreeting,
                 Name = profile.Name,
+                Location = profile.Location,
                 PhoneNumber = profile.PhoneNumber,
                 Account = account
             });
             SaveChanges();
 
             LogActivityCount(profile, account, LogType.AddedFriend);
+
+            AddProfile(profile, account);
         }
 
         public void AddLogMessageSentToFriend(ProfileMessage profile, string account, string textGreeting)
@@ -253,6 +257,7 @@ namespace ZaloCommunityDev.Data
                 Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                 MessageText = textGreeting,
                 Name = profile.Name,
+                Location  = profile.Location,
                 PhoneNumber = profile.PhoneNumber,
                 Account = account
             });
@@ -267,6 +272,7 @@ namespace ZaloCommunityDev.Data
                 Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                 MessageText = textGreeting,
                 Name = profile.Name,
+                Location = profile.Location,
                 PhoneNumber = profile.PhoneNumber,
                 Account = account
             });

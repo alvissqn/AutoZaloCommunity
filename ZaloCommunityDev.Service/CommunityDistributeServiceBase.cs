@@ -27,7 +27,6 @@ namespace ZaloCommunityDev.Service
 
         protected readonly ZaloAdbRequest ZaloAdbRequest;
 
-
         protected bool IsDebug => Settings.IsDebug;
         protected ScreenInfo Screen => Settings.Screen;
 
@@ -97,6 +96,8 @@ namespace ZaloCommunityDev.Service
 
         public void SendKey(KeyCode keycode, int times = 1)
         {
+            ZaloHelper.Output("Debug: SendKey " + keycode.ToString() + ". Time : " + times);
+
             if ((ZaloAdbRequest.Device != null) && (ZaloAdbRequest.Device.State == DeviceState.Online))
             {
                 for (var i = 0; i < times; i++)

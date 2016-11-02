@@ -144,6 +144,12 @@
     <None Include="ImageData\1280x2048.dpi384\template\more_friend_pattern_template.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="ImageData\1280x2048.dpi384\template\login_disable_pattern_template.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="ImageData\1280x2048.dpi384\template\login_enable_pattern_template.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="ImageData\1280x2048.dpi384\template\nolike_pattern_template.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

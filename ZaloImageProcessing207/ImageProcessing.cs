@@ -240,6 +240,14 @@ namespace ZaloCommunityDev.ImageProcessing
             return ContainsTemplate(fileName, $@".\ImageData\{screen.Name}\template\find_friend_via_phone_pattern_template.png");
         }
 
+        public bool HasLoginButton(string fileName, ScreenInfo screen)
+        {
+            return DetectTemplate(fileName, new string[] {
+                $@".\ImageData\{screen.Name}\template\login_disable_pattern_template.png" ,
+                $@".\ImageData\{screen.Name}\template\login_enable_pattern_template.png" ,
+            }).Any();
+        }
+
         #endregion Functions
     }
 }

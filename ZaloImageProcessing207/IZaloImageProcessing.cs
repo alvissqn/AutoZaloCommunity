@@ -13,5 +13,6 @@ namespace ZaloCommunityDev.ImageProcessing
         FriendPositionMessage[] GetListFriendName(string captureFiles, ScreenInfo screen);
         FriendPositionMessage[] GetFriendProfileList(string fileName, ScreenInfo screen);
         bool HasFindButton(string fileName, ScreenInfo screen);
+        bool HasLoginButton(string fileName, ScreenInfo screen);
     }
 }

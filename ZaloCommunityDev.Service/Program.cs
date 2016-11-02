@@ -75,7 +75,7 @@ namespace ZaloCommunityDev.Service
                 case RunnerConstants.sendmessagetofriendsincontacts:
                 case "gui-tin-nhan-trong-danh-ba":
                     zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-                    zaloMessageToFriendService.SendMessageToFriendInList(filter);
+                    zaloMessageToFriendService.SendMessageToFriendInContactList(filter);
 
                     break;
             }
