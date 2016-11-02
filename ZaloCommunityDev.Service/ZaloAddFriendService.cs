@@ -15,8 +15,8 @@ namespace ZaloCommunityDev.Service
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloAddFriendService));
 
-        public ZaloAddFriendService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
-            : base(settings, dbContext, zaloImageProcessing, ZaloAdbRequest)
+        public ZaloAddFriendService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest zaloAdbRequest)
+            : base(settings, dbContext, zaloImageProcessing, zaloAdbRequest)
         {
         }
 
@@ -141,12 +141,12 @@ namespace ZaloCommunityDev.Service
             string[] profilesPage1 = null;
             string[] profilesPage2 = null;
             ZaloHelper.Output("!đang tìm thông tin các bạn");
-            var friendNotAdded = (GetPositionAccountNotAdded((x) => profilesPage1 = x)).OrderByDescending(x => x.Point.Y);
+            var friendNotAdded = GetPositionAccountNotAdded(x => profilesPage1 = x).OrderByDescending(x => x.Point.Y);
             var stack = new Stack<FriendPositionMessage>(friendNotAdded);
 
-            profilesPage1.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+            profilesPage1.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
             ZaloHelper.Output($"!--------------------");
-            friendNotAdded.ToList().ForEach((x) => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x}"));
+            friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x}"));
             while (countSuccess < numberOfAction)
             {
                 while (stack.Count == 0)
@@ -155,14 +155,14 @@ namespace ZaloCommunityDev.Service
                     ScrollList(9);
 
                     ZaloHelper.Output("!đang tìm thông tin các bạn");
-                    friendNotAdded = (GetPositionAccountNotAdded((x) => profilesPage2 = x)).OrderByDescending(x => x.Point.Y);
+                    friendNotAdded = (GetPositionAccountNotAdded(x => profilesPage2 = x)).OrderByDescending(x => x.Point.Y);
                     stack = new Stack<FriendPositionMessage>(friendNotAdded);
 
-                    profilesPage1.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+                    profilesPage1.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
                     ZaloHelper.Output($"!--------------------");
-                    friendNotAdded.ToList().ForEach((x) => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x}"));
+                    friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x}"));
 
-                    profilesPage2.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+                    profilesPage2.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
 
                     if (!profilesPage2.Except(profilesPage1).Any())
                     {
@@ -197,13 +197,14 @@ namespace ZaloCommunityDev.Service
             return t.ToArray();
         }
 
-        public bool ClickToAddFriendAtRowPosition(ProfileMessage profile, int position, Filter filter)
+        // ReSharper disable once UnusedMember.Local
+        private bool ClickToAddFriendAtRowPosition(ProfileMessage profile, int position, Filter filter)
             => ClickToAddFriendAt(profile, Screen.MenuPoint.Y * 2, (position - 1) * Screen.FriendRowHeight + Screen.FriendRowHeight / 2 + Screen.HeaderHeight, filter);
 
-        public bool ClickToAddFriendAt(ProfileMessage profile, ScreenPoint point, Filter filter)
+        private bool ClickToAddFriendAt(ProfileMessage profile, ScreenPoint point, Filter filter)
             => ClickToAddFriendAt(profile, point.X, point.Y, filter);
 
-        public bool ClickToAddFriendAt(ProfileMessage profile, int x, int y, Filter filter)
+        private bool ClickToAddFriendAt(ProfileMessage profile, int x, int y, Filter filter)
         {
             ZaloHelper.Output($"!đã nhấn vào bạn: {profile.Name}");
 
@@ -245,7 +246,7 @@ namespace ZaloCommunityDev.Service
 
             TouchAt(Screen.AddFriendScreenGreetingTextField);
 
-            var textGreeting = ZaloHelper.GetGreetingText(profile, filter); ;
+            var textGreeting = ZaloHelper.GetGreetingText(profile, filter);
 
             ZaloHelper.Output($"!gửi: {textGreeting}");
             SendText(textGreeting);

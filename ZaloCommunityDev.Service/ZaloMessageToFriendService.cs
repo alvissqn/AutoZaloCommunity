@@ -15,8 +15,8 @@ namespace ZaloCommunityDev.Service
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloMessageToFriendService));
 
-        public ZaloMessageToFriendService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
-            : base(settings, dbContext, zaloImageProcessing, ZaloAdbRequest)
+        public ZaloMessageToFriendService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest zaloAdbRequest)
+            : base(settings, dbContext, zaloImageProcessing, zaloAdbRequest)
         {
         }
 
@@ -24,35 +24,33 @@ namespace ZaloCommunityDev.Service
         {
             try
             {
-                var finish = false;
-
                 var countSuccess = 0;
-
-                string[] profilesPage1 = null;
 
                 InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.MainTabActivity");
                 Delay(1000);
                 TouchAt(Screen.HomeScreenFriendTab);
                 Delay(1000);
-                ZaloHelper.Output($"Đang phân tích dữ liệu");
+                ZaloHelper.Output("Đang phân tích dữ liệu");
 
                 var fileCapture = CaptureScreenNow();
                 var friends = ZaloImageProcessing.GetFriendProfileList(fileCapture, Screen);
                 var stack = new Stack<FriendPositionMessage>(friends.Where(x => !string.IsNullOrWhiteSpace(x.Name)).OrderByDescending(x => x.Point.Y));
-                profilesPage1 = stack.Select(x => x.Name).ToArray();
+                var profilesPage1 = stack.Select(x => x.Name).ToArray();
 
-                while (!finish)
+                while (countSuccess <= filter.NumberOfAction)
                 {
                     while (stack.Count == 0)
                     {
                         ScrollList(9);
 
+                        ZaloHelper.Output("Đang phân tích dữ liệu màn hình");
                         fileCapture = CaptureScreenNow();
                         friends = ZaloImageProcessing.GetFriendProfileList(fileCapture, Screen);
                         stack = new Stack<FriendPositionMessage>(friends.OrderByDescending(x => x.Point.Y));
                         var profilesPage2 = stack.Select(x => x.Name).ToArray();
                         if (!profilesPage2.Except(profilesPage1).Any())
                         {
+                            ZaloHelper.Output("Hết danh sách");
                             return;
                         }
 
@@ -70,13 +68,22 @@ namespace ZaloCommunityDev.Service
                         continue;
                     }
 
-                    var request = new ChatRequest() { Profile = new ProfileMessage() { Name = pointRowFriend.Name }, Objective = ChatObjective.FriendInContactList };
+                    var request = new ChatRequest
+                    {
+                        Profile = new ProfileMessage
+                        {
+                            Name = pointRowFriend.Name
+                        },
+                        Objective = ChatObjective.FriendInContactList
+                    };
 
                     if (Screen.InfoRect.Contains(pointRowFriend.Point))
                     {
                         TouchAt(pointRowFriend.Point);
-                        Delay(2000);//wait to navigate chat screen
-                        NavigateToGrab(request);
+                        Delay(2000);
+
+                        NavigateToProfileScreenFromChatScreenToGetInfoThenGoBack(request);
+
                         if (Chat(request, filter))
                         {
                             countSuccess++;
@@ -96,7 +103,7 @@ namespace ZaloCommunityDev.Service
         {
             try
             {
-                var canSentToday = (Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount());
+                var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount();
                 var numberOfAction = filter.NumberOfAction > canSentToday ? canSentToday : filter.NumberOfAction;
                 if (numberOfAction <= 0)
                 {
@@ -105,13 +112,13 @@ namespace ZaloCommunityDev.Service
                     return;
                 }
 
-                string[] phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
+                var phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
 
                 var countSuccess = 0;
                 while (countSuccess < numberOfAction)
                 {
                     InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
-                    bool success = false;
+                    var success = false;
                     var stack = new Stack<string>(phonelist);
 
                     while (!success)
@@ -133,8 +140,8 @@ namespace ZaloCommunityDev.Service
                         SendText(phoneNumber);
                         SendKey(KeyCode.AkeycodeEnter);
                         Thread.Sleep(4000);
-                        //check is not available
 
+                        ZaloHelper.Output("!đang kiểm tra số điện thoại khả dụng");
                         if (ZaloImageProcessing.HasFindButton(CaptureScreenNow(), Screen))
                         {
                             ZaloHelper.Output("!Lỗi, số đt không có");
@@ -152,6 +159,8 @@ namespace ZaloCommunityDev.Service
                             {
                                 countSuccess++;
                                 DbContext.AddProfile(request.Profile);
+
+                                success = true;
                             }
                         }
                     }
@@ -168,7 +177,7 @@ namespace ZaloCommunityDev.Service
         {
             try
             {
-                var canSentToday = (Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount());
+                var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount();
                 var numberOfAction = filter.NumberOfAction > canSentToday ? canSentToday : filter.NumberOfAction;
                 if (numberOfAction <= 0)
                 {
@@ -204,6 +213,7 @@ namespace ZaloCommunityDev.Service
             var t2 = t.Where(v => DbContext.LogMessageSentToStrangerSet.FirstOrDefault(x => x.Name == v.Name) == null).ToArray();
 
             allPrrofiles(names.Select(x => x.Name).ToArray());
+
             return t2.ToArray();
         }
 
@@ -217,9 +227,9 @@ namespace ZaloCommunityDev.Service
             var friendNotAdded = (GetPositionAccountNotSent(x => profilesPage1 = x)).OrderByDescending(x => x.Point.Y);
             var points = new Stack<FriendPositionMessage>(friendNotAdded);
 
-            profilesPage1.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
-            ZaloHelper.Output($"!--------------------");
-            friendNotAdded.ToList().ForEach((x) => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x.Name}"));
+            profilesPage1.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+            ZaloHelper.Output("!--------------------");
+            friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x.Name}"));
             while (countSuccess < maxFriendToday)
             {
                 while (points.Count == 0)
@@ -229,14 +239,14 @@ namespace ZaloCommunityDev.Service
 
                     ZaloHelper.Output("!đang tìm thông tin các bạn");
 
-                    friendNotAdded = (GetPositionAccountNotSent((x) => profilesPage2 = x)).OrderByDescending(x => x.Point.Y);
+                    friendNotAdded = GetPositionAccountNotSent(x => profilesPage2 = x).OrderByDescending(x => x.Point.Y);
                     points = new Stack<FriendPositionMessage>(friendNotAdded);
 
-                    profilesPage1.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+                    profilesPage1.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
                     ZaloHelper.Output($"!--------------------");
-                    friendNotAdded.ToList().ForEach((x) => ZaloHelper.Output($"!bạn chưa được gửi tin nhắn: {x}"));
+                    friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!bạn chưa được gửi tin nhắn: {x}"));
 
-                    profilesPage2.ToList().ForEach((x) => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+                    profilesPage2.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
 
                     if (!profilesPage2.Except(profilesPage1).Any())
                     {
@@ -272,7 +282,7 @@ namespace ZaloCommunityDev.Service
             }
         }
 
-        public void NavigateToGrab(ChatRequest profile)
+        public void NavigateToProfileScreenFromChatScreenToGetInfoThenGoBack(ChatRequest profile)
         {
             //GrabInfomation
             TouchAtIconTopRight();
