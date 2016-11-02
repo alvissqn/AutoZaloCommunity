@@ -70,6 +70,10 @@
     <Compile Include="Migrations\201611011246332_codeadd.Designer.cs">
       <DependentUpon>201611011246332_codeadd.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611021053140_codeadded.cs" />
+    <Compile Include="Migrations\201611021053140_codeadded.Designer.cs">
+      <DependentUpon>201611021053140_codeadded.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AddFriendByPhoneConfigDto.cs" />
     <Compile Include="Models\AddFriendNearByConfigDto.cs" />
@@ -83,6 +87,7 @@
     <Compile Include="Models\ProfileBase.cs" />
     <Compile Include="Models\ProfileInfoDto.cs" />
     <Compile Include="Models\SentMessage.cs" />
+    <Compile Include="Models\UserDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +111,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611011246332_codeadd.resx">
       <DependentUpon>201611011246332_codeadd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611021053140_codeadded.resx">
+      <DependentUpon>201611021053140_codeadded.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

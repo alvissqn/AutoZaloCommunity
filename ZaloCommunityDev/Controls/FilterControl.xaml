@@ -119,7 +119,8 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding ElementName=This, Path=IncludePhoneNumbersHeader}"
-                               VerticalAlignment="Top" />
+                               VerticalAlignment="Top"
+                               Margin="0,7,0,0" />
                     <TextBox Grid.Column="1"
                              AcceptsReturn="True"
                              Text="{Binding IncludePhoneNumbers}" />
@@ -205,7 +206,8 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding ElementName=This, Path=SentImageForFemaleHeader}"
-                               VerticalAlignment="Top" />
+                               VerticalAlignment="Top"
+                               Margin="0,7,0,0" />
                     <TextBox Grid.Column="1"
                              Text="{Binding SentImageForFemale}"
                              AcceptsReturn="True" />
@@ -219,7 +221,8 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding ElementName=This, Path=SentImageForMaleHeader}"
-                               VerticalAlignment="Top" />
+                               VerticalAlignment="Top"
+                               Margin="0,7,0,0" />
                     <TextBox Grid.Column="1"
                              Text="{Binding SentImageForMale}"
                              AcceptsReturn="True" />

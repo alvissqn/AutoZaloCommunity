@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:uiAssists="clr-namespace:ZaloCommunityDev.UiAssists"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d"
       DataContext="{Binding Main,Source={StaticResource Locator}}"
       d:DesignHeight="700"
@@ -20,24 +21,31 @@
         <ScrollViewer  Grid.Row="1"
                        VerticalScrollBarVisibility="Auto">
             <StackPanel  Margin="20">
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="Chọn thiết bị đang online"
-                               VerticalAlignment="Center" />
 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <ComboBox x:Name="OnlineDevices"
+                              materialDesign:HintAssist.Hint="CHỌN THIẾT BỊ ANDROID ĐANG ONLINE"
                               MinWidth="250"
                               SelectedIndex="0"
                               SelectedItem="{Binding SelectedDevice}"
                               ItemsSource="{Binding OnlineDevices}"
-                              Margin="20,0,0,0"
-                              Width="431" />
+                              Margin="0,0,20,0" />
 
-                    <Button Content="Tải lại"
+                    <Button Grid.Column="1"
                             Style="{DynamicResource MaterialDesignFlatButton}"
                             Margin="10,0,0,0"
-                            Command="{Binding RefreshAvdListCommand}" />
-                </StackPanel>
+                            Command="{Binding RefreshAvdListCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Refresh"
+                                                     Margin="0,0,4,0" />
+                            <TextBlock Text="TẢI LẠI" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
 
                 <CheckBox Content="Chế độ kiểm tra"
                           Margin="5,10,5,20"
@@ -48,23 +56,19 @@
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Tên đăng nhập"
-                                            Binding="{Binding Username, Converter={x:Static uiAssists:UiConverterHelper.HideUsername}}"
-                                             />
+                                            Binding="{Binding Username, Mode=TwoWay, Converter={x:Static uiAssists:UiConverterHelper.HideUsername}}" />
 
                         <DataGridTextColumn Header="Mật khẩu"
-                                            Binding="{Binding Password, Converter={x:Static uiAssists:UiConverterHelper.HidePassword}}" />
+                                            Binding="{Binding Password, Mode=TwoWay, Converter={x:Static uiAssists:UiConverterHelper.HidePassword}}" />
 
                         <DataGridTextColumn Header="Quốc gia"
-                                            IsReadOnly="True"
-                                            Binding="{Binding Region}" />
+                                            Binding="{Binding Region, Mode=TwoWay}" />
 
                         <DataGridTextColumn Header="Thứ tự chạy"
-                                            IsReadOnly="True"
-                                            Binding="{Binding Order}" />
+                                            Binding="{Binding Order, Mode=TwoWay}" />
 
                         <DataGridCheckBoxColumn Header="Hoạt động"
-                                            IsReadOnly="True"
-                                            Binding="{Binding IsActive}" />
+                                                Binding="{Binding IsActive, Mode=TwoWay}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>

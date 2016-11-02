@@ -2,8 +2,10 @@
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.Shared;
+using System.Windows;
 
 namespace ZaloCommunityDev.ViewModel
 {
@@ -12,6 +14,7 @@ namespace ZaloCommunityDev.ViewModel
         private readonly ConsoleOutputViewModel _consoleOutputViewModel;
         private readonly Settings _settings;
         private readonly ZaloCommunityService _zaloCommunityService;
+        private readonly DatabaseContext _dbContext;
 
         private User _currentUser;
         private string[] _onlineDevices;
@@ -22,6 +25,7 @@ namespace ZaloCommunityDev.ViewModel
         public MainViewModel(ZaloCommunityService service, DatabaseContext dbContext, Settings settings, ConsoleOutputViewModel consoleOutputViewModel)
         {
             _zaloCommunityService = service;
+            _dbContext = dbContext;
             _settings = settings;
             _consoleOutputViewModel = consoleOutputViewModel;
 
@@ -88,15 +92,28 @@ namespace ZaloCommunityDev.ViewModel
         public void Load()
         {
             OnlineDevices = _zaloCommunityService.OnlineDevices;
-            Users = new ObservableCollection<User>(new[] { new User { Username = "0979864903", Password = "kimngan12345" } });
+            Users = new ObservableCollection<User>(_dbContext.GetAccountList());
 
             CurrentUser = Users[0];
         }
 
         private ConsoleOutput CreateConsoleOutput(string type)
         {
-            _settings.User = CurrentUser;
+            _settings.User = Users.FirstOrDefault(x => x.IsActive);
+            if (_settings.User == null)
+            {
+                MessageBox.Show("Vui lòng chọn một tài khoản");
+
+                return null;
+            }
             _settings.DeviceNumber = SelectedDevice;
+            if (string.IsNullOrWhiteSpace(_settings.DeviceNumber))
+            {
+                MessageBox.Show("Vui lòng chọn một thiết bị android đang chạy. Kiểm tra thiết bị đã chạy chưa");
+
+                return null;
+            }
+
             var consoleOutput = new ConsoleOutput(_settings.User.Username, _settings.DeviceNumber, type);
             _consoleOutputViewModel.ConsoleOutputs.Add(consoleOutput);
 
@@ -106,30 +123,45 @@ namespace ZaloCommunityDev.ViewModel
         private async void AutoAddFriendByPhoneInvoke(Filter filter)
         {
             var consoleOutput = CreateConsoleOutput("Kết bạn theo số đt");
+            if (consoleOutput == null)
+                return;
+
             await _zaloCommunityService.AddFriendByPhone(filter, consoleOutput);
         }
 
         private async void AutoAddFriendNearByInvoke(Filter filter)
         {
             var consoleOutput = CreateConsoleOutput("Kết bạn theo vị trí");
+            if (consoleOutput == null)
+                return;
+
             await _zaloCommunityService.AddFriendNearBy(filter, consoleOutput);
         }
 
         private async void AutoSendMessageToFriendInvoke(Filter filter)
         {
             var consoleOutput = CreateConsoleOutput("Gửi tin nhắn cho bạn");
+            if (consoleOutput == null)
+                return;
+
             await _zaloCommunityService.SendMessageToFriend(filter, consoleOutput);
         }
 
         private async void AutoSendMessageToStrangerByPhoneInvoke(Filter filter)
         {
             var consoleOutput = CreateConsoleOutput("Gửi tin nhắn theo số đt");
+            if (consoleOutput == null)
+                return;
+
             await _zaloCommunityService.SendMessageToStrangerByPhone(filter, consoleOutput);
         }
 
         private async void AutoSendMessageToStrangerNearByInvoke(Filter filter)
         {
             var consoleOutput = CreateConsoleOutput("Gửi tin nhắn theo vị trí");
+            if (consoleOutput == null)
+                return;
+
             await _zaloCommunityService.SendMessageToStrangerNearBy(filter, consoleOutput);
         }
     }

@@ -53,9 +53,9 @@ namespace ZaloCommunityDev.UiAssists
         {
             var len = ((string)value).Length;
             return "******" + ((string)value).Substring(len - 3, 3);
-        });
+        }, x => x);
 
-        public static IValueConverter HidePassword => Get(value => ((string)value).Substring(0, 3) + "**********");
+        public static IValueConverter HidePassword => Get(value => ((string)value).Substring(0, 3) + "**********", (x) => x);
 
         public static IValueConverter CountZeroToCollapsed => Get((index) => (int)index == 0 ? Visibility.Collapsed : Visibility.Visible);
         public static IValueConverter ZeroToColumnWidth => Get((value) => (int)value == 0 ? new GridLength(0, GridUnitType.Pixel) : DependencyProperty.UnsetValue);

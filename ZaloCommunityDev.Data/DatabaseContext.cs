@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace ZaloCommunityDev.Data
         {
         }
 
+        public DbSet<UserDto> UserSet { get; set; }
         public DbSet<AddFriendNearByConfigDto> AddFriendNearByConfigSet { get; set; }
         public DbSet<AddFriendByPhoneConfigDto> AddFriendByPhoneConfigSet { get; set; }
         public DbSet<MessageToFriendConfigDto> MessageToFriendConfigSet { get; set; }
@@ -88,6 +90,8 @@ namespace ZaloCommunityDev.Data
         }
 
         public int GetAddedFriendCount() => LogActivitySet.FirstOrDefault(x => x.Date == TodayText)?.AddedFriendCount ?? 0;
+
+        public List<User> GetAccountList() => UserSet.ToArray().Select(Mapper.Map<UserDto, User>).ToList();
 
         public int GetMessageToStragerCount() => LogActivitySet.FirstOrDefault(x => x.Date == TodayText)?.PostStrangerCount ?? 0;
 

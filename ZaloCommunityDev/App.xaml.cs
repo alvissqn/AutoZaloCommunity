@@ -20,6 +20,8 @@ namespace ZaloCommunityDev
                 cfg.CreateMap<MessageToStrangerNearByConfigDto, Filter>();
                 cfg.CreateMap<MessageToStrangerByPhoneConfigDto, Filter>();
 
+                cfg.CreateMap<UserDto, User>();
+
                 cfg.CreateMap<Filter, AddFriendNearByConfigDto>();
                 cfg.CreateMap<Filter, AddFriendByPhoneConfigDto>();
                 cfg.CreateMap<Filter, MessageToFriendConfigDto>();

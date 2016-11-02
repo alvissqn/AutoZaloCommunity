@@ -52,5 +52,7 @@ namespace ZaloCommunityDev.Data.Models
         }
 
          public string Locations { get; set; }
+
+        public string IgnoreRecentActionBefore { get; set; }
     }
 }
