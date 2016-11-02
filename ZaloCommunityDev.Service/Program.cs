@@ -15,7 +15,7 @@ namespace ZaloCommunityDev.Service
 
         static void Main(string[] args)
         {
-            args = new[] { "send-message-near-by", "6ce8be4569f24e2ea6c04bb4aa3ae0fc" };
+            //args = new[] { "send-message-near-by", "6ce8be4569f24e2ea6c04bb4aa3ae0fc" };
             var sessionId = args[1];
 
             var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\setting.json"));
@@ -41,6 +41,7 @@ namespace ZaloCommunityDev.Service
             switch (args[0])
             {
                 case "add-friend-near-by":
+                case "ket-ban-gan-day":
 
                     var ZaloAddFriendService = new ZaloAddFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
                     ZaloAddFriendService.AddFriendNearBy(filter);
@@ -48,28 +49,28 @@ namespace ZaloCommunityDev.Service
                     break;
 
                 case "add-friend-by-phone":
-
+                case "ket-ban-qua-dien-thoai":
                     ZaloAddFriendService = new ZaloAddFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
                     ZaloAddFriendService.AddFriendByPhone(filter);
 
                     break;
 
                 case "send-message-near-by":
-
+                case "gui-tin-nhan-gan-day":
                     var ZaloMessageToFriendService = new ZaloMessageToFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
                     ZaloMessageToFriendService.SendMessageNearBy(filter);
 
                     break;
 
                 case "send-message-by-phone-number":
-
+                case "gui-tin-nhan-qua-so-dien-thoai":
                     ZaloMessageToFriendService = new ZaloMessageToFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
                     ZaloMessageToFriendService.SendMessageByPhoneNumber(filter);
 
                     break;
 
                 case "send-message-to-friends-in-contacts":
-
+                case "gui-tin-nhan-trong-danh-ba":
                     ZaloMessageToFriendService = new ZaloMessageToFriendService(Settings, DatabaseContext, ZaloImageProcessing, ZaloAdbRequest);
                     ZaloMessageToFriendService.SendMessageToFriendInList(filter);
 
