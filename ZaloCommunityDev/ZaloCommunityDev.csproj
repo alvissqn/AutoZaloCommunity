@@ -174,6 +174,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ConsoleHubControl.xaml.cs">
+      <DependentUpon>ConsoleHubControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ConsoleOutputControl.xaml.cs">
+      <DependentUpon>ConsoleOutputControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FilterControl.xaml.cs">
       <DependentUpon>FilterControl.xaml</DependentUpon>
     </Compile>
@@ -196,9 +202,18 @@
       <DependentUpon>SelectDevicePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UiAssists\UiConverterHelper.cs" />
+    <Compile Include="ViewModel\ConsoleOutputViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="ViewModel\ZaloCommunityService.cs" />
+    <Page Include="Controls\ConsoleHubControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ConsoleOutputControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\FilterControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

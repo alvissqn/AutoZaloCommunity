@@ -1,4 +1,4 @@
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.Threading.Tasks;
@@ -32,12 +32,16 @@ namespace ZaloCommunityDev.ViewModel
                 RaisePropertyChanged();
             }
         }
-        Settings settings;
-        public MainViewModel(ZaloCommunityService service, DatabaseContext dbContext, Settings settings)
+
+        private readonly Settings _settings;
+        private readonly ConsoleOutputViewModel _consoleOutputViewModel;
+
+        public MainViewModel(ZaloCommunityService service, DatabaseContext dbContext, Settings settings, ConsoleOutputViewModel consoleOutputViewModel)
         {
             _zaloCommunityService = service;
             _databaseContext = dbContext;
-            this.settings = settings;
+            this._settings = settings;
+            _consoleOutputViewModel = consoleOutputViewModel;
 
             Load();
 
@@ -80,32 +84,36 @@ namespace ZaloCommunityDev.ViewModel
             }
         }
 
-        string selectedDevice;
-        public string SelectedDevice { get { return selectedDevice; } set { Set(ref selectedDevice, value); } }
+        private string _selectedDevice;
 
-        public ObservableCollection<string> Logs
+        public string SelectedDevice
         {
-            get { return _logs; }
+            get
+            {
+                return _selectedDevice;
+            }
             set
             {
-                Set(ref _logs, value);
+                Set(ref _selectedDevice, value);
             }
         }
 
         public void Load()
         {
             OnlineDevices = _zaloCommunityService.OnlineDevices;
-            Users = new ObservableCollection<User>(new User[] { new User { Username = "0979864903", Password = "kimngan12345" } });
+            Users = new ObservableCollection<User>(new [] { new User { Username = "0979864903", Password = "kimngan12345" } });
 
             CurrentUser = Users[0];
         }
 
         private async Task AddFriendAuto(Filter x)
         {
-            settings.User = CurrentUser;
-            settings.DeviceNumber = SelectedDevice;
+            _settings.User = CurrentUser;
+            _settings.DeviceNumber = SelectedDevice;
+            var consoleOutput = new ConsoleOutput(_settings.User.Username, _settings.DeviceNumber, "Kết bạn theo vị trí");
+            _consoleOutputViewModel.ConsoleOutputs.Add(consoleOutput);
 
-            await _zaloCommunityService.AddFriendNearBy(x, t => { DispatcherHelper.CheckBeginInvokeOnUI(() => Logs.Add(t)); }, end => { });
+            await _zaloCommunityService.AddFriendNearBy(x, consoleOutput);
         }
 
         private async Task SpamFriendNow(Filter x)

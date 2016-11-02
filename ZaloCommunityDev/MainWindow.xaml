@@ -6,6 +6,7 @@
                        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                        xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
                        xmlns:uiAssists="clr-namespace:ZaloCommunityDev.UiAssists"
+                       xmlns:controls1="clr-namespace:ZaloCommunityDev.Controls"
                        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                        Background="{DynamicResource MaterialDesignPaper}"
                        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
@@ -22,11 +23,11 @@
             <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-
         <wpf:Card VerticalAlignment="Stretch">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <ListBox x:Name="TaskListBox"
@@ -79,17 +80,25 @@
                     </ListBox.Items>
                 </ListBox>
 
-                <StackPanel Grid.Row="1">
+                <StackPanel Grid.Row="2">
                     <TextBlock Text="Zalo Community Dev"
                                FontStyle="Italic"
                                Margin="5" />
                 </StackPanel>
+
+                <CheckBox Content="Hiện thị tiến trình"
+                          Grid.Row="1"
+                          x:Name="Console" />
             </Grid>
         </wpf:Card>
         <Frame x:Name="RootFrame"
                NavigationUIVisibility="Hidden"
                Source="{Binding ElementName=TaskListBox, Path=SelectedItem.Tag, Converter={x:Static uiAssists:UiConverterHelper.TextToUri}}"
+               Visibility="{Binding ElementName=Console, Path=IsChecked, Converter={x:Static uiAssists:UiConverterHelper.CollapsedIfTrue}}"
                Grid.Column="1">
         </Frame>
+
+        <controls1:ConsoleHubControl Grid.Column="1"
+                                     Visibility="{Binding ElementName=Console, Path=IsChecked, Converter={x:Static uiAssists:UiConverterHelper.CollapsedIfFalse}}" />
     </Grid>
 </controls:MetroWindow>

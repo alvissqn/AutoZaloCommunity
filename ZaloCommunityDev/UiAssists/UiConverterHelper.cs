@@ -41,7 +41,6 @@ namespace ZaloCommunityDev.UiAssists
 
     public static class UiConverterHelper
     {
-
         public static IValueConverter TextToUri => Get(text => new Uri((string)text, UriKind.RelativeOrAbsolute));
 
         public static IValueConverter TimeSpanNowConverter => Get((timespan) => DateTime.Now.Date.Add((TimeSpan)timespan), (dateTime) => ((DateTime)dateTime) - ((DateTime)dateTime).Date);
@@ -60,6 +59,9 @@ namespace ZaloCommunityDev.UiAssists
         public static IValueConverter DisplayTextNullOrEmpty => Get(text => string.IsNullOrWhiteSpace(text as string) ? "-" : text);
 
         public static IValueConverter CollapsedIfNullOrEmpty => Get(text => string.IsNullOrWhiteSpace(text as string) ? Visibility.Collapsed : Visibility.Visible);
+        public static IValueConverter CollapsedIfNull => Get(text => text == null ? Visibility.Collapsed : Visibility.Visible);
+        public static IValueConverter CollapsedIfTrue => Get(value => (bool)value ? Visibility.Collapsed : Visibility.Visible);
+        public static IValueConverter CollapsedIfFalse => Get(value => !(bool)value ? Visibility.Collapsed : Visibility.Visible);
 
         public static IValueConverter GetFrameElementTag => Get(x => DependencyProperty.UnsetValue, (frameworkElement) => ((FrameworkElement)frameworkElement).DataContext as string);
 

@@ -11,8 +11,8 @@ namespace ZaloCommunityDev.Service
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloLoginService));
 
-        public ZaloLoginService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
-            : base(settings, dbContext, zaloImageProcessing, ZaloAdbRequest)
+        public ZaloLoginService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest zaloAdbRequest)
+            : base(settings, dbContext, zaloImageProcessing, zaloAdbRequest)
         {
         }
 

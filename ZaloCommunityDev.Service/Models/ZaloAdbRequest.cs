@@ -42,8 +42,11 @@ namespace ZaloCommunityDev.Service.Models
 
         public ConsoleOutputReceiver ConsoleOutputReceiver => _receiver;
 
-        public void StartAvd(string serialNumberOrIndex)
+        public bool StartAvd(string serialNumberOrIndex)
         {
+            if (Adb == null)
+                return false;
+
             try
             {
                 var value = 0;
@@ -55,10 +58,14 @@ namespace ZaloCommunityDev.Service.Models
                 {
                     _device = Adb.Devices.First(x => x.SerialNumber == serialNumberOrIndex && x.IsOnline);
                 }
+
+                return _device != null;
             }
             catch (Exception ex)
             {
                 _log.Error(ex);
+
+                return false;
             }
         }
 

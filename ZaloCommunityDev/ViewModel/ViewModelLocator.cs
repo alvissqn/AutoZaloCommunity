@@ -15,10 +15,12 @@ namespace ZaloCommunityDev.ViewModel
             SimpleIoc.Default.Register<ZaloCommunityService>();
             SimpleIoc.Default.Register<DatabaseContext>();
             SimpleIoc.Default.Register<Settings>();
+            SimpleIoc.Default.Register<ConsoleOutputViewModel>();
 
         }
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public ConsoleOutputViewModel ConsoleOutputViewModel => ServiceLocator.Current.GetInstance<ConsoleOutputViewModel>();
         public Settings Settings => ServiceLocator.Current.GetInstance<Settings>();
     }
 }

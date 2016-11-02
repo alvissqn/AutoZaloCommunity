@@ -15,14 +15,16 @@ namespace ZaloCommunityDev.ViewModel
     {
         private ILog log = LogManager.GetLogger(nameof(ZaloCommunityService));
 
-        string WorkingFolderPath = @"C:\Users\ngan\Desktop\ZaloCommunityDev\ZaloCommunityDev.Service\bin\Debug";
+        private string WorkingFolderPath = @"C:\Users\diepnguyenv\Desktop\code\zalocommunitydev\ZaloCommunityDev.Service\bin\Debug";
+        //private string WorkingFolderPath = @"C:\Users\ngan\Desktop\ZaloCommunityDev\ZaloCommunityDev.Service\bin\Debug";
 
-        string Filename = @"ZaloCommunityDev.Service.exe";
+        private string Filename = @"ZaloCommunityDev.Service.exe";
 
-        AndroidDebugBridge _adb;
+        private AndroidDebugBridge _adb;
         public string AndroidDebugBridgeOsLocation { get; set; } = @"C:\Program Files\Leapdroid\VM";
 
-        Settings settings;
+        private Settings settings;
+
         public ZaloCommunityService(Settings settings)
         {
             this.settings = settings;
@@ -40,25 +42,20 @@ namespace ZaloCommunityDev.ViewModel
 
         public string[] OnlineDevices => _adb?.Devices.Where(x => x.IsOnline).Select(x => x.SerialNumber).ToArray();
 
-        public void KillProcess()
+        internal async Task AddFriendNearBy(Filter x, ConsoleOutput output)
         {
-            CurrentProcess.Close();
-        }
-
-        internal async Task AddFriendNearBy(Filter x, Action<string> textReceived, Action<string> completed)
-        {
-            string sessionText = Guid.NewGuid().ToString("N").ToLower();
+            var sessionText = Guid.NewGuid().ToString("N").ToLower();
             var newpath = Path.Combine(WorkingFolderPath, "WorkingSession", sessionText);
             Directory.CreateDirectory(newpath);
 
-            var filterText =  JsonConvert.SerializeObject(x, Formatting.Indented);
+            var filterText = JsonConvert.SerializeObject(x, Formatting.Indented);
             var settingsText = JsonConvert.SerializeObject(settings, Formatting.Indented);
             File.WriteAllText(Path.Combine(newpath, "filter.json"), filterText);
             File.WriteAllText(Path.Combine(newpath, "setting.json"), settingsText);
 
             await Task.Factory.StartNew(() =>
             {
-                RunZaloService("add-friend-near-by", textReceived, sessionText);
+                RunZaloService("add-friend-near-by", sessionText, output);
             });
         }
 
@@ -67,28 +64,29 @@ namespace ZaloCommunityDev.ViewModel
             //throw new NotImplementedException();
         }
 
-        private Process CurrentProcess { get; set; }
-        
-        public string RunZaloService(string type, Action<string> textReceived, string arguments = null)
+        public string RunZaloService(string type, string arguments, ConsoleOutput output)
         {
-            var process = new Process();
-            CurrentProcess = process;
-
-            process.StartInfo.FileName = Path.Combine(WorkingFolderPath, Filename);
-            if (!string.IsNullOrEmpty(arguments))
+            arguments = (type + " " + arguments).Trim();
+            var process = new Process
             {
-                process.StartInfo.Arguments = type + " " + arguments;
-            }
-            
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.WorkingDirectory = WorkingFolderPath;
+                StartInfo = {
+                                FileName = Path.Combine(WorkingFolderPath, Filename),
+                                Arguments = arguments,
+                                CreateNoWindow = true,
+                                WindowStyle = ProcessWindowStyle.Hidden,
+                                UseShellExecute = false,
+                                WorkingDirectory = WorkingFolderPath,
+                                RedirectStandardError = true,
+                                RedirectStandardOutput = true ,
+                                StandardOutputEncoding = Encoding.UTF8
+                            }
+            };
 
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.RedirectStandardOutput = true;
+            output.SetWindowProcess(process);
+
             var stdOutput = new StringBuilder();
-            process.OutputDataReceived += (sender, args) => textReceived(args.Data);
+
+            process.OutputDataReceived += (sender, args) => output.Received(args.Data);
 
             string stdError = null;
             try
@@ -100,32 +98,30 @@ namespace ZaloCommunityDev.ViewModel
             }
             catch (Exception e)
             {
-                throw new Exception("OS error while executing " + Format(Filename, arguments) + ": " + e.Message, e);
+                output.Received("OS error while executing " + Format(Filename, arguments) + ": " + e.Message);
             }
 
             if (process.ExitCode == 0)
             {
                 return stdOutput.ToString();
             }
-            else
+
+            var message = new StringBuilder();
+
+            if (!string.IsNullOrEmpty(stdError))
             {
-                var message = new StringBuilder();
-
-                if (!string.IsNullOrEmpty(stdError))
-                {
-                    message.AppendLine(stdError);
-                }
-
-                if (stdOutput.Length != 0)
-                {
-                    message.AppendLine("Std output:");
-                    message.AppendLine(stdOutput.ToString());
-                }
-                
-                textReceived(Format(Filename, arguments) + " finished with exit code = " + process.ExitCode + ": " + message);
-
-                return message.ToString();
+                message.AppendLine(stdError);
             }
+
+            if (stdOutput.Length != 0)
+            {
+                message.AppendLine("Std output:");
+                message.AppendLine(stdOutput.ToString());
+            }
+
+            output.Received(Format(Filename, arguments) + " finished with exit code = " + process.ExitCode + ": " + message);
+
+            return message.ToString();
         }
 
         private string Format(string filename, string arguments)

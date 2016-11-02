@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.IO;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
@@ -13,6 +14,7 @@ namespace ZaloCommunityDev.Service
 
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             //args = new[] { "send-message-near-by", "6ce8be4569f24e2ea6c04bb4aa3ae0fc" };
             var sessionId = args[1];
             ZaloHelper.Output($"Request:{args[0]} .SessionId:{sessionId}.");
