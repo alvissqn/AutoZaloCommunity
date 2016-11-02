@@ -88,7 +88,7 @@ namespace ZaloCommunityDev.Service
                         if (Chat(request, filter))
                         {
                             countSuccess++;
-                            DbContext.AddProfile(request.Profile);
+                            DbContext.AddProfile(request.Profile, Settings.User.Username);
                         }
                     }
                 }
@@ -104,7 +104,7 @@ namespace ZaloCommunityDev.Service
         {
             try
             {
-                var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount();
+                var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount( Settings.User.Username);
                 var numberOfAction = filter.NumberOfAction > canSentToday ? canSentToday : filter.NumberOfAction;
                 if (numberOfAction <= 0)
                 {
@@ -159,7 +159,7 @@ namespace ZaloCommunityDev.Service
                             if (Chat(request, filter))
                             {
                                 countSuccess++;
-                                DbContext.AddProfile(request.Profile);
+                                DbContext.AddProfile(request.Profile, Settings.User.Username);
 
                                 success = true;
                             }
@@ -178,7 +178,7 @@ namespace ZaloCommunityDev.Service
         {
             try
             {
-                var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount();
+                var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount(Settings.User.Username);
                 var numberOfAction = filter.NumberOfAction > canSentToday ? canSentToday : filter.NumberOfAction;
                 if (numberOfAction <= 0)
                 {
@@ -274,7 +274,7 @@ namespace ZaloCommunityDev.Service
 
                     if (Chat(request, filter))
                     {
-                        DbContext.AddProfile(request.Profile);
+                        DbContext.AddProfile(request.Profile, Settings.User.Username);
                         countSuccess++;
                     }
 
@@ -319,13 +319,13 @@ namespace ZaloCommunityDev.Service
             switch (profile.Objective)
             {
                 case ChatObjective.FriendInContactList:
-                    DbContext.AddLogMessageSentToFriend(profile.Profile, chatText);
+                    DbContext.AddLogMessageSentToFriend(profile.Profile, Settings.User.Username, chatText);
 
                     break;
 
                 case ChatObjective.StrangerByPhone:
                 case ChatObjective.StrangerNearBy:
-                    DbContext.AddLogMessageSentToStranger(profile.Profile, chatText);
+                    DbContext.AddLogMessageSentToStranger(profile.Profile, Settings.User.Username, chatText);
 
                     break;
             }

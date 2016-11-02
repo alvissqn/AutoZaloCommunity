@@ -15,8 +15,8 @@ namespace ZaloCommunityDev.ViewModel
     {
         private ILog log = LogManager.GetLogger(nameof(ZaloCommunityService));
 
-        private string WorkingFolderPath = @"C:\Users\diepnguyenv\Desktop\code\zalocommunitydev\ZaloCommunityDev.Service\bin\Debug";
-        //private string WorkingFolderPath = @"C:\Users\ngan\Desktop\ZaloCommunityDev\ZaloCommunityDev.Service\bin\Debug";
+        //private string WorkingFolderPath = @"C:\Users\diepnguyenv\Desktop\code\zalocommunitydev\ZaloCommunityDev.Service\bin\Debug";
+        private string WorkingFolderPath = @"C:\Users\ngan\Desktop\ZaloCommunityDev\ZaloCommunityDev.Service\bin\Debug";
 
         private string Filename = @"ZaloCommunityDev.Service.exe";
 

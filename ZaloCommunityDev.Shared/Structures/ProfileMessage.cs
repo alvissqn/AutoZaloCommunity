@@ -10,6 +10,7 @@ namespace ZaloCommunityDev.Shared.Structures
         public DateTime Birthday { get;  set; }
         public string BirthdayText { get;  set; }
         public bool IsAddedToFriend { get; set; }
+        public string Location { get; set; }
 
         public static bool IsEmpty(ProfileMessage profile)
         {

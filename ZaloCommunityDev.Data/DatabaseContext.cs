@@ -41,7 +41,7 @@ namespace ZaloCommunityDev.Data
 
         private static string TodayText => DateTime.Now.Date.ToString("dd/MM/yyyy");
 
-        public void AddProfile(ProfileMessage profile)
+        public void AddProfile(ProfileMessage profile, string account)
         {
             try
             {
@@ -50,7 +50,8 @@ namespace ZaloCommunityDev.Data
                     BirthdayText = profile.BirthdayText,
                     Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                     Name = profile.Name,
-                    PhoneNumber = profile.PhoneNumber
+                    PhoneNumber = profile.PhoneNumber,
+                    Account  =account
                 });
 
                 SaveChanges();
@@ -61,16 +62,16 @@ namespace ZaloCommunityDev.Data
             }
         }
 
-        public void LogActivityCount(ProfileMessage profile, LogType logtype)
+        public void LogActivityCount(ProfileMessage profile, string account, LogType logtype)
         {
-            var item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText);
+            var item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText && account== x.Account);
             if (item == null)
             {
-                LogActivitySet.Add(new LogActivityDto { Date = TodayText });
+                LogActivitySet.Add(new LogActivityDto { Date = TodayText, Account = account});
             }
 
             SaveChanges();
-            item = LogActivitySet.First(x => x.Date == TodayText);
+            item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText && account == x.Account);
 
             switch (logtype)
             {
@@ -89,11 +90,11 @@ namespace ZaloCommunityDev.Data
             SaveChanges();
         }
 
-        public int GetAddedFriendCount() => LogActivitySet.FirstOrDefault(x => x.Date == TodayText)?.AddedFriendCount ?? 0;
+        public int GetAddedFriendCount(string account) => LogActivitySet.FirstOrDefault(x => x.Date == TodayText && x.Account==account)?.AddedFriendCount ?? 0;
 
+        public int GetMessageToStragerCount(string account) => LogActivitySet.FirstOrDefault(x => x.Date == TodayText && x.Account == account)?.PostStrangerCount ?? 0;
         public List<User> GetAccountList() => UserSet.ToArray().Select(Mapper.Map<UserDto, User>).ToList();
 
-        public int GetMessageToStragerCount() => LogActivitySet.FirstOrDefault(x => x.Date == TodayText)?.PostStrangerCount ?? 0;
 
         public Filter[] GetFilter(string key)
         {
@@ -228,7 +229,7 @@ namespace ZaloCommunityDev.Data
             dbItemConfig.TextGreetingForMale = item.TextGreetingForMale;
         }
 
-        public void LogAddFriend(ProfileMessage profile, string textGreeting)
+        public void LogAddFriend(ProfileMessage profile, string account, string textGreeting)
         {
             LogRequestAddFriendSet.Add(new LogRequestAddFriendDto
             {
@@ -236,14 +237,15 @@ namespace ZaloCommunityDev.Data
                 Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                 MessageText = textGreeting,
                 Name = profile.Name,
-                PhoneNumber = profile.PhoneNumber
+                PhoneNumber = profile.PhoneNumber,
+                Account = account
             });
             SaveChanges();
 
-            LogActivityCount(profile, LogType.AddedFriend);
+            LogActivityCount(profile, account, LogType.AddedFriend);
         }
 
-        public void AddLogMessageSentToFriend(ProfileMessage profile, string textGreeting)
+        public void AddLogMessageSentToFriend(ProfileMessage profile, string account, string textGreeting)
         {
             LogMessageSentToFriendSet.Add(new LogMessageSentToFriendDto
             {
@@ -251,12 +253,13 @@ namespace ZaloCommunityDev.Data
                 Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                 MessageText = textGreeting,
                 Name = profile.Name,
-                PhoneNumber = profile.PhoneNumber
+                PhoneNumber = profile.PhoneNumber,
+                Account = account
             });
-            LogActivityCount(profile, LogType.MessageFriend);
+            LogActivityCount(profile, account, LogType.MessageFriend);
         }
 
-        public void AddLogMessageSentToStranger(ProfileMessage profile, string textGreeting)
+        public void AddLogMessageSentToStranger(ProfileMessage profile, string account, string textGreeting)
         {
             LogMessageSentToStrangerSet.Add(new LogMessageSentToStrangerDto
             {
@@ -264,10 +267,11 @@ namespace ZaloCommunityDev.Data
                 Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                 MessageText = textGreeting,
                 Name = profile.Name,
-                PhoneNumber = profile.PhoneNumber
+                PhoneNumber = profile.PhoneNumber,
+                Account = account
             });
 
-            LogActivityCount(profile, LogType.MessageToStranger);
+            LogActivityCount(profile, account, LogType.MessageToStranger);
         }
     }
 }

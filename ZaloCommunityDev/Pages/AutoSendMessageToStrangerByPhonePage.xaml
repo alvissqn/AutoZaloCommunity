@@ -29,7 +29,7 @@
                                 ExcludePhoneNumbersVisibility="Collapsed"
                                 IgnoreRecentActionBeforeVisibility="Collapsed"
                                 IncludedPeopleNamesVisibility="Collapsed"
-                                IncludePhoneNumbersVisibility="Collapsed"
+                                IncludePhoneNumbersHeader="Danh bạ điện thoại"
                                 LocationsVisibility="Collapsed" />
 
         <TextBlock Grid.Row="0"

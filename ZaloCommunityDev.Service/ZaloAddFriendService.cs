@@ -26,7 +26,7 @@ namespace ZaloCommunityDev.Service
             {
                 ZaloHelper.Output("Tiến hành kết bạn theo vị trí địa lý");
 
-                var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount());
+                var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount(Settings.User.Username));
                 var numberOfAction = filter.NumberOfAction > canAddedFriendToday ? canAddedFriendToday : filter.NumberOfAction;
                 if (numberOfAction <= 0)
                 {
@@ -61,7 +61,7 @@ namespace ZaloCommunityDev.Service
         {
             try
             {
-                var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount());
+                var canAddedFriendToday = (Settings.MaxFriendAddedPerDay - DbContext.GetAddedFriendCount(Settings.User.Username));
                 var numberOfAction = filter.NumberOfAction > canAddedFriendToday ? canAddedFriendToday : filter.NumberOfAction;
                 if (numberOfAction == 0)
                 {
@@ -91,10 +91,10 @@ namespace ZaloCommunityDev.Service
                             continue;
                         }
 
-                        Thread.Sleep(100);
-
+                        Thread.Sleep(800);
+                        ZaloHelper.Output($"Đang xóa ô nhập chữ");
                         DeleteWordInFocusedTextField();
-                        ZaloHelper.Output("đang nhập số điện thoại.");
+                        ZaloHelper.Output($"Đang nhập số điện thoại :{phoneNumber}");
 
                         SendText(phoneNumber);
                         SendKey(KeyCode.AkeycodeEnter);
@@ -179,7 +179,7 @@ namespace ZaloCommunityDev.Service
                 var profile = new ProfileMessage { Name = pointRowFriend.Name };
                 if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToAddFriendAt(profile, pointRowFriend.Point, filter))
                 {
-                    DbContext.AddProfile(profile);
+                    DbContext.AddProfile(profile, Settings.User.Username);
                     countSuccess++;
                     ZaloHelper.Output($"!yêu cầu kết bạn [{countSuccess}]: {profile.Name} bị thành công.");
                 }
@@ -264,7 +264,7 @@ namespace ZaloCommunityDev.Service
 
             TouchAtIconTopLeft(); //GoBack to friendList
 
-            DbContext.LogAddFriend(profile, textGreeting);
+            DbContext.LogAddFriend(profile, Settings.User.Username ,textGreeting);
 
             return true;
         }

@@ -10,11 +10,15 @@ namespace ZaloCommunityDev.Data.Models
         [Key]
         public int Id { get; set; }
 
+        public string Account { get; set; }
+
         public string Name { get; set; }
 
         public string BirthdayText { get; set; }
 
         public string PhoneNumber { get; set; }
+
+        public string Location { get; set; }
 
         [NotMapped]
         public Gender Gender { get; set; }

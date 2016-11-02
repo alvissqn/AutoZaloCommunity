@@ -16,7 +16,7 @@ namespace ZaloCommunityDev.ViewModel
         private readonly ZaloCommunityService _zaloCommunityService;
         private readonly DatabaseContext _dbContext;
 
-        private User _currentUser;
+
         private string[] _onlineDevices;
 
         private string _selectedDevice;
@@ -49,15 +49,7 @@ namespace ZaloCommunityDev.ViewModel
 
         #region Properties
 
-        public User CurrentUser
-        {
-            get { return _currentUser; }
-            set
-            {
-                _currentUser = value;
-                RaisePropertyChanged();
-            }
-        }
+
 
         public string[] OnlineDevices
         {
@@ -94,7 +86,7 @@ namespace ZaloCommunityDev.ViewModel
             OnlineDevices = _zaloCommunityService.OnlineDevices;
             Users = new ObservableCollection<User>(_dbContext.GetAccountList());
 
-            CurrentUser = Users[0];
+
         }
 
         private ConsoleOutput CreateConsoleOutput(string type)

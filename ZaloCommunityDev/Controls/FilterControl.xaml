@@ -260,6 +260,7 @@
                 <Button Margin="10,0,0,0"
                         Style="{DynamicResource MaterialDesignFlatButton}"
                         Command="{Binding ElementName=This,Path=SaveConfigsCommand}"
+                        Click="Save_Click"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">

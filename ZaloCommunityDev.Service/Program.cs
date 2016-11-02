@@ -17,6 +17,7 @@ namespace ZaloCommunityDev.Service
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var sessionId = args[1];
+
             ZaloHelper.Output($"Request:{args[0]} .SessionId:{sessionId}.");
 
             var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\setting.json"));
@@ -33,7 +34,7 @@ namespace ZaloCommunityDev.Service
             var zaloAdbRequest = new ZaloAdbRequest(settings);
             if (!zaloAdbRequest.StartAvd(settings.DeviceNumber))
             {
-                ZaloHelper.Output("Chưa start thiết bị nào");
+                ZaloHelper.Output("Không tìm thấy thiết bị android nào.");
                 return;
             }
 
@@ -78,6 +79,8 @@ namespace ZaloCommunityDev.Service
 
                     break;
             }
+
+            throw new Exception("TASK COMPLETED");
         }
     }
 }

@@ -15,8 +15,8 @@ namespace ZaloCommunityDev.Service
             profile.PhoneNumber = info.PhoneNumber;
         }
 
-        public static void Output(string text) => Console.WriteLine(text);
-        public static void SendCompletedTaskSignal() => Console.WriteLine("@TASK COMPLETED");
+        public static void Output(string text) => Console.WriteLine("ZALOSERVICE>> "+ text);
+        public static void SendCompletedTaskSignal() => Console.WriteLine("ZALOSERVICE>> @TASK COMPLETED");
 
         public static string GetGreetingText(ProfileMessage profle, Filter filter)
         {

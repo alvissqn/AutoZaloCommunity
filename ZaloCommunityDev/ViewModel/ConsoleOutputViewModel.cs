@@ -32,7 +32,13 @@ namespace ZaloCommunityDev.ViewModel
         public ObservableCollection<string> Outputs { get; set; } = new ObservableCollection<string>();
         public ICommand StopProcessCommand => _stopProcessCommand ?? (_stopProcessCommand = new RelayCommand(() => _windowProcess.Close()));
 
-        public void Received(string data) => DispatcherHelper.CheckBeginInvokeOnUI(() => Outputs.Add(data));
+        public void Received(string data) => DispatcherHelper.CheckBeginInvokeOnUI(() => {
+            if (data.StartsWith("ZALO"))
+            {
+                Outputs.Add(data);
+            }
+
+        });
 
         public void SetWindowProcess(Process process)
         {

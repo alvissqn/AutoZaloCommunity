@@ -8,6 +8,8 @@ namespace ZaloCommunityDev.Data.Models
     public class LogActivityDto
     {
         [Key]
+        public int Id { get; set; }
+
         [StringLength(10)]
         public string Date { get; set; } = DateTime.Now.Date.ToString("dd/MM/yyyy");
 
@@ -16,5 +18,7 @@ namespace ZaloCommunityDev.Data.Models
         public int PostFriendCount { get; set; }
 
         public int PostStrangerCount { get; set; }
+
+        public string Account { get; set; }
     }
 }

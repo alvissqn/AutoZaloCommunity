@@ -325,22 +325,36 @@ namespace ZaloCommunityDev.Controls
 
         private void FilterControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Action getSource = () => DispatcherHelper.CheckBeginInvokeOnUI(() => Sources = new ObservableCollection<Filter>(db.GetFilter(ConfigType) ?? new Filter[0]));
+            GetSource();
 
-            Task.Factory.StartNew(() => getSource());
-
-            RefreshCommand = new RelayCommand(getSource);
+            RefreshCommand = new RelayCommand(GetSource);
             NewFilterCommand = new RelayCommand(() =>
             {
-                var newFilter = new Filter { ConfigName = "#Cau hinh" };
+                var newFilter = new Filter
+                {
+                    ConfigName = "#Cau hinh",
+                    NumberOfAction = 5
+                };
+
                 Sources.Add(newFilter);
                 SelectedFilter = newFilter;
+
             });
             SaveConfigsCommand = new RelayCommand(() =>
             {
-                db.SaveFilter(Sources, ConfigType);
-                getSource();
+                
             });
+        }
+        private void GetSource()
+        {
+            Action getSource = () => DispatcherHelper.CheckBeginInvokeOnUI(() => Sources = new ObservableCollection<Filter>(db.GetFilter(ConfigType) ?? new Filter[0]));
+
+            Task.Factory.StartNew(() => getSource());
+        }
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            db.SaveFilter(Sources, ConfigType);
+            GetSource();
         }
     }
 }
