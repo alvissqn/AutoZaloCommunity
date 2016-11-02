@@ -30,7 +30,7 @@ namespace ZaloCommunityDev.Service
                 Delay(Settings.Delay.WaitForceCloseApp);
 
                 ZaloHelper.Output("Tiến hành đăng nhập vào tài khoản: " + account);
-                InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.LoginUsingPWActivity");
+                GotoPage(Activity.LoginUsingPw);
 
                 Delay(Settings.Delay.WaitLoginScreenOpened);
 

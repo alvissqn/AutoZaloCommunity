@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.Service.Models
@@ -16,7 +14,7 @@ namespace ZaloCommunityDev.Service.Models
 
         public ZaloAdbRequest(Settings settings)
         {
-            _receiver = new ConsoleOutputReceiver();
+            ConsoleOutputReceiver = new ConsoleOutputReceiver();
 
             AdbPath = settings.AndroidDebugBridgeOsLocation;
 
@@ -32,15 +30,11 @@ namespace ZaloCommunityDev.Service.Models
         }
 
         protected AndroidDebugBridge Adb;
-        public string AdbPath;
+        public string AdbPath { get; }
 
-        private ConsoleOutputReceiver _receiver;
+        public Device Device { get; private set; }
 
-        private Device _device;
-
-        public Device Device => _device;
-
-        public ConsoleOutputReceiver ConsoleOutputReceiver => _receiver;
+        public ConsoleOutputReceiver ConsoleOutputReceiver { get; }
 
         public bool StartAvd(string serialNumberOrIndex)
         {
@@ -52,14 +46,14 @@ namespace ZaloCommunityDev.Service.Models
                 var value = 0;
                 if (int.TryParse(serialNumberOrIndex, out value))
                 {
-                    _device = Adb.Devices.FirstOrDefault(x => x.IsOnline);
+                    Device = Adb.Devices.FirstOrDefault(x => x.IsOnline);
                 }
                 else
                 {
-                    _device = Adb.Devices.First(x => x.SerialNumber == serialNumberOrIndex && x.IsOnline);
+                    Device = Adb.Devices.First(x => x.SerialNumber == serialNumberOrIndex && x.IsOnline);
                 }
 
-                return _device != null;
+                return Device != null;
             }
             catch (Exception ex)
             {

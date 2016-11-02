@@ -21,7 +21,10 @@
         <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
                                 ConfigType="AutoSendMessageToFriendPage"
-                                Margin="20"/>
+                                Margin="20"
+                                NumberOfActionHeader="Số lần gửi tin nhắn"
+                                LocationsHeader="Vị trí địa lý (áp dụng trong database)"
+                                AccountNameVisibility="Collapsed" />
 
         <TextBlock Grid.Row="0"
                    Text="GỬI TIN CHO BẠN BÈ"

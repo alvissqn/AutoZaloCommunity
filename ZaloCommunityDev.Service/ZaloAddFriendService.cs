@@ -40,7 +40,7 @@ namespace ZaloCommunityDev.Service
                 var ageFrom = ageValues[0];
                 var ageTo = ageValues[1];
 
-                GotoActivity(Activity.UserNearbyList);
+                GotoPage(Activity.UserNearbyList);
 
                 ZaloHelper.Output("Thiết lập tùy chỉnh nâng cao");
                 AddSettingSearchFriend(gender, ageFrom, ageTo);
@@ -74,7 +74,7 @@ namespace ZaloCommunityDev.Service
                 var phonelist = new Stack<string>(filter.IncludePhoneNumbers.Split(";,|".ToArray()));
                 while (countSuccess < numberOfAction)
                 {
-                    InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
+                    GotoPage(Activity.FindFriendByPhoneNumber);
                     var success = false;
                     while (!success)
                     {

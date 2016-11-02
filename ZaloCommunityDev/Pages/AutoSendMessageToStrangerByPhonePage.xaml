@@ -21,7 +21,15 @@
         <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
                                 ConfigType="AutoSendMessageToStrangerByPhonePage"
-                                Margin="20" />
+                                Margin="20"
+                                NumberOfActionHeader="Số lần gửi tin nhắn"
+                                AccountNameVisibility="Collapsed"
+                                ExcludePeopleNamesVisibility="Collapsed"
+                                ExcludePhoneNumbersVisibility="Collapsed"
+                                IgnoreRecentActionBeforeVisibility="Collapsed"
+                                IncludedPeopleNamesVisibility="Collapsed"
+                                IncludePhoneNumbersVisibility="Collapsed"
+                                LocationsVisibility="Collapsed" />
 
         <TextBlock Grid.Row="0"
                    Text="GỬI TIN CHO NGƯỜI LẠ BẰNG SỐ ĐIỆN THOẠI"

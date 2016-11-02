@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:controls="clr-namespace:ZaloCommunityDev.Controls"
       mc:Ignorable="d"
       DataContext="{Binding Main, Source={StaticResource Locator}}"
@@ -19,29 +18,24 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-            <controls:FilterControl Grid.Row="1"
+        <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
                                 ConfigType="AutoAddFriendNearByPage"
+                                StartCommand="{Binding AutoAddFriendCommand}"
                                 Margin="20"
-                                 />
-        <Expander Grid.Row="2" Header="Kết quả">
-            <ListBox ItemsSource="{Binding Logs}"/>
-        </Expander>
+                                ExcludePeopleNamesVisibility="Collapsed"
+                                ExcludePhoneNumbersVisibility="Collapsed"
+                                AccountNameVisibility="Collapsed"
+                                IgnoreRecentActionBeforeVisibility="Collapsed"
+                                IncludedPeopleNamesVisibility="Collapsed"
+                                IncludePhoneNumbersVisibility="Collapsed"
+                                SentImageForFemaleVisibility="Collapsed"
+                                SentImageForMaleVisibility="Collapsed" />
+
         <TextBlock Grid.Row="0"
                    Text="THÊM BẠN TỰ ĐỘNG Ở GẦN ĐÂY"
                    Margin="20,20,0,0"
                    FontSize="20"
                    VerticalAlignment="Center" />
-
-        <materialDesign:Card Grid.Row="3"
-                             Margin="5">
-            <Button Content="BẮT ĐẦU KẾT BẠN"
-                    Margin="10"
-                    VerticalAlignment="Center"
-                    Style="{DynamicResource MaterialDesignFlatButton}"
-                    Command="{Binding AutoAddFriendCommand}"
-                    CommandParameter="{Binding ElementName=FilterBox, Path=SelectedFilter}"
-                    HorizontalAlignment="Right" />
-        </materialDesign:Card>
     </Grid>
 </Page>

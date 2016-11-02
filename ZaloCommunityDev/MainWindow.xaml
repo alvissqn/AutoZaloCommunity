@@ -13,92 +13,95 @@
                        mc:Ignorable="d"
                        Title="Zalo Community Dev (1.0.0 Beta)"
                        Height="700"
-                       Width="1000"
-                       MinWidth="1000"
+                       Width="800"
+                       MinWidth="800"
                        GlowBrush="{DynamicResource AccentColorBrush}"
                        DataContext="{Binding Main, Source={StaticResource Locator}}"
                        BorderBrush="White">
+
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <CheckBox Content="TIẾN TRÌNH"
+                      x:Name="ConsoleToggle" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <wpf:Card VerticalAlignment="Stretch">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <ListBox x:Name="TaskListBox"
-                         Margin="0,20,0,0">
-                    <ListBox.Items>
-                        <ListBoxItem Tag="Pages\SelectDevicePage.xaml">
-                            <StackPanel Orientation="Horizontal">
-                                <wpf:PackIcon Kind="Settings" />
-                                <TextBlock Text="TÙY CHỈNH CHUNG"
-                                           Margin="10,0,0,0" />
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem  Tag="Pages\AutoAddFriendNearByPage.xaml">
-                            <StackPanel Orientation="Horizontal">
-                                <wpf:PackIcon Kind="AccountLocation" />
-                                <TextBlock Text="KẾT BẠN GẦN ĐÂY"
-                                           Margin="10,0,0,0" />
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem Tag="Pages\AutoAddFriendByPhonePage.xaml">
-                            <StackPanel Orientation="Horizontal">
-                                <wpf:PackIcon Kind="Phone" />
-                                <TextBlock Text="KẾT BẠN BẰNG SỐ ĐT"
-                                           Margin="10,0,0,0" />
-                            </StackPanel>
-                        </ListBoxItem>
+        <Grid Visibility="{Binding ElementName=ConsoleToggle, Path=IsChecked, Converter={x:Static uiAssists:UiConverterHelper.CollapsedIfTrue}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <wpf:Card VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ListBox x:Name="TaskListBox"
+                             Margin="0,20,0,0">
+                        <ListBox.Items>
+                            <ListBoxItem Tag="Pages\SelectDevicePage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="Settings" />
+                                    <TextBlock Text="TÙY CHỈNH CHUNG"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem  Tag="Pages\AutoAddFriendNearByPage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="AccountLocation" />
+                                    <TextBlock Text="KẾT BẠN GẦN ĐÂY"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem Tag="Pages\AutoAddFriendByPhonePage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="Phone" />
+                                    <TextBlock Text="KẾT BẠN BẰNG SỐ ĐT"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
 
-                        <ListBoxItem Tag="Pages\AutoSendMessageToFriendPage.xaml">
-                            <StackPanel Orientation="Horizontal">
-                                <wpf:PackIcon Kind="Message" />
-                                <TextBlock Text="GỬI TIN NHẮN CHO BẠN"
-                                           Margin="10,0,0,0" />
-                            </StackPanel>
-                        </ListBoxItem>
+                            <ListBoxItem Tag="Pages\AutoSendMessageToFriendPage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="Message" />
+                                    <TextBlock Text="GỬI TIN NHẮN CHO BẠN"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
 
-                        <ListBoxItem Tag="Pages\AutoSendMessageToStrangerNearByPage.xaml">
-                            <StackPanel Orientation="Horizontal">
-                                <wpf:PackIcon Kind="NearMe" />
-                                <TextBlock Text="GỬI TIN NHẮN GẦN ĐÂY"
-                                           Margin="10,0,0,0" />
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem Tag="Pages\AutoSendMessageToStrangerByPhonePage.xaml">
-                            <StackPanel Orientation="Horizontal">
-                                <wpf:PackIcon Kind="CallMade" />
-                                <TextBlock Text="GỬI TIN NHẮN QUA SỐ ĐT"
-                                           Margin="10,0,0,0" />
-                            </StackPanel>
-                        </ListBoxItem>
-                    </ListBox.Items>
-                </ListBox>
+                            <ListBoxItem Tag="Pages\AutoSendMessageToStrangerNearByPage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="NearMe" />
+                                    <TextBlock Text="GỬI TIN NHẮN GẦN ĐÂY"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem Tag="Pages\AutoSendMessageToStrangerByPhonePage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="CallMade" />
+                                    <TextBlock Text="GỬI TIN NHẮN QUA SỐ ĐT"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+                        </ListBox.Items>
+                    </ListBox>
 
-                <StackPanel Grid.Row="2">
-                    <TextBlock Text="Zalo Community Dev"
-                               FontStyle="Italic"
-                               Margin="5" />
-                </StackPanel>
-
-                <CheckBox Content="Hiện thị tiến trình"
-                          Grid.Row="1"
-                          x:Name="Console" />
-            </Grid>
-        </wpf:Card>
-        <Frame x:Name="RootFrame"
-               NavigationUIVisibility="Hidden"
-               Source="{Binding ElementName=TaskListBox, Path=SelectedItem.Tag, Converter={x:Static uiAssists:UiConverterHelper.TextToUri}}"
-               Visibility="{Binding ElementName=Console, Path=IsChecked, Converter={x:Static uiAssists:UiConverterHelper.CollapsedIfTrue}}"
-               Grid.Column="1">
-        </Frame>
-
-        <controls1:ConsoleHubControl Grid.Column="1"
-                                     Visibility="{Binding ElementName=Console, Path=IsChecked, Converter={x:Static uiAssists:UiConverterHelper.CollapsedIfFalse}}" />
+                    <StackPanel Grid.Row="2">
+                        <TextBlock Text="Zalo Community Dev"
+                                   FontStyle="Italic"
+                                   Margin="5" />
+                    </StackPanel>
+                </Grid>
+            </wpf:Card>
+            <Frame x:Name="RootFrame"
+                   NavigationUIVisibility="Hidden"
+                   Source="{Binding ElementName=TaskListBox, Path=SelectedItem.Tag, Converter={x:Static uiAssists:UiConverterHelper.TextToUri}}"
+                   Grid.Column="1">
+            </Frame>
+        </Grid>
+        <controls1:ConsoleHubControl Visibility="{Binding ElementName=ConsoleToggle, Path=IsChecked, Converter={x:Static uiAssists:UiConverterHelper.CollapsedIfFalse}}" />
     </Grid>
 </controls:MetroWindow>

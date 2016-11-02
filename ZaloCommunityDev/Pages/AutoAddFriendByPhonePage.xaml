@@ -21,7 +21,15 @@
         <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
                                 ConfigType="AutoAddFriendByPhonePage"
-                                Margin="20" />
+                                Margin="20"
+                                AccountNameVisibility="Collapsed"
+                                ExcludePeopleNamesVisibility="Collapsed"
+                                ExcludePhoneNumbersVisibility="Collapsed"
+                                IgnoreRecentActionBeforeVisibility="Collapsed"
+                                SentImageForFemaleVisibility="Collapsed"
+                                SentImageForMaleVisibility="Collapsed"
+                                LocationsVisibility="Collapsed"
+                                IncludePhoneNumbersHeader="Danh bạ điện thoại" />
 
         <TextBlock Grid.Row="0"
                    Text="THÊM BẠN TỰ ĐỘNG BẰNG SỐ ĐIỆN THOẠI"

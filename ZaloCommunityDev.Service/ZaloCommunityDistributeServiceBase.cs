@@ -1,5 +1,4 @@
-﻿using System;
-using log4net;
+﻿using log4net;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Service.Models;
@@ -10,7 +9,10 @@ namespace ZaloCommunityDev.Service
     public enum Activity
     {
         UserNearbySettings,
-        UserNearbyList
+        UserNearbyList,
+        FindFriendByPhoneNumber,
+        LoginUsingPw,
+        MainTab
     }
 
     public abstract class ZaloCommunityDistributeServiceBase : CommunityDistributeServiceBase
@@ -24,7 +26,7 @@ namespace ZaloCommunityDev.Service
 
         protected void AddSettingSearchFriend(GenderSelection gender, string ageFrom, string ageTo)
         {
-            GotoActivity(Activity.UserNearbySettings);
+            GotoPage(Activity.UserNearbySettings);
 
             TouchGender(gender);
             TouchAgeRange(ageFrom, ageTo);
@@ -32,7 +34,6 @@ namespace ZaloCommunityDev.Service
             TouchAt(Screen.ConfigSearchFriendUpdateButton);//TOUCH Update   to back to previous page
 
             TouchGenderOnSideBar(gender);
-
         }
 
         private void TouchAgeRange(string ageFrom, string ageTo)
@@ -97,7 +98,7 @@ namespace ZaloCommunityDev.Service
             }
         }
 
-        public void GotoActivity(Activity activity)
+        public void GotoPage(Activity activity)
         {
             const string activityStart = "/c adb shell am start -n";
 
@@ -112,6 +113,21 @@ namespace ZaloCommunityDev.Service
 
                 case Activity.UserNearbySettings:
                     arguments = $@"{activityStart} com.zing.zalo/.ui.UserNearbySettingsActivity";
+
+                    break;
+
+                case Activity.FindFriendByPhoneNumber:
+                    arguments = $@"{activityStart} com.zing.zalo/.ui.FindFriendByPhoneNumberActivity";
+
+                    break;
+
+                case Activity.LoginUsingPw:
+                    arguments = $@"{activityStart} com.zing.zalo/.ui.LoginUsingPWActivity";
+
+                    break;
+
+                case Activity.MainTab:
+                    arguments = $@"{activityStart} com.zing.zalo/.ui.MainTabActivity";
 
                     break;
 

@@ -15,7 +15,7 @@ namespace ZaloCommunityDev.Service
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            //args = new[] { "send-message-near-by", "6ce8be4569f24e2ea6c04bb4aa3ae0fc" };
+
             var sessionId = args[1];
             ZaloHelper.Output($"Request:{args[0]} .SessionId:{sessionId}.");
 
@@ -23,7 +23,6 @@ namespace ZaloCommunityDev.Service
             var filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\filter.json"));
 
             //IKernel kernal = new StandardKernel();
-
             //kernal.Bind<IZaloImageProcessing>().To<ZaloImageProcessing>();
             //kernal.Bind<DatabaseContext>().ToSelf();
             //kernal.Bind<Settings>().ToConstant(settings);
@@ -32,7 +31,11 @@ namespace ZaloCommunityDev.Service
             var zaloImageProcessing = new ZaloImageProcessing();
             var databaseContext = new DatabaseContext();
             var zaloAdbRequest = new ZaloAdbRequest(settings);
-            zaloAdbRequest.StartAvd(settings.DeviceNumber);
+            if (!zaloAdbRequest.StartAvd(settings.DeviceNumber))
+            {
+                ZaloHelper.Output("Chưa start thiết bị nào");
+                return;
+            }
 
             var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
             zaloLoginService.Login(settings.User);

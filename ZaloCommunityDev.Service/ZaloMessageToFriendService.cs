@@ -26,7 +26,8 @@ namespace ZaloCommunityDev.Service
             {
                 var countSuccess = 0;
 
-                InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.MainTabActivity");
+                GotoPage(Activity.MainTab);
+
                 Delay(1000);
                 TouchAt(Screen.HomeScreenFriendTab);
                 Delay(1000);
@@ -117,7 +118,7 @@ namespace ZaloCommunityDev.Service
                 var countSuccess = 0;
                 while (countSuccess < numberOfAction)
                 {
-                    InvokeProc("/c adb shell am start -n com.zing.zalo/.ui.FindFriendByPhoneNumberActivity");
+                    GotoPage(Activity.FindFriendByPhoneNumber);
                     var success = false;
                     var stack = new Stack<string>(phonelist);
 
@@ -191,7 +192,7 @@ namespace ZaloCommunityDev.Service
                 var ageFrom = ageValues[0];
                 var ageTo = ageValues[1];
 
-                GotoActivity(Activity.UserNearbyList);
+                GotoPage(Activity.UserNearbyList);
 
                 AddSettingSearchFriend(gender, ageFrom, ageTo);
 

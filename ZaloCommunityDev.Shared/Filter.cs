@@ -16,47 +16,76 @@
         private string _excludePhoneNumbers;
         private string _sentImageForMale;
         private string _sentImageForFemale;
+        private string _ignoreRecentActionBefore;
 
         public string SentImageForMale
         {
             get { return _sentImageForMale; }
-            set { _sentImageForMale = value; RaisePropertyChanged(); }
+            set
+            {
+                _sentImageForMale = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string SentImageForFemale
         {
             get { return _sentImageForFemale; }
-            set { _sentImageForFemale = value; RaisePropertyChanged(); }
+            set
+            {
+                _sentImageForFemale = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string IncludePhoneNumbers
         {
             get { return _includePhoneNumbers; }
-            set { _includePhoneNumbers = value; RaisePropertyChanged(); }
+            set
+            {
+                _includePhoneNumbers = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string ExcludePhoneNumbers
         {
             get { return _excludePhoneNumbers; }
-            set { _excludePhoneNumbers = value; RaisePropertyChanged(); }
+            set
+            {
+                _excludePhoneNumbers = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string AccountName
         {
             get { return _accountName; }
-            set { _accountName = value; RaisePropertyChanged(); }
+            set
+            {
+                _accountName = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string ConfigName
         {
             get { return _configName; }
-            set { _configName = value; RaisePropertyChanged(); }
+            set
+            {
+                _configName = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string ExcludePeopleNames
         {
             get { return _excludePeopleNames; }
-            set { _excludePeopleNames = value; RaisePropertyChanged(); }
+            set
+            {
+                _excludePeopleNames = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string FilterAgeRange
@@ -68,7 +97,11 @@
         public GenderSelection GenderSelection
         {
             get { return _genderSelection; }
-            set { _genderSelection = value; RaisePropertyChanged(); }
+            set
+            {
+                _genderSelection = value;
+                RaisePropertyChanged();
+            }
         }
 
         public int Id { get; set; }
@@ -76,31 +109,61 @@
         public string IncludedPeopleNames
         {
             get { return _includedPeopleNames; }
-            set { _includedPeopleNames = value; RaisePropertyChanged(); }
+            set
+            {
+                _includedPeopleNames = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string Locations
         {
             get { return _locations; }
-            set { _locations = value; RaisePropertyChanged(); }
+            set
+            {
+                _locations = value;
+                RaisePropertyChanged();
+            }
         }
 
         public int NumberOfAction
         {
             get { return _numberOfAction; }
-            set { _numberOfAction = value; RaisePropertyChanged(); }
+            set
+            {
+                _numberOfAction = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string TextGreetingForFemale
         {
             get { return _textGreetingForFemale; }
-            set { _textGreetingForFemale = value; RaisePropertyChanged(); }
+            set
+            {
+                _textGreetingForFemale = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string TextGreetingForMale
         {
             get { return _textGreetingForMale; }
-            set { _textGreetingForMale = value; RaisePropertyChanged(); }
+            set
+            {
+                _textGreetingForMale = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string IgnoreRecentActionBefore
+        {
+            get { return _ignoreRecentActionBefore; }
+            set
+            {
+                _ignoreRecentActionBefore = value;
+                RaisePropertyChanged();
+            }
         }
 
         public override string ToString() => $"{ConfigName}";

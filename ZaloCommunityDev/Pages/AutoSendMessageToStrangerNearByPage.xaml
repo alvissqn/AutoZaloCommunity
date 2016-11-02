@@ -21,7 +21,14 @@
         <controls:FilterControl Grid.Row="1"
                                 x:Name="FilterBox"
                                 ConfigType="AutoSendMessageToStrangerNearByPage"
-                                Margin="20"/>
+                                Margin="20"
+                                NumberOfActionHeader="Số lần gửi tin nhắn"
+                                AccountNameVisibility="Collapsed"
+                                ExcludePeopleNamesVisibility="Collapsed"
+                                ExcludePhoneNumbersVisibility="Collapsed"
+                                IgnoreRecentActionBeforeVisibility="Collapsed"
+                                IncludedPeopleNamesVisibility="Collapsed"
+                                IncludePhoneNumbersVisibility="Collapsed" />
 
         <TextBlock Grid.Row="0"
                    Text="GỬI TIN CHO NGƯỜI LẠ GẦN ĐÂY"
@@ -40,5 +47,4 @@
                     HorizontalAlignment="Right" />
         </materialDesign:Card>
     </Grid>
-
 </Page>
