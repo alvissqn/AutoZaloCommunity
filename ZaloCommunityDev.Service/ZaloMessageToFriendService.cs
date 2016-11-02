@@ -270,8 +270,8 @@ namespace ZaloCommunityDev.Service
         {
             TouchAt(Screen.ChatScreenTextField);
             Delay(300);
-            var textGreeting = filter.TextGreetingForFemale;
-            SendText(textGreeting);
+            var chatText = ZaloHelper.GetGreetingText(profile.Profile, filter);
+            SendText(chatText);
             Delay(500);
 
             if (!IsDebug)
@@ -286,12 +286,12 @@ namespace ZaloCommunityDev.Service
             switch (profile.Objective)
             {
                 case ChatObjective.FriendInContactList:
-                    DbContext.AddLogMessageSentToFriend(profile.Profile, textGreeting);
+                    DbContext.AddLogMessageSentToFriend(profile.Profile, chatText);
 
                     break;
                 case ChatObjective.StrangerByPhone:
                 case ChatObjective.StrangerNearBy:
-                    DbContext.AddLogMessageSentToStranger(profile.Profile, textGreeting);
+                    DbContext.AddLogMessageSentToStranger(profile.Profile, chatText);
 
                     break;                    
             }

@@ -220,7 +220,7 @@ namespace ZaloCommunityDev.Service
 
             TouchAt(Screen.AddFriendScreenGreetingTextField);
 
-            var textGreeting = profile.Gender == "Nam" ? filter.TextGreetingForMale : filter.TextGreetingForFemale;
+            var textGreeting = ZaloHelper.GetGreetingText(profile, filter); ;
 
             Console.WriteLine($"!gửi: {textGreeting}");
             SendText(textGreeting);

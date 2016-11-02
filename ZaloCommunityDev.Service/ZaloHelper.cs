@@ -1,4 +1,5 @@
-﻿using ZaloCommunityDev.Shared.Structures;
+﻿using ZaloCommunityDev.Shared;
+using ZaloCommunityDev.Shared.Structures;
 
 namespace ZaloCommunityDev.Service
 {
@@ -11,6 +12,18 @@ namespace ZaloCommunityDev.Service
             profile.IsAddedToFriend = info.IsAddedToFriend;
             profile.Name = string.IsNullOrWhiteSpace(profile.Name) ? info.Name : profile.Name;
             profile.PhoneNumber = info.PhoneNumber;
+        }
+
+        public static string GetGreetingText(ProfileMessage profle, Filter filter)
+        {
+            if (profle.Gender == "Nam")
+            {
+                return filter.TextGreetingForMale;
+            }
+            else
+            {
+                return filter.TextGreetingForMale;
+            }                
         }
     }
 }
