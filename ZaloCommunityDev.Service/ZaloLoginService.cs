@@ -22,7 +22,7 @@ namespace ZaloCommunityDev.Service
             var password = user.Password;
             var region = user.Region;
 
-            EnableAbdKeyoard();
+            //EnableAbdKeyoard();
 
             try
             {

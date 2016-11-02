@@ -52,15 +52,15 @@ namespace ZaloCommunityDev.Service
         {
             var fileName = DateTime.Now.Ticks.ToString();
 
-            InvokeProc($"/c adb shell screencap -p sdcard/DCIM/{fileName}.png");
+            InvokeProc($"/c adb shell screencap -p sdcard/DCIM/zalocommnuitydev.png");
 
             Delay(100);
 
-            InvokeProc($"/c adb pull sdcard/DCIM/{fileName}.png d:/{fileName}.png");
+            InvokeProc($"/c adb pull sdcard/DCIM/zalocommnuitydev.png d:/zalo_images/{fileName}.png");
 
             Delay(100);
 
-            return $@"d:\{fileName}.png";
+            return $@"d:\zalo_images\{fileName}.png";
         }
 
         public void ChangeDisplayDensity(int des)
