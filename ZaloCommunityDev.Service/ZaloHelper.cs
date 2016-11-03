@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
 
@@ -16,7 +17,12 @@ namespace ZaloCommunityDev.Service
         }
 
         public static void Output(string text) => Console.WriteLine("ZALOSERVICE>> "+ text);
-        public static void SendCompletedTaskSignal() => Console.WriteLine("ZALOSERVICE>> @TASK COMPLETED");
+        public static void SendCompletedTaskSignal()
+        {
+            Console.WriteLine("ZALOSERVICE>> @TASK COMPLETED");
+
+            Process.GetCurrentProcess().Kill();
+        }
 
         public static string GetGreetingText(ProfileMessage profle, Filter filter)
         {

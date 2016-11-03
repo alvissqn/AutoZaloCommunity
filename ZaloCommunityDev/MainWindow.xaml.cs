@@ -1,31 +1,26 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using Microsoft.Practices.ServiceLocation;
+using ZaloCommunityDev.ViewModel;
 
 namespace ZaloCommunityDev
 {
     public partial class MainWindow
     {
-        //private readonly ZaloCommunityService _service;
-        // private readonly IZaloImageProcessing _zaloImageProcessing;
-
         public MainWindow()
         {
             InitializeComponent();
-            // _service = ServiceLocator.Current.GetInstance<ZaloCommunityService>();
-            //  _zaloImageProcessing = ServiceLocator.Current.GetInstance<IZaloImageProcessing>();
+            Closing += MainWindow_Closing;
         }
 
-        private async void Okok(object sender, RoutedEventArgs e)
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //await service.AddFriendNearBy("Nữ", "16", "23", 2);
-            //  await _service.SetGPS("107.013530", "10.793295");
-            //service.TouchSwipe(350, 500, 350, 405);
-        }
+            var consoleList = ServiceLocator.Current.GetInstance<ConsoleOutputViewModel>().ConsoleOutputs;
+            foreach (var console in consoleList)
+            {
+                console.Terminate();
+            }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //  var capture = await _service.CaptureScreenNow();
-            //   _zaloImageProcessing.GetProfile(capture, new ScreenInfo());
+            Process.GetCurrentProcess().Kill();
         }
-
     }
 }

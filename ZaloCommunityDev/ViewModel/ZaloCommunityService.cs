@@ -79,10 +79,12 @@ namespace ZaloCommunityDev.ViewModel
 
         public string RunZaloService(string type, string arguments, ConsoleOutput output)
         {
-            arguments = (type + " " + arguments).Trim();
-            var process = new Process
+            try
             {
-                StartInfo = {
+                arguments = (type + " " + arguments).Trim();
+                var process = new Process
+                {
+                    StartInfo = {
                                 FileName = Path.Combine(WorkingFolderPath, Filename),
                                 Arguments = arguments,
                                 CreateNoWindow = true,
@@ -93,48 +95,54 @@ namespace ZaloCommunityDev.ViewModel
                                 RedirectStandardOutput = true ,
                                 StandardOutputEncoding = Encoding.UTF8
                             }
-            };
+                };
 
-            output.SetWindowProcess(process);
+                output.SetWindowProcess(process);
 
-            var stdOutput = new StringBuilder();
+                var stdOutput = new StringBuilder();
 
-            process.OutputDataReceived += (sender, args) => output.Received(args.Data);
+                process.OutputDataReceived += (sender, args) => output.Received(args.Data);
 
-            string stdError = null;
-            try
-            {
-                process.Start();
-                process.BeginOutputReadLine();
-                stdError = process.StandardError.ReadToEnd();
-                process.WaitForExit();
+                string stdError = null;
+                try
+                {
+                    process.Start();
+                    process.BeginOutputReadLine();
+                    stdError = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
+                }
+                catch (Exception e)
+                {
+                    output.Received("OS error while executing " + Format(Filename, arguments) + ": " + e.Message);
+                }
+
+                if (process.ExitCode == 0)
+                {
+                    return stdOutput.ToString();
+                }
+
+                var message = new StringBuilder();
+
+                if (!string.IsNullOrEmpty(stdError))
+                {
+                    message.AppendLine(stdError);
+                }
+
+                if (stdOutput.Length != 0)
+                {
+                    message.AppendLine("Std output:");
+                    message.AppendLine(stdOutput.ToString());
+                }
+
+                output.Received(Format(Filename, arguments) + " finished with exit code = " + process.ExitCode + ": " + message);
+
+                return message.ToString();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                output.Received("OS error while executing " + Format(Filename, arguments) + ": " + e.Message);
+                log.Error(ex);
+                return string.Empty;
             }
-
-            if (process.ExitCode == 0)
-            {
-                return stdOutput.ToString();
-            }
-
-            var message = new StringBuilder();
-
-            if (!string.IsNullOrEmpty(stdError))
-            {
-                message.AppendLine(stdError);
-            }
-
-            if (stdOutput.Length != 0)
-            {
-                message.AppendLine("Std output:");
-                message.AppendLine(stdOutput.ToString());
-            }
-
-            output.Received(Format(Filename, arguments) + " finished with exit code = " + process.ExitCode + ": " + message);
-
-            return message.ToString();
         }
 
         private string CreateSession(Filter x)

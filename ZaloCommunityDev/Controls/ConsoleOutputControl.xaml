@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:uiAssits="clr-namespace:ZaloCommunityDev.UiAssists"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="800">
     <Grid>
 
         <Grid.RowDefinitions>
@@ -15,9 +16,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-
         <ScrollViewer Grid.Row="1"
-                      Margin="20,20,0,0">
+                      Margin="20,20,0,0"
+                      VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Outputs}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -29,26 +30,78 @@
 
         <materialDesign:Card Grid.Row="2"
                              Margin="5"
-                             VerticalAlignment="Stretch">
+                             VerticalAlignment="Stretch"
+                             Padding="5">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Horizontal"
                             VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsStop, Converter={x:Static uiAssits:UiConverterHelper.CollapsedIfTrue}}">
+                        <Button Style="{DynamicResource MaterialDesignFlatButton}"
+                                Command="{Binding ResumeProcessCommand}"
+                                IsEnabled="{Binding IsSuspended}"
+                                Padding="5,0,5,0"
+                                MinHeight="0"
+                                VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Play"
+                                                         VerticalAlignment="Center" />
+                                <TextBlock Text="CHẠY TIẾP"
+                                           Foreground="#FF767676" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{DynamicResource MaterialDesignFlatButton}"
+                                Command="{Binding SuspendProcessCommand}"
+                                Padding="5,0,5,0"
+                                IsEnabled="{Binding IsSuspended, Converter={x:Static uiAssits:UiConverterHelper.InvertBoolean}}"
+                                MinHeight="0"
+                                VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Pause"
+                                                         VerticalAlignment="Center" />
+                                <TextBlock Text="DỪNG"
+                                           Foreground="#FF767676" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                     <Button Style="{DynamicResource MaterialDesignFlatButton}"
+                            Command="{Binding TerminateProcessCommand}"
+                            IsEnabled="{Binding IsTerminated, Converter={x:Static uiAssits:UiConverterHelper.InvertBoolean}}"
                             Padding="5,0,5,0"
                             MinHeight="0"
                             VerticalAlignment="Top">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Stop"
                                                      VerticalAlignment="Center" />
-                            <TextBlock Text="DỪNG"
+                            <TextBlock Text="ĐÓNG"
                                        Foreground="#FF767676" />
                         </StackPanel>
                     </Button>
+
+                    <Button Margin="50,0,0,0"
+                            Command="{Binding CloseConsoleWindowCommand}"
+                            Style="{DynamicResource MaterialDesignFlatButton}"
+                            Padding="5,0,5,0"
+                            MinHeight="0"
+                            VerticalAlignment="Top">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Close"
+                                                     VerticalAlignment="Center" />
+                            <TextBlock Text="TẮT CỬA SỔ"
+                                       Foreground="#FF767676" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
 
                     <Button Style="{DynamicResource MaterialDesignFlatButton}"
                             Padding="5,0,5,0"
@@ -57,7 +110,7 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Close"
                                                      VerticalAlignment="Center" />
-                            <TextBlock Text="ĐÓNG TIẾN TRÌNH"
+                            <TextBlock Text="ĐÓNG"
                                        Foreground="#FF767676" />
                         </StackPanel>
                     </Button>

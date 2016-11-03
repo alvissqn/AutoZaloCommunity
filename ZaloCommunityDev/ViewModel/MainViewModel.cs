@@ -16,7 +16,6 @@ namespace ZaloCommunityDev.ViewModel
         private readonly ZaloCommunityService _zaloCommunityService;
         private readonly DatabaseContext _dbContext;
 
-
         private string[] _onlineDevices;
 
         private string _selectedDevice;
@@ -48,8 +47,6 @@ namespace ZaloCommunityDev.ViewModel
         public ICommand RefreshAvdListCommand { get; }
 
         #region Properties
-
-
 
         public string[] OnlineDevices
         {
@@ -85,8 +82,6 @@ namespace ZaloCommunityDev.ViewModel
         {
             OnlineDevices = _zaloCommunityService.OnlineDevices;
             Users = new ObservableCollection<User>(_dbContext.GetAccountList());
-
-
         }
 
         private ConsoleOutput CreateConsoleOutput(string type)
@@ -111,6 +106,8 @@ namespace ZaloCommunityDev.ViewModel
 
             return consoleOutput;
         }
+
+        #region Auto
 
         private async void AutoAddFriendByPhoneInvoke(Filter filter)
         {
@@ -156,5 +153,7 @@ namespace ZaloCommunityDev.ViewModel
 
             await _zaloCommunityService.SendMessageToStrangerNearBy(filter, consoleOutput);
         }
+
+        #endregion Auto
     }
 }
