@@ -41,7 +41,8 @@
 
                 <StackPanel Orientation="Horizontal"
                             VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsStop, Converter={x:Static uiAssits:UiConverterHelper.CollapsedIfTrue}}">
+                    <StackPanel Orientation="Horizontal"
+                                Visibility="{Binding IsTerminated, Converter={x:Static uiAssits:UiConverterHelper.CollapsedIfTrue}}">
                         <Button Style="{DynamicResource MaterialDesignFlatButton}"
                                 Command="{Binding ResumeProcessCommand}"
                                 IsEnabled="{Binding IsSuspended}"
@@ -65,7 +66,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Pause"
                                                          VerticalAlignment="Center" />
-                                <TextBlock Text="DỪNG"
+                                <TextBlock Text="TAM DỪNG"
                                            Foreground="#FF767676" />
                             </StackPanel>
                         </Button>
@@ -79,7 +80,7 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Stop"
                                                      VerticalAlignment="Center" />
-                            <TextBlock Text="ĐÓNG"
+                            <TextBlock Text="DUNG HAN"
                                        Foreground="#FF767676" />
                         </StackPanel>
                     </Button>
@@ -88,6 +89,7 @@
                             Command="{Binding CloseConsoleWindowCommand}"
                             Style="{DynamicResource MaterialDesignFlatButton}"
                             Padding="5,0,5,0"
+                            IsEnabled="{Binding IsTerminated}"
                             MinHeight="0"
                             VerticalAlignment="Top">
                         <StackPanel Orientation="Horizontal">

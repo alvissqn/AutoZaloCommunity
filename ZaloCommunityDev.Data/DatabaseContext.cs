@@ -43,7 +43,7 @@ namespace ZaloCommunityDev.Data
         public DbSet<LogRequestAddFriendDto> LogRequestAddFriendSet { get; set; }
         public DbSet<ProfileDto> ProfileSet { get; set; }
 
-        private static string TodayText => DateTime.Now.Date.ToString("dd/MM/yyyy");
+        private static string TodayText => DateTime.Now.Date.ToString("dd'/'MM'/'yyyy");
 
         public void AddProfile(ProfileMessage profile, string account)
         {
@@ -284,25 +284,80 @@ namespace ZaloCommunityDev.Data
             LogActivityCount(profile, account, LogType.MessageToStranger);
         }
 
-        public LogActivityDto[] GetDailyActivity()
-            => LogActivitySet.ToArray().OrderByDescending(x => DateTime.Parse(x.Date)).ThenBy(x => x.Account).ToArray();
+        public LogActivityDto[] GetDailyActivity(DateTime? dateTime = null, string account = null)
+        {
+            LogActivityDto[] logs = null;
+            if (dateTime == null)
+            {
+                if (account == null)
+                {
+                    logs = LogActivitySet
+                        .OrderByDescending(x => x.Id)
+                        .Take(30)
+                        .ToArray();
+                }
+                else
+                {
+                    logs = LogActivitySet
+                        .Where(x => x.Account == account)
+                        .OrderByDescending(x => x.Id)
+                        .Take(30)
+                        .ToArray();
+                }
+            }
+            else
+            {
+                var dateText = dateTime?.ToString("dd'/'MM'/'yyyy");
+                if (account == null)
+                {
+                    logs = LogActivitySet
+                        .Where(x => x.Date == dateText)
+                       .OrderByDescending(x => x.Id)
+                       .ToArray();
+                }
+                else
+                {
+                    logs = LogActivitySet
+                       .Where(x => x.Date == dateText && x.Account == account)
+                      .OrderByDescending(x => x.Id)
+                      .ToArray();
+                }
+            }
+
+            return logs.OrderByDescending(x => DateTime.Parse(x.Date)).ThenBy(x => x.Account).ToArray();
+        }
 
         public LogRequestAddFriendDto[] GetLogRequestAddFriends(DateTime dateTime, string account)
-            => LogRequestAddFriendSet.Where(x => DbFunctions.TruncateTime(x.CreatedTime).Value == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
-
-        public LogRequestAddFriendDto[] GetLogRequestAddFriendsUsingDapper(DateTime dateTime, string account)
         {
-            var db = new OleDbConnection(ConfigurationManager.ConnectionStrings["ZaloCommunityDb"].ConnectionString);
-            var sqlString = "SELECT * FROM LogRequestAddFriend where @From <= [CreatedTime] and [CreatedTime] <=@To";
-            var logs = (List<LogRequestAddFriendDto>)db.Query<LogRequestAddFriendDto>(sqlString, new { From = dateTime, To = dateTime });
+            using (var db = new OleDbConnection(ConfigurationManager.ConnectionStrings["ZaloCommunityDb"].ConnectionString))
+            {
+                var sqlString = $"SELECT * FROM {DataHelper.TableName<LogRequestAddFriendDto>()} WHERE ({DataHelper.GetPropertyName<MessageToProfile, DateTime>(x => x.CreatedTime)} BETWEEN @from AND @to) and ({DataHelper.GetPropertyName<MessageToProfile, string>(x => x.Account)}=@Account)";
+                var logs = (List<LogRequestAddFriendDto>)db.Query<LogRequestAddFriendDto>(sqlString, new { @from = dateTime.Date, @to = dateTime.Date.AddDays(1), @Account = account });
 
-            return logs.ToArray();
+                return logs.ToArray();
+            }
         }
 
         public LogMessageSentToFriendDto[] GetLogMessageSentToFriends(DateTime dateTime, string account)
-            => LogMessageSentToFriendSet.Where(x => x.CreatedTime.Date == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
+        {
+            using (var db = new OleDbConnection(ConfigurationManager.ConnectionStrings["ZaloCommunityDb"].ConnectionString))
+            {
+                var sqlString = $"SELECT * FROM {DataHelper.TableName<LogMessageSentToFriendDto>()} WHERE ({DataHelper.GetPropertyName<MessageToProfile, DateTime>(x => x.CreatedTime)} BETWEEN @from AND @to) and ({DataHelper.GetPropertyName<MessageToProfile, string>(x => x.Account)}=@Account)";
+                var logs = (List<LogMessageSentToFriendDto>)db.Query<LogMessageSentToFriendDto>(sqlString, new { @from = dateTime.Date, @to = dateTime.Date.AddDays(1), @Account = account });
+
+                return logs.ToArray();
+            }
+        }
 
         public LogMessageSentToStrangerDto[] GetLogMessageSentToStrangers(DateTime dateTime, string account)
-            => LogMessageSentToStrangerSet.Where(x => x.CreatedTime.Date == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
+        {
+            using (var db = new OleDbConnection(ConfigurationManager.ConnectionStrings["ZaloCommunityDb"].ConnectionString))
+            {
+                var sqlString = $"SELECT * FROM {DataHelper.TableName<LogMessageSentToStrangerDto>()} WHERE ({DataHelper.GetPropertyName<MessageToProfile, DateTime>(x => x.CreatedTime)} BETWEEN @from AND @to) and ({DataHelper.GetPropertyName<MessageToProfile, string>(x => x.Account)}=@Account)";
+                var logs = (List<LogMessageSentToStrangerDto>)db.Query<LogMessageSentToStrangerDto>(sqlString, new { @from = dateTime.Date, @to = dateTime.Date.AddDays(1), @Account = account });
+
+                return logs.ToArray();
+            }
+        }
     }
 }

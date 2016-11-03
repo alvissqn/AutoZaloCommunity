@@ -18,23 +18,37 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Button Margin="10,0,0,0"
-                Style="{DynamicResource MaterialDesignFlatButton}"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Click="Refresh_Click">
-            <StackPanel Orientation="Horizontal">
+        <StackPanel  HorizontalAlignment="Right"
+                     Orientation="Horizontal"
+                     VerticalAlignment="Bottom">
 
-                <materialDesign:PackIcon Kind="Refresh"
-                              Margin="8,0" />
-                <TextBlock Text="TẢI LẠI" />
-            </StackPanel>
-        </Button>
+            <ComboBox materialDesign:HintAssist.Hint="CHỌN TÀI KHOẢN"
+                      x:Name="AccountFilter"
+                      VerticalAlignment="Bottom" />
+
+            <DatePicker x:Name="DatePicker"
+                        Width="100"
+                        HorizontalAlignment="Left"
+                        Margin="0 16 0 0"
+                        materialDesign:HintAssist.Hint="CHỌN NGÀY"
+                        VerticalAlignment="Center" />
+
+            <Button Margin="10,0,0,0"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
+                    Click="Refresh_Click"
+                    VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Refresh"
+                                             Margin="8,0" />
+                    <TextBlock Text="TẢI LẠI" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
 
         <DataGrid x:Name="DataGridDailyLog"
-                  ItemsSource="{Binding Users}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
+                  Margin="20,20,0,0"
                   Grid.Row="1"
                   CanUserDeleteRows="False">
             <DataGrid.Columns>
@@ -51,11 +65,11 @@
                                     IsReadOnly="True"
                                     Binding="{Binding AddedFriendCount}" />
 
-                <DataGridTextColumn Header="Đã gửi tin nhắn cho bạn"
+                <DataGridTextColumn Header="Nhắn tin cho bạn trong danh sách"
                                     IsReadOnly="True"
                                     Binding="{Binding PostFriendCount}" />
 
-                <DataGridTextColumn Header="Đã gửi tin nhắn cho người lạ"
+                <DataGridTextColumn Header="Nhắn tin cho người lạ"
                                     IsReadOnly="True"
                                     Binding="{Binding PostStrangerCount}" />
             </DataGrid.Columns>

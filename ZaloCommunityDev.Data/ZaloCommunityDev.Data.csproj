@@ -83,6 +83,7 @@
     <Compile Include="Models\AddFriendByPhoneConfigDto.cs" />
     <Compile Include="Models\AddFriendNearByConfigDto.cs" />
     <Compile Include="Models\FilterBase.cs" />
+    <Compile Include="Models\DataHelper.cs" />
     <Compile Include="Models\LogActivityDto.cs" />
     <Compile Include="Models\LogMessageSentToFriendDto.cs" />
     <Compile Include="Models\LogMessageSentToStrangerDto.cs" />

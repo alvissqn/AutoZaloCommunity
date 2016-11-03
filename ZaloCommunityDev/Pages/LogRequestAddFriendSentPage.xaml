@@ -48,7 +48,8 @@
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   Grid.Row="1"
-                  CanUserDeleteRows="False">
+                  CanUserDeleteRows="False"
+                  Margin="20,0,0,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Tên tài khoản"
                                     IsReadOnly="True"

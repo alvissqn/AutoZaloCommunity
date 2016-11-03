@@ -6,6 +6,7 @@ using System.Linq;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.Shared;
 using System.Windows;
+using ZaloCommunityDev.Models;
 
 namespace ZaloCommunityDev.ViewModel
 {

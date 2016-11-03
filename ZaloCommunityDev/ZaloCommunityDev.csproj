@@ -183,6 +183,8 @@
     <Compile Include="Controls\FilterControl.xaml.cs">
       <DependentUpon>FilterControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ConsoleOutput.cs" />
+    <Compile Include="Models\ProcessExtension.cs" />
     <Compile Include="Pages\AutoAddFriendByPhonePage.xaml.cs">
       <DependentUpon>AutoAddFriendByPhonePage.xaml</DependentUpon>
     </Compile>

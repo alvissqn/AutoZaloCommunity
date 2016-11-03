@@ -33,6 +33,6 @@ namespace ZaloCommunityDev.Pages
         }
 
         private void Refresh_Clicked(object sender, System.Windows.RoutedEventArgs e)
-            => LogDataGrid.ItemsSource = _dbContext.GetLogRequestAddFriendsUsingDapper(DatePicker.SelectedDate ?? DateTime.Now, (string)AccountFilter.SelectedItem);
+            => LogDataGrid.ItemsSource = _dbContext.GetLogRequestAddFriends(DatePicker.SelectedDate ?? DateTime.Now, (string)AccountFilter.SelectedItem);
     }
 }

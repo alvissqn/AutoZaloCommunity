@@ -6,7 +6,7 @@
         {
             GenderSelection.OnlyMale,
             GenderSelection.OnlyFemale,
-            GenderSelection.OnlyMale,
+            GenderSelection.Both,
         };
     }
 }

@@ -7,27 +7,28 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZaloCommunityDev.Models;
 using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.ViewModel
 {
     public class ZaloCommunityService
     {
-        private ILog log = LogManager.GetLogger(nameof(ZaloCommunityService));
+        private readonly ILog _log = LogManager.GetLogger(nameof(ZaloCommunityService));
 
-        //private string WorkingFolderPath = @"C:\Users\diepnguyenv\Desktop\code\zalocommunitydev\ZaloCommunityDev.Service\bin\Debug";
-        private string WorkingFolderPath = @"C:\Users\ngan\Desktop\ZaloCommunityDev\ZaloCommunityDev.Service\bin\Debug";
+        //private const string WorkingFolderPath = @"C:\Users\diepnguyenv\Desktop\code\zalocommunitydev\ZaloCommunityDev.Service\bin\Debug";
+        private const string WorkingFolderPath = @"C:\Users\ngan\Desktop\ZaloCommunityDev\ZaloCommunityDev.Service\bin\Debug";
 
-        private string Filename = @"ZaloCommunityDev.Service.exe";
+        private const string Filename = @"ZaloCommunityDev.Service.exe";
 
-        private AndroidDebugBridge _adb;
+        private readonly AndroidDebugBridge _adb;
         public string AndroidDebugBridgeOsLocation { get; set; } = @"C:\Program Files\Leapdroid\VM";
 
-        private Settings settings;
+        private readonly Settings _settings;
 
         public ZaloCommunityService(Settings settings)
         {
-            this.settings = settings;
+            this._settings = settings;
 
             try
             {
@@ -36,7 +37,7 @@ namespace ZaloCommunityDev.ViewModel
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                _log.Error(ex);
             }
         }
 
@@ -140,7 +141,7 @@ namespace ZaloCommunityDev.ViewModel
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                _log.Error(ex);
                 return string.Empty;
             }
         }
@@ -152,7 +153,7 @@ namespace ZaloCommunityDev.ViewModel
             Directory.CreateDirectory(newpath);
 
             var filterText = JsonConvert.SerializeObject(x, Formatting.Indented);
-            var settingsText = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            var settingsText = JsonConvert.SerializeObject(_settings, Formatting.Indented);
             File.WriteAllText(Path.Combine(newpath, "filter.json"), filterText);
             File.WriteAllText(Path.Combine(newpath, "setting.json"), settingsText);
             return sessionText;
