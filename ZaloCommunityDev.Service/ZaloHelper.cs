@@ -7,7 +7,7 @@ namespace ZaloCommunityDev.Service
 {
     public static class ZaloHelper
     {
-        public static void CopyProfile(ProfileMessage profile, ProfileMessage info)
+        public static void CopyProfile(ref ProfileMessage profile, ProfileMessage info)
         {
             profile.BirthdayText = info.BirthdayText;
             profile.Gender = info.Gender;
@@ -26,7 +26,7 @@ namespace ZaloCommunityDev.Service
 
         public static string GetGreetingText(ProfileMessage profle, Filter filter)
         {
-            if (profle.Gender == "Nam")
+            if (profle.GenderValue() == Gender.Male)
             {
                 return filter.TextGreetingForMale;
             }
@@ -34,6 +34,11 @@ namespace ZaloCommunityDev.Service
             {
                 return filter.TextGreetingForFemale;
             }
+        }
+
+        internal static void OutputLine()
+        {
+            Console.WriteLine("ZALOSERVICE>> --------------------------------");
         }
     }
 }

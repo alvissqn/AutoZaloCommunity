@@ -85,14 +85,30 @@ namespace ZaloCommunityDev.Service
             switch (gender)
             {
                 case GenderSelection.OnlyMale:
+
+                    TouchAt(Screen.SearchFriendSideBarBothGenderTextItem);//why touch twice: update
+                    Delay(1000);
+                    TouchAt(Screen.IconTopRight);//Open Right SideBar
+                    Delay(500);
+
                     TouchAt(Screen.SearchFriendSideBarMaleOnlyTextItem);
                     break;
 
                 case GenderSelection.OnlyFemale:
+                    TouchAt(Screen.SearchFriendSideBarBothGenderTextItem);
+                    Delay(1000);
+                    TouchAt(Screen.IconTopRight);//Open Right SideBar
+                    Delay(500);
+
                     TouchAt(Screen.SearchFriendSideBarFemaleOnlyTextItem);
                     break;
 
                 default:
+                    TouchAt(Screen.SearchFriendSideBarFemaleOnlyTextItem);
+                    Delay(1000);
+                    TouchAt(Screen.IconTopRight);//Open Right SideBar
+                    Delay(500);
+
                     TouchAt(Screen.SearchFriendSideBarBothGenderTextItem);
                     break;
             }

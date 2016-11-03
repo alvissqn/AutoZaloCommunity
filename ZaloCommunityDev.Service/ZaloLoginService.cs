@@ -50,16 +50,19 @@ namespace ZaloCommunityDev.Service
 
                     ZaloHelper.Output("đang gửi tên đăng nhập");
                     TouchAt(Screen.LoginScreenPhoneTextField);
-                    SendKey(KeyCode.AkeycodeMoveEnd);
+                    Delay(200);
+                    TouchAt(Screen.LoginScreenPhoneTextField);
+                    Delay(200);
                     for (var i = 0; i < 12; i++)
                     {
                         SendKey(KeyCode.AkeycodeDel);
                     }
                     SendText(account);
 
-                    ZaloHelper.Output("đang gửi tên mật khẩu");
+                    ZaloHelper.Output("đang gửi mật khẩu");
                     Delay(100);
                     TouchAt(Screen.LoginScreenPasswordTextField);
+                    Delay(500);
                     SendText(password);
                     TouchAt(Screen.LoginScreenOkButton);
                     //SendKey(KeyCode.AkeycodeEnter, 2);

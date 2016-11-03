@@ -18,7 +18,7 @@ namespace ZaloCommunityDev.Shared
         public static bool IsValidProfile(this Filter filter, ProfileMessage profile, out string reason)
         {
             reason = null;
-            if (string.IsNullOrWhiteSpace(filter.FilterAgeRange))
+            if (!string.IsNullOrWhiteSpace(filter.FilterAgeRange))
             {
                 var ages = filter.FilterAgeRange.Split(";-=_ ".ToArray());
 
@@ -40,6 +40,23 @@ namespace ZaloCommunityDev.Shared
 
                         return false;
                     }
+                }
+            }
+
+            if (filter.GenderSelection != GenderSelection.Both)
+            {
+                if (filter.GenderSelection==GenderSelection.OnlyMale && profile.GenderValue() != Gender.Male)
+                {
+                    reason = $"Yêu cầu chọn nam, nhưng kết quả trả về là nữ";
+
+                    return false;
+                }
+
+                if (filter.GenderSelection == GenderSelection.OnlyFemale && profile.GenderValue() != Gender.Female)
+                {
+                    reason = $"Yêu cầu chọn nữ, nhưng kết quả trả về là nam";
+
+                    return false;
                 }
             }
 

@@ -76,9 +76,9 @@
 
         #region Login Screen
         public ScreenPoint LoginScreenCountryCombobox { get; set; } = new ScreenPoint(250, 270);
-        public ScreenPoint LoginScreenFirstCountryItem { get; set; } = new ScreenPoint(250, 270);
-        public ScreenPoint LoginScreenPhoneTextField{ get; set; } = new ScreenPoint(250, 900);
-        public ScreenPoint LoginScreenPasswordTextField { get; set; } = new ScreenPoint(250, 550);
+        public ScreenPoint LoginScreenFirstCountryItem { get; set; } = new ScreenPoint(250, 400);
+        public ScreenPoint LoginScreenPhoneTextField{ get; set; } = new ScreenPoint(1133, 400);
+        public ScreenPoint LoginScreenPasswordTextField { get; set; } = new ScreenPoint(1133, 535);
         public ScreenPoint LoginScreenOkButton { get; set; } = new ScreenPoint(650, 760);
         public ScreenPoint HomeScreenFriendTab { get; set; } = new ScreenPoint(520, 110);
         #endregion

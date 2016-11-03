@@ -35,6 +35,11 @@ namespace ZaloCommunityDev.Service
 
                 var fileCapture = CaptureScreenNow();
                 var friends = ZaloImageProcessing.GetFriendProfileList(fileCapture, Screen);
+
+                ZaloHelper.OutputLine();
+                friends.ToList().ForEach(x => ZaloHelper.Output(x.Name));
+                ZaloHelper.OutputLine();
+
                 var stack = new Stack<FriendPositionMessage>(friends.Where(x => !string.IsNullOrWhiteSpace(x.Name)).OrderByDescending(x => x.Point.Y));
                 var profilesPage1 = stack.Select(x => x.Name).ToArray();
 
@@ -47,6 +52,11 @@ namespace ZaloCommunityDev.Service
                         ZaloHelper.Output("Đang phân tích dữ liệu màn hình");
                         fileCapture = CaptureScreenNow();
                         friends = ZaloImageProcessing.GetFriendProfileList(fileCapture, Screen);
+
+                        ZaloHelper.OutputLine();
+                        friends.ToList().ForEach(x => ZaloHelper.Output(x.Name));
+                        ZaloHelper.OutputLine();
+
                         stack = new Stack<FriendPositionMessage>(friends.OrderByDescending(x => x.Point.Y));
                         var profilesPage2 = stack.Select(x => x.Name).ToArray();
                         if (!profilesPage2.Except(profilesPage1).Any())
@@ -60,30 +70,30 @@ namespace ZaloCommunityDev.Service
 
                     Delay(2000);
 
-                    var pointRowFriend = stack.Pop();
+                    var rowFriend = stack.Pop();
 
-                    if (DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == pointRowFriend.Name && x.Account==Settings.User.Username) != null)
+                    if (DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == rowFriend.Name && x.Account==Settings.User.Username) != null)
                     {
-                        ZaloHelper.Output($"Đã gửi tin cho bạn {pointRowFriend.Name} rồi");
+                        ZaloHelper.Output($"Đã gửi tin cho bạn {rowFriend.Name} rồi");
 
                         continue;
                     }
 
-                    var profile = DbContext.ProfileSet.FirstOrDefault(x => x.Name == pointRowFriend.Name);
+                    var profile = DbContext.ProfileSet.FirstOrDefault(x => x.Name == rowFriend.Name);
                     var request = new ChatRequest
                     {
                         Profile = new ProfileMessage
                         {
-                            Name = pointRowFriend.Name,
+                            Name = rowFriend.Name,
                             Location = profile?.Location,
                             PhoneNumber =  profile?.PhoneNumber
                         },
                         Objective = ChatObjective.FriendInContactList
                     };
 
-                    if (Screen.InfoRect.Contains(pointRowFriend.Point))
+                    if (Screen.InfoRect.Contains(rowFriend.Point))
                     {
-                        TouchAt(pointRowFriend.Point);
+                        TouchAt(rowFriend.Point);
                         Delay(2000);
 
                         NavigateToProfileScreenFromChatScreenToGetInfoThenGoBack(request);
@@ -93,6 +103,13 @@ namespace ZaloCommunityDev.Service
                         if (!filter.IsValidProfile(request.Profile, out reason))
                         {
                             ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
+                            TouchAtIconTopLeft(); //Goback to Chat View
+                            Delay(400);
+                            TouchAtIconTopLeft(); //Touch to close side bar
+                            Delay(400);
+                            TouchAtIconTopLeft(); //Goto home page
+                            Delay(400);
+
                         }
                         else if (Chat(request, filter))
                         {
@@ -150,7 +167,10 @@ namespace ZaloCommunityDev.Service
                         }
 
                         Thread.Sleep(100);
+
+                        DeleteWordInFocusedTextField();
                         SendText(phoneNumber);
+                        
                         SendKey(KeyCode.AkeycodeEnter);
                         Thread.Sleep(4000);
 
@@ -171,6 +191,9 @@ namespace ZaloCommunityDev.Service
                             if (!filter.IsValidProfile(profile, out reason))
                             {
                                 ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
+
+                                TouchAtIconTopLeft(); //Goback to Phone Entry
+                                Delay(400);
                             }
                             else
                             {
@@ -302,12 +325,15 @@ namespace ZaloCommunityDev.Service
                     Delay(2000);//wait to navigate chat screen
 
                     var infoGrab = GrabProfileInfo(pointRowFriend.Name);
-                    ZaloHelper.CopyProfile(request.Profile, infoGrab);
+                    var profile = request.Profile;
+                    ZaloHelper.CopyProfile(ref profile, infoGrab);
 
                     string reason;
                     if (!filter.IsValidProfile(request.Profile, out reason))
                     {
                         ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
+                        TouchAt(Screen.IconTopLeft);
+                        Delay(300);
                     }
                     else if (Chat(request, filter))
                     {
@@ -315,12 +341,11 @@ namespace ZaloCommunityDev.Service
                         countSuccess++;
                         ZaloHelper.Output($"!gửi tin nhắn tới: {request.Profile.Name} thành công. Số bạn đã gửi thành công trong phiên này là: {countSuccess}");
                     }
-
                 }
             }
         }
 
-        public void NavigateToProfileScreenFromChatScreenToGetInfoThenGoBack(ChatRequest profile)
+        public void NavigateToProfileScreenFromChatScreenToGetInfoThenGoBack(ChatRequest request)
         {
             //GrabInfomation
             TouchAtIconTopRight();
@@ -328,8 +353,10 @@ namespace ZaloCommunityDev.Service
             TouchAt(Screen.ChatScreenProfileAvartar);
             Delay(2000);
 
-            var infoGrab = GrabProfileInfo(profile.Profile.Name);
-            ZaloHelper.CopyProfile(profile.Profile, infoGrab);
+            var infoGrab = GrabProfileInfo(request.Profile.Name);
+
+            var profileCopy = request.Profile;
+            ZaloHelper.CopyProfile(ref profileCopy, infoGrab);
 
             TouchAtIconTopLeft();//Back to chat screen
             TouchAtIconTopLeft();//Close sidebar

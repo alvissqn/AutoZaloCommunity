@@ -118,7 +118,7 @@ namespace ZaloCommunityDev.Service
                             if (!filter.IsValidProfile(profile, out reason))
                             {
                                 ZaloHelper.Output("Bỏ qua bạn này, lý do: "+ reason);
-
+                                TouchAtIconTopLeft();
                                 continue;
                             }
                             else
@@ -158,7 +158,7 @@ namespace ZaloCommunityDev.Service
 
             profilesPage1.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
             ZaloHelper.Output($"!--------------------");
-            friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x}"));
+            friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x.Name}"));
             while (countSuccess < numberOfAction)
             {
                 while (stack.Count == 0)
@@ -172,7 +172,7 @@ namespace ZaloCommunityDev.Service
 
                     profilesPage1.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
                     ZaloHelper.Output($"!--------------------");
-                    friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x}"));
+                    friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!các bạn chưa được gửi lời mời: {x.Name}"));
 
                     profilesPage2.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
 
@@ -230,13 +230,13 @@ namespace ZaloCommunityDev.Service
             //I''m on profile page
 
             var info = GrabProfileInfo(profile.Name);
-            ZaloHelper.CopyProfile(profile, info);
+            ZaloHelper.CopyProfile(ref profile, info);
 
             string reason;
             if (!filter.IsValidProfile(profile, out reason))
             {
                 ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
-
+                TouchAtIconTopLeft(); //GoBack to friendList
                 return false;
             }
 

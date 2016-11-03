@@ -24,6 +24,8 @@
                                 Margin="20"
                                 StartCommand="{Binding AutoAddFriendByPhoneCommand}"
                                 AccountNameVisibility="Collapsed"
+                                IncludedPeopleNamesVisibility="Collapsed"
+                                NumberOfActionVisibility="Collapsed"
                                 ExcludePeopleNamesVisibility="Collapsed"
                                 ExcludePhoneNumbersVisibility="Collapsed"
                                 IgnoreRecentActionBeforeVisibility="Collapsed"

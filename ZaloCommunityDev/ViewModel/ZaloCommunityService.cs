@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using ZaloCommunityDev.Models;
 using ZaloCommunityDev.Shared;
 
@@ -52,6 +53,12 @@ namespace ZaloCommunityDev.ViewModel
 
         public async Task AddFriendByPhone(Filter filter, ConsoleOutput consoleOutput)
         {
+            filter.NumberOfAction = filter.IncludePhoneNumbers.Split(";- ".ToArray()).Count();
+            if (filter.NumberOfAction == 0)
+            {
+                MessageBox.Show("Vui lòng nhập danh bạ điện thoại");
+                return;
+            }
             var sessionId = CreateSession(filter);
 
             await Task.Factory.StartNew(() => { RunZaloService(RunnerConstants.addfriendbyphone, sessionId, consoleOutput); });

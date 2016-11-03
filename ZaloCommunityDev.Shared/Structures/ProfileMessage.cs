@@ -6,6 +6,13 @@ namespace ZaloCommunityDev.Shared.Structures
     {
         public string Name { get; set; }
         public string Gender { get; set; }
+        public Gender GenderValue()
+        {
+            if (Gender.ToLower().Contains("na"))
+                return Shared.Gender.Male;
+            else
+                return Shared.Gender.Female;
+        }
         public string PhoneNumber { get; set; }
         public DateTime Birthday { get;  set; }
         public string BirthdayText { get;  set; }
