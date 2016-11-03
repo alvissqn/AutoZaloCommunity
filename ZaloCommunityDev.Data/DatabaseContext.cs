@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
+using System.Data.OleDb;
 using System.Linq;
 using AutoMapper;
+using Dapper;
 using log4net;
 using ZaloCommunityDev.Data.Models;
 using ZaloCommunityDev.Shared;
@@ -263,7 +266,6 @@ namespace ZaloCommunityDev.Data
                 Account = account
             });
             LogActivityCount(profile, account, LogType.MessageFriend);
-
         }
 
         public void AddLogMessageSentToStranger(ProfileMessage profile, string account, string textGreeting)
@@ -288,11 +290,19 @@ namespace ZaloCommunityDev.Data
         public LogRequestAddFriendDto[] GetLogRequestAddFriends(DateTime dateTime, string account)
             => LogRequestAddFriendSet.Where(x => DbFunctions.TruncateTime(x.CreatedTime).Value == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
 
+        public LogRequestAddFriendDto[] GetLogRequestAddFriendsUsingDapper(DateTime dateTime, string account)
+        {
+            var db = new OleDbConnection(ConfigurationManager.ConnectionStrings["ZaloCommunityDb"].ConnectionString);
+            var sqlString = "SELECT * FROM LogRequestAddFriend where @From <= [CreatedTime] and [CreatedTime] <=@To";
+            var logs = (List<LogRequestAddFriendDto>)db.Query<LogRequestAddFriendDto>(sqlString, new { From = dateTime, To = dateTime });
+
+            return logs.ToArray();
+        }
+
         public LogMessageSentToFriendDto[] GetLogMessageSentToFriends(DateTime dateTime, string account)
             => LogMessageSentToFriendSet.Where(x => x.CreatedTime.Date == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
 
         public LogMessageSentToStrangerDto[] GetLogMessageSentToStrangers(DateTime dateTime, string account)
             => LogMessageSentToStrangerSet.Where(x => x.CreatedTime.Date == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
-
     }
 }
