@@ -193,7 +193,8 @@ namespace ZaloCommunityDev.Service
                     Name = pointRowFriend.Name
                 };
 
-                if (Screen.InfoRect.Contains(pointRowFriend.Point) && ClickToAddFriendAt(profile, pointRowFriend.Point, filter))
+                if (Screen.InfoRect.Contains(pointRowFriend.Point) 
+                    && ClickToAddFriendAt(profile, pointRowFriend.Point, filter))
                 {
                     DbContext.AddProfile(profile, Settings.User.Username);
                     countSuccess++;

@@ -29,7 +29,9 @@ namespace ZaloCommunityDev.Service
                 GotoPage(Activity.MainTab);
 
                 Delay(1000);
+
                 TouchAt(Screen.HomeScreenFriendTab);
+
                 Delay(1000);
                 ZaloHelper.Output("Đang phân tích dữ liệu");
 
@@ -103,11 +105,7 @@ namespace ZaloCommunityDev.Service
                         if (!filter.IsValidProfile(request.Profile, out reason))
                         {
                             ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
-                            TouchAtIconTopLeft(); //Goback to Chat View
-                            Delay(400);
                             TouchAtIconTopLeft(); //Touch to close side bar
-                            Delay(400);
-                            TouchAtIconTopLeft(); //Goto home page
                             Delay(400);
 
                         }

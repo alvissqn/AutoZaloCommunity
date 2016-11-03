@@ -5,6 +5,7 @@ using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Service.Models;
 using ZaloCommunityDev.Shared;
+using System.Linq;
 
 namespace ZaloCommunityDev.Service
 {
@@ -14,6 +15,13 @@ namespace ZaloCommunityDev.Service
 
         private static void Main(string[] args)
         {
+            if (args[1] == "last-filter")
+            {
+                var directory = Directory.GetDirectories($@".\{WorkingFolderPath}\").OrderByDescending(Directory.GetCreationTime).First();
+
+                args[1] = directory.Split("\\".ToArray()).Last();
+            }
+
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var sessionId = args[1];
@@ -37,10 +45,10 @@ namespace ZaloCommunityDev.Service
                 ZaloHelper.Output("Không tìm thấy thiết bị android nào.");
                 return;
             }
-
+#if RELEASE
             var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-            zaloLoginService.Login(settings.User);
-
+           zaloLoginService.Login(settings.User);
+#endif
             switch (args[0])
             {
                 case RunnerConstants.addfriendnearby:

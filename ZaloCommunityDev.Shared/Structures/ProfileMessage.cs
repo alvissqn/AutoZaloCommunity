@@ -2,12 +2,16 @@
 
 namespace ZaloCommunityDev.Shared.Structures
 {
-    public struct ProfileMessage
+    public class ProfileMessage
     {
         public string Name { get; set; }
         public string Gender { get; set; }
         public Gender GenderValue()
         {
+            if (Gender == null)
+            {
+                return Shared.Gender.Unknown;
+            }
             if (Gender.ToLower().Contains("na"))
                 return Shared.Gender.Male;
             else
