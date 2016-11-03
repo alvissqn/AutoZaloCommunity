@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using AutoMapper;
 using log4net;
@@ -51,8 +52,8 @@ namespace ZaloCommunityDev.Data
                     Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                     Name = profile.Name,
                     PhoneNumber = profile.PhoneNumber,
-                    Location  = profile.Location,
-                    Account  =account
+                    Location = profile.Location,
+                    Account = account
                 });
 
                 SaveChanges();
@@ -65,14 +66,14 @@ namespace ZaloCommunityDev.Data
 
         public void LogActivityCount(ProfileMessage profile, string account, LogType logtype)
         {
-            var item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText && account== x.Account);
+            var item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText && account == x.Account);
             if (item == null)
             {
-                LogActivitySet.Add(new LogActivityDto { Date = TodayText, Account = account});
+                LogActivitySet.Add(new LogActivityDto { Date = TodayText, Account = account });
             }
 
             SaveChanges();
-            item = LogActivitySet.FirstOrDefault(x => x.Date == TodayText && account == x.Account);
+            item = LogActivitySet.First(x => x.Date == TodayText && account == x.Account);
 
             switch (logtype)
             {
@@ -91,11 +92,11 @@ namespace ZaloCommunityDev.Data
             SaveChanges();
         }
 
-        public int GetAddedFriendCount(string account) => LogActivitySet.FirstOrDefault(x => x.Date == TodayText && x.Account==account)?.AddedFriendCount ?? 0;
+        public int GetAddedFriendCount(string account) => LogActivitySet.FirstOrDefault(x => x.Date == TodayText && x.Account == account)?.AddedFriendCount ?? 0;
 
         public int GetMessageToStragerCount(string account) => LogActivitySet.FirstOrDefault(x => x.Date == TodayText && x.Account == account)?.PostStrangerCount ?? 0;
-        public List<User> GetAccountList() => UserSet.ToArray().Select(Mapper.Map<UserDto, User>).ToList();
 
+        public List<User> GetAccountList() => UserSet.ToArray().Select(Mapper.Map<UserDto, User>).ToList();
 
         public Filter[] GetFilter(string key)
         {
@@ -257,11 +258,12 @@ namespace ZaloCommunityDev.Data
                 Gender = profile.Gender == "Nam" ? Gender.Male : Gender.Female,
                 MessageText = textGreeting,
                 Name = profile.Name,
-                Location  = profile.Location,
+                Location = profile.Location,
                 PhoneNumber = profile.PhoneNumber,
                 Account = account
             });
             LogActivityCount(profile, account, LogType.MessageFriend);
+
         }
 
         public void AddLogMessageSentToStranger(ProfileMessage profile, string account, string textGreeting)
@@ -279,5 +281,18 @@ namespace ZaloCommunityDev.Data
 
             LogActivityCount(profile, account, LogType.MessageToStranger);
         }
+
+        public LogActivityDto[] GetDailyActivity()
+            => LogActivitySet.ToArray().OrderByDescending(x => DateTime.Parse(x.Date)).ThenBy(x => x.Account).ToArray();
+
+        public LogRequestAddFriendDto[] GetLogRequestAddFriends(DateTime dateTime, string account)
+            => LogRequestAddFriendSet.Where(x => DbFunctions.TruncateTime(x.CreatedTime).Value == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
+
+        public LogMessageSentToFriendDto[] GetLogMessageSentToFriends(DateTime dateTime, string account)
+            => LogMessageSentToFriendSet.Where(x => x.CreatedTime.Date == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
+
+        public LogMessageSentToStrangerDto[] GetLogMessageSentToStrangers(DateTime dateTime, string account)
+            => LogMessageSentToStrangerSet.Where(x => x.CreatedTime.Date == dateTime.Date && x.Account == account).ToArray().OrderByDescending(x => x.CreatedTime).ThenBy(x => x.Account).ToArray();
+
     }
 }

@@ -1,0 +1,93 @@
+﻿<Page x:Class="ZaloCommunityDev.Pages.LogRequestAddFriendSentPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d"
+      DataContext="{Binding Main,Source={StaticResource Locator}}"
+      d:DesignHeight="700"
+      d:DesignWidth="700"
+      Title="SelectDevicePage"
+      VerticalAlignment="Top">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel  HorizontalAlignment="Right"
+                     Orientation="Horizontal"
+                     VerticalAlignment="Bottom">
+
+            <ComboBox materialDesign:HintAssist.Hint="CHỌN TÀI KHOẢN"
+                      x:Name="AccountFilter"
+                      VerticalAlignment="Bottom" />
+
+            <DatePicker x:Name="DatePicker"
+                        Width="100"
+                        HorizontalAlignment="Left"
+                        Margin="0 16 0 0"
+                        materialDesign:HintAssist.Hint="CHỌN NGÀY"
+                        VerticalAlignment="Center" />
+
+            <Button Margin="10,0,0,0"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
+                    Click="Refresh_Clicked"
+                    VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Refresh"
+                                             Margin="8,0" />
+                    <TextBlock Text="TẢI LẠI" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <DataGrid x:Name="LogDataGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  Grid.Row="1"
+                  CanUserDeleteRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Tên tài khoản"
+                                    IsReadOnly="True"
+                                    Binding="{Binding Account}" />
+
+                <DataGridTextColumn Header="Tên"
+                                    IsReadOnly="True"
+                                    Binding="{Binding Name}" />
+
+                <DataGridTextColumn Header="Ngày sinh"
+                                    IsReadOnly="True"
+                                    Binding="{Binding BirthdayText}" />
+
+                <DataGridTextColumn Header="Số điện thoại"
+                                    IsReadOnly="True"
+                                    Binding="{Binding PhoneNumber}" />
+
+                <DataGridTextColumn Header="Vị trí địa lý"
+                                    IsReadOnly="True"
+                                    Binding="{Binding Location}" />
+
+                <DataGridTextColumn Header="Giới tính"
+                                    IsReadOnly="True"
+                                    Binding="{Binding Gender}" />
+
+                <DataGridTextColumn Header="Lời mời"
+                                    IsReadOnly="True"
+                                    Binding="{Binding MessageText}" />
+
+                <DataGridTextColumn Header="Ngày gửi"
+                                    IsReadOnly="True"
+                                    Binding="{Binding CreatedTime}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBlock Grid.Row="0"
+                   Text="CHI TIẾT KẾT BẠN THEO NGÀY"
+                   Margin="20"
+                   FontSize="20"
+                   VerticalAlignment="Center" />
+    </Grid>
+</Page>

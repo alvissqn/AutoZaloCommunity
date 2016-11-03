@@ -198,6 +198,18 @@
     <Compile Include="Pages\AutoSendMessageToFriendPage.xaml.cs">
       <DependentUpon>AutoSendMessageToFriendPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\LogSendMessageToStrangerPage.xaml.cs">
+      <DependentUpon>LogSendMessageToStrangerPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\LogSendMessageToFriendPage.xaml.cs">
+      <DependentUpon>LogSendMessageToFriendPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\LogRequestAddFriendSentPage.xaml.cs">
+      <DependentUpon>LogRequestAddFriendSentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\LogDailyActivityPage.xaml.cs">
+      <DependentUpon>LogDailyActivityPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SelectDevicePage.xaml.cs">
       <DependentUpon>SelectDevicePage.xaml</DependentUpon>
     </Compile>
@@ -249,6 +261,22 @@
     <Page Include="Pages\AutoSendMessageToFriendPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\LogSendMessageToStrangerPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\LogSendMessageToFriendPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\LogRequestAddFriendSentPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\LogDailyActivityPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\SelectDevicePage.xaml">
       <SubType>Designer</SubType>

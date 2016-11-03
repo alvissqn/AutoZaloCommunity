@@ -15,9 +15,7 @@ namespace ZaloCommunityDev.ViewModel
         private readonly Settings _settings;
         private readonly ZaloCommunityService _zaloCommunityService;
         private readonly DatabaseContext _dbContext;
-
         private string[] _onlineDevices;
-
         private string _selectedDevice;
         private ObservableCollection<User> _users;
 
@@ -39,12 +37,16 @@ namespace ZaloCommunityDev.ViewModel
             AutoSendMessageToStrangerNearByCommand = new RelayCommand<Filter>(AutoSendMessageToStrangerNearByInvoke);
         }
 
+        #region Commands
+
         public ICommand AutoAddFriendByPhoneCommand { get; }
         public ICommand AutoAddFriendNearByCommand { get; }
         public ICommand AutoSendMessageToFriendCommand { get; }
         public ICommand AutoSendMessageToStrangerByPhoneCommand { get; }
         public ICommand AutoSendMessageToStrangerNearByCommand { get; }
         public ICommand RefreshAvdListCommand { get; }
+
+        #endregion Commands
 
         #region Properties
 
@@ -78,6 +80,8 @@ namespace ZaloCommunityDev.ViewModel
 
         #endregion Properties
 
+        #region Methods
+
         public void Load()
         {
             OnlineDevices = _zaloCommunityService.OnlineDevices;
@@ -106,6 +110,8 @@ namespace ZaloCommunityDev.ViewModel
 
             return consoleOutput;
         }
+
+        #endregion Methods
 
         #region Auto
 

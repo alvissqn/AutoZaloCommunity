@@ -52,7 +52,7 @@
                             <ListBoxItem  Tag="Pages\AutoAddFriendNearByPage.xaml">
                                 <StackPanel Orientation="Horizontal">
                                     <wpf:PackIcon Kind="AccountLocation" />
-                                    <TextBlock Text="KẾT BẠN GẦN ĐÂY"
+                                    <TextBlock Text="KẾT BẠN THEO VỊ TRÍ"
                                                Margin="10,0,0,0" />
                                 </StackPanel>
                             </ListBoxItem>
@@ -75,7 +75,7 @@
                             <ListBoxItem Tag="Pages\AutoSendMessageToStrangerNearByPage.xaml">
                                 <StackPanel Orientation="Horizontal">
                                     <wpf:PackIcon Kind="NearMe" />
-                                    <TextBlock Text="GỬI TIN NHẮN GẦN ĐÂY"
+                                    <TextBlock Text="GỬI TIN NHẮN THEO VỊ TRÍ"
                                                Margin="10,0,0,0" />
                                 </StackPanel>
                             </ListBoxItem>
@@ -86,6 +86,38 @@
                                                Margin="10,0,0,0" />
                                 </StackPanel>
                             </ListBoxItem>
+
+                            <ListBoxItem Tag="Pages\LogDailyActivityPage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="Store24Hour" />
+                                    <TextBlock Text="BÁO CÁO HOẠT ĐỘNG HÀNG NGÀY"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+
+                            <ListBoxItem Tag="Pages\LogRequestAddFriendSentPage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="Store24Hour" />
+                                    <TextBlock Text="BÁO CÁO KẾT BẠN"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+
+                            <ListBoxItem Tag="Pages\LogSendMessageToFriendPage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="Store24Hour" />
+                                    <TextBlock Text="BÁO CÁO GỬI TIN CHO BẠN"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem Tag="Pages\LogSendMessageToStrangerPage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="Store24Hour" />
+                                    <TextBlock Text="BÁO CÁO GỬI TIN CHO NGƯỜI LẠ"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+
                         </ListBox.Items>
                     </ListBox>
 
