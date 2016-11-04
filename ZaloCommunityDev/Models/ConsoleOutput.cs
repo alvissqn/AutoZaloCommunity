@@ -74,12 +74,12 @@ namespace ZaloCommunityDev.Models
         public ObservableCollection<string> Outputs { get; set; } = new ObservableCollection<string>();
 
         public void Received(string data) => DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                                                                   {
-                                                                                       if (data?.StartsWith("ZALO", StringComparison.OrdinalIgnoreCase) ?? false)
-                                                                                       {
-                                                                                           Outputs.Add(data);
-                                                                                       }
-                                                                                   });
+        {
+            if (data?.StartsWith("ZALO", StringComparison.OrdinalIgnoreCase) ?? false)
+            {
+                Outputs.Add(data);
+            }
+        });
 
         public void SetWindowProcess(Process process)
         {

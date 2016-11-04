@@ -22,7 +22,7 @@ namespace ZaloCommunityDev.Service
                 args[1] = directory.Split("\\".ToArray()).Last();
             }
 
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var sessionId = args[1];
 

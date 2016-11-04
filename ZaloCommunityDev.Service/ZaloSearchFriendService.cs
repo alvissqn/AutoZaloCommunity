@@ -112,5 +112,11 @@ namespace ZaloCommunityDev.Service
                 ZaloHelper.SendCompletedTaskSignal();
             }
         }
+
+        public void SearchFriendsLocation(string areaNameOrCoordinator)
+        {
+            //I'm in page contact
+
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace ZaloCommunityDev.Service
 
         public void AddFriendNearBy(Filter filter)
         {
+            filter.Locations = SetLocationByName(filter.Locations);
             try
             {
                 ZaloHelper.Output("Tiến hành kết bạn theo vị trí địa lý");
@@ -117,7 +118,7 @@ namespace ZaloCommunityDev.Service
                             string reason;
                             if (!filter.IsValidProfile(profile, out reason))
                             {
-                                ZaloHelper.Output("Bỏ qua bạn này, lý do: "+ reason);
+                                ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
                                 TouchAtIconTopLeft();
                                 continue;
                             }
@@ -190,10 +191,11 @@ namespace ZaloCommunityDev.Service
 
                 var profile = new ProfileMessage
                 {
-                    Name = pointRowFriend.Name
+                    Name = pointRowFriend.Name,
+                    Location = filter.Locations
                 };
 
-                if (Screen.InfoRect.Contains(pointRowFriend.Point) 
+                if (Screen.InfoRect.Contains(pointRowFriend.Point)
                     && ClickToAddFriendAt(profile, pointRowFriend.Point, filter))
                 {
                     DbContext.AddProfile(profile, Settings.User.Username);
@@ -241,7 +243,6 @@ namespace ZaloCommunityDev.Service
                 return false;
             }
 
-
             if (!info.IsAddedToFriend)
             {
                 return AddFriendViaIconButton(profile, filter);
@@ -272,7 +273,7 @@ namespace ZaloCommunityDev.Service
 
             TouchAt(Screen.AddFriendScreenGreetingTextField);
 
-            var textGreeting = ZaloHelper.GetZalomessages(profile, filter)?.FirstOrDefault(x=>x.Type==ZaloMessageType.Text)?.Value;
+            var textGreeting = ZaloHelper.GetZalomessages(profile, filter)?.FirstOrDefault(x => x.Type == ZaloMessageType.Text)?.Value;
             if (!string.IsNullOrWhiteSpace(textGreeting))
             {
                 ZaloHelper.Output($"!gửi: {textGreeting}");
@@ -289,14 +290,14 @@ namespace ZaloCommunityDev.Service
             }
             else
             {
-               TouchAtIconTopLeft(); //GoBack to profile
+                TouchAtIconTopLeft(); //GoBack to profile
             }
 
             Delay(300);
 
             TouchAtIconTopLeft(); //GoBack to friendList
 
-            DbContext.LogAddFriend(profile, Settings.User.Username ,textGreeting);
+            DbContext.LogAddFriend(profile, Settings.User.Username, textGreeting);
 
             return true;
         }

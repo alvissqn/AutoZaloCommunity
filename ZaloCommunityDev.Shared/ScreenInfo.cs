@@ -81,6 +81,17 @@
         public ScreenPoint LoginScreenPasswordTextField { get; set; } = new ScreenPoint(1133, 535);
         public ScreenPoint LoginScreenOkButton { get; set; } = new ScreenPoint(650, 760);
         public ScreenPoint HomeScreenFriendTab { get; set; } = new ScreenPoint(520, 110);
+
+        #endregion
+
+        #region FakeGps
+        public ScreenPoint FakeGpsScreenMenu { get; set; } = new ScreenPoint(1226, 114);
+        public ScreenPoint FakeGpsSearch { get; set; } = new ScreenPoint(850, 130);
+        public ScreenPoint FakeGpsLocationTab { get; set; } = new ScreenPoint(900, 850);
+        public ScreenPoint FakeGpsCountryTextField { get; set; } = new ScreenPoint(900, 1000);
+        public ScreenPoint FakeGpsLocationOkButton { get; set; } = new ScreenPoint(1000, 1160);
+        public ScreenPoint FakeGpsStopButton { get; set; } = new ScreenPoint(1000, 115);
+        public ScreenPoint FakeGpsStartButton { get; set; } = new ScreenPoint(850, 115);
         #endregion
     }
 }

@@ -53,10 +53,9 @@ namespace ZaloCommunityDev.Service
                     Delay(200);
                     TouchAt(Screen.LoginScreenPhoneTextField);
                     Delay(200);
-                    for (var i = 0; i < 12; i++)
-                    {
-                        SendKey(KeyCode.AkeycodeDel);
-                    }
+
+                    DeleteWordInFocusedTextField();
+
                     SendText(account);
 
                     ZaloHelper.Output("Đang gửi mật khẩu");

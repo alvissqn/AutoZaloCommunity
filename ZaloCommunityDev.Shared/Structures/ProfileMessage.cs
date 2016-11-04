@@ -27,11 +27,16 @@ namespace ZaloCommunityDev.Shared.Structures
             get { return _birthdayText; }
             set
             {
-                if (value.Any(c => char.IsDigit(c)))
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _birthdayText = string.Empty;
+                    return;
+                }
+
+                if (value.Any(char.IsDigit))
                 {
                     _birthdayText = value;
                 }
-                _birthdayText = string.Empty;
             }
         }
 
@@ -40,6 +45,9 @@ namespace ZaloCommunityDev.Shared.Structures
 
         public static bool IsEmpty(ProfileMessage profile)
         {
+            if (profile == null)
+                return true;
+
             if (!string.IsNullOrWhiteSpace(profile.Name))
                 return false;
 

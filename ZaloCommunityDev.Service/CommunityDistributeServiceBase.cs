@@ -13,12 +13,14 @@ using ZaloCommunityDev.ImageProcessing;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
 using ZaloCommunityDev.Service.Models;
+using System.Reflection;
 
 namespace ZaloCommunityDev.Service
 {
-
     public abstract class CommunityDistributeServiceBase
     {
+        public static string WorkingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
         private readonly ILog _log = LogManager.GetLogger(nameof(CommunityDistributeServiceBase));
 
         protected readonly DatabaseContext DbContext;
@@ -30,7 +32,7 @@ namespace ZaloCommunityDev.Service
         protected bool IsDebug => Settings.IsDebug;
         protected ScreenInfo Screen => Settings.Screen;
 
-         protected CommunityDistributeServiceBase(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
+        protected CommunityDistributeServiceBase(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest ZaloAdbRequest)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -50,12 +52,11 @@ namespace ZaloCommunityDev.Service
         public string CaptureScreenNow()
         {
             var fileName = DateTime.Now.Ticks.ToString();
-
-            InvokeProc($"/c adb shell screencap -p sdcard/DCIM/zalocommnuitydev.png");
+            InvokeProc($"/c adb shell screencap -p sdcard/zalocommnunitydev/_screen.png");
 
             Delay(100);
 
-            InvokeProc($"/c adb pull sdcard/DCIM/zalocommnuitydev.png d:/zalo_images/{fileName}.png");
+            InvokeProc($"/c adb pull sdcard/zalocommnunitydev/_screen.png \"{ConvertToAndroidPath(WorkingPath)}/ImageData/CaptureScreen/{fileName}.png\"");
 
             Delay(100);
 
@@ -136,7 +137,61 @@ namespace ZaloCommunityDev.Service
             Delay(Settings.Delay.PressedKeyEvent);
         }
 
-        public void SetGps(string lat, string longt)
+        public string SetLocationByName(string areaNameOrCoord)
+        {
+            if (string.IsNullOrWhiteSpace(areaNameOrCoord))
+                return string.Empty;
+
+            try
+            {
+                InvokeProc("/c adb shell am force-stop com.blogspot.newapphorizons.fakegps");
+
+                Delay(Settings.Delay.CloseMap);
+
+                InvokeProc("/c adb shell am start -n com.blogspot.newapphorizons.fakegps/com.blogspot.newapphorizons.fakegps.MainActivity");
+
+                Delay(Settings.Delay.OpenMap);
+
+                TouchAt(Screen.FakeGpsScreenMenu);
+
+                Delay(500);
+
+                TouchAt(Screen.FakeGpsSearch);
+
+                Delay(500);
+
+                TouchAt(Screen.FakeGpsLocationTab);
+
+                Delay(500);
+
+                TouchAt(Screen.FakeGpsCountryTextField);
+
+                SendText(areaNameOrCoord);
+
+                Delay(500);
+
+                TouchAt(Screen.FakeGpsLocationOkButton);
+
+                TouchAt(Screen.FakeGpsStopButton);
+                Delay(500);
+
+                TouchAt(Screen.FakeGpsStartButton);
+                Delay(300);
+
+                var locationText = InvokeProc("/c adb shell dumpsys location");
+
+                var logLat = locationText.Split("\r\n".ToArray())?.LastOrDefault(x => x.TrimStart().StartsWith("Location[gps"))?.Substring("gps ", " acc");
+
+                return $"{logLat}({areaNameOrCoord})";
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+                return string.Empty;
+            }
+        }
+
+        public void SetGpsByCxdeberryGeoTag(string lat, string longt)
         {
             InvokeProc("/c adb shell am force-stop com.cxdeberry.geotag");
 
@@ -183,31 +238,27 @@ namespace ZaloCommunityDev.Service
             Thread.Sleep(0x3e8);
         }
 
-        public void UpImage(string path)
+        private static string ConvertToAndroidPath(string path) => path.Replace(@"\", @"/");
+
+        public void UpImage(FileInfo path)
         {
-            InvokeProc("/c adb push \"" + path + "\" sdcard/DCIM && adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard/DCIM/");
+            InvokeProc($"/c adb push \"{ConvertToAndroidPath(path.FullName)}\" sdcard/DCIM && adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard/DCIM/");
             Thread.Sleep(100);
         }
 
-        public void UpImageChat(string path)
+        public void UpImageChat(FileInfo path)
         {
-            InvokeProc("/c adb push \"" + path + "\" sdcard/DCIM/image.png && adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard/DCIM/");
+            InvokeProc("/c adb push \"" + ConvertToAndroidPath(path.FullName) + "\" sdcard/DCIM/image.png && adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard/DCIM/");
             Thread.Sleep(100);
         }
 
-        public void UpImagePost(string path)
+        public void UpImagePost(FileInfo path)
         {
-            InvokeProc("/c adb push \"" + path + "\" sdcard/DCIM && adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard/DCIM/");
+            InvokeProc("/c adb push \"" + ConvertToAndroidPath(path.FullName) + "\" sdcard/DCIM && adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard/DCIM/");
             Thread.Sleep(100);
         }
 
-        protected void DeleteWordInFocusedTextField(int word = 15)
-        {
-            for (var i = 0; i < word; i++)
-            {
-                SendKey(KeyCode.AkeycodeDel);
-            }
-        }
+        protected void DeleteWordInFocusedTextField(int word = 15) => SendKey(KeyCode.AkeycodeDel, word);
 
         protected ProfileMessage GrabProfileInfo(string initName = null)
         {
@@ -226,7 +277,7 @@ namespace ZaloCommunityDev.Service
             return profile;
         }
 
-        protected void InvokeProc(string args)
+        protected string InvokeProc(string args)
         {
             var process = new Process
             {
@@ -241,6 +292,7 @@ namespace ZaloCommunityDev.Service
 
             process.Start();
             process.WaitForExit();
+            return process.StandardOutput.ReadToEnd();
         }
 
         protected void ScrollList(int times)

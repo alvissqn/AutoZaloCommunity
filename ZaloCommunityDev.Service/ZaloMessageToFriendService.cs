@@ -32,6 +32,13 @@ namespace ZaloCommunityDev.Service
 
                 TouchAt(Screen.HomeScreenFriendTab);
 
+                if (string.IsNullOrWhiteSpace(filter.IncludedPeopleNames))
+                {
+                    SendMessageToFriendWithNames(filter);
+
+                    return;
+                }
+
                 Delay(1000);
                 ZaloHelper.Output("Đang phân tích dữ liệu");
 
@@ -123,6 +130,11 @@ namespace ZaloCommunityDev.Service
             {
                 ZaloHelper.SendCompletedTaskSignal();
             }
+        }
+
+        private void SendMessageToFriendWithNames(Filter filter)
+        {
+            //Search in contact
         }
 
         public void SendMessageByPhoneNumber(Filter filter)
@@ -219,6 +231,8 @@ namespace ZaloCommunityDev.Service
 
         public void SendMessageNearBy(Filter filter)
         {
+            filter.Locations = SetLocationByName(filter.Locations);
+
             try
             {
                 var canSentToday = Settings.MaxMessageStrangerPerDay - DbContext.GetMessageToStragerCount(Settings.User.Username);
@@ -285,12 +299,11 @@ namespace ZaloCommunityDev.Service
 
                     friendNotAdded = GetPositionAccountNotSent(x => profilesPage2 = x).OrderByDescending(x => x.Point.Y);
                     points = new Stack<FriendPositionMessage>(friendNotAdded);
-
-                    profilesPage1.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
-                    ZaloHelper.Output($"!--------------------");
-                    friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!bạn chưa được gửi tin nhắn: {x}"));
-
                     profilesPage2.ToList().ForEach(x => ZaloHelper.Output($"!tìm thấy bạn trên màn hình: {x}"));
+
+                    ZaloHelper.OutputLine();
+                    friendNotAdded.ToList().ForEach(x => ZaloHelper.Output($"!bạn chưa được gửi tin nhắn: {x}"));
+                    ZaloHelper.OutputLine();
 
                     if (!profilesPage2.Except(profilesPage1).Any())
                     {
@@ -308,9 +321,10 @@ namespace ZaloCommunityDev.Service
 
                 var request = new ChatRequest
                 {
-                    Profile = new ProfileMessage()
+                    Profile = new ProfileMessage
                     {
-                        Name = pointRowFriend.Name
+                        Name = pointRowFriend.Name,
+                        Location = filter.Locations
                     },
                     Objective = ChatObjective.StrangerNearBy
                 };
