@@ -272,18 +272,24 @@ namespace ZaloCommunityDev.Service
 
             TouchAt(Screen.AddFriendScreenGreetingTextField);
 
-            var textGreeting = ZaloHelper.GetGreetingText(profile, filter);
-
-            ZaloHelper.Output($"!gửi: {textGreeting}");
-            SendText(textGreeting);
-
-            if (Settings.IsDebug)
+            var textGreeting = ZaloHelper.GetZalomessages(profile, filter)?.FirstOrDefault(x=>x.Type==ZaloMessageType.Text)?.Value;
+            if (!string.IsNullOrWhiteSpace(textGreeting))
             {
-                TouchAtIconTopLeft();
+                ZaloHelper.Output($"!gửi: {textGreeting}");
+                SendText(textGreeting);
+
+                if (Settings.IsDebug)
+                {
+                    TouchAtIconTopLeft();
+                }
+                else
+                {
+                    TouchAt(Screen.AddFriendScreenOkButton); //TouchToAddFriend, zalo auto goto profile after sent
+                }
             }
             else
             {
-                TouchAt(Screen.AddFriendScreenOkButton); //TouchToAddFriend then goto profile
+               TouchAtIconTopLeft(); //GoBack to profile
             }
 
             Delay(300);

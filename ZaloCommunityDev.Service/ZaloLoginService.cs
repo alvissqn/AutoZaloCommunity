@@ -20,8 +20,8 @@ namespace ZaloCommunityDev.Service
         {
             try
             {
-                int count = 0;
-                bool finish = false;
+                var count = 0;
+                var finish = false;
                 while (!finish && count < 5)
                 {
                     //EnableAbdKeyoard();
@@ -29,7 +29,7 @@ namespace ZaloCommunityDev.Service
                     var password = user.Password;
                     var region = user.Region;
 
-                    ZaloHelper.Output("Đóng quá trình trước: " + account);
+                    ZaloHelper.Output("Đóng ZALO trước đó");
                     InvokeProc("/c adb shell am force-stop com.zing.zalo");
                     Delay(Settings.Delay.WaitForceCloseApp);
 
@@ -48,7 +48,7 @@ namespace ZaloCommunityDev.Service
                     TouchAt(Screen.LoginScreenFirstCountryItem);
                     Delay(500);
 
-                    ZaloHelper.Output("đang gửi tên đăng nhập");
+                    ZaloHelper.Output("Đang gửi tên đăng nhập");
                     TouchAt(Screen.LoginScreenPhoneTextField);
                     Delay(200);
                     TouchAt(Screen.LoginScreenPhoneTextField);
@@ -59,7 +59,7 @@ namespace ZaloCommunityDev.Service
                     }
                     SendText(account);
 
-                    ZaloHelper.Output("đang gửi mật khẩu");
+                    ZaloHelper.Output("Đang gửi mật khẩu");
                     Delay(100);
                     TouchAt(Screen.LoginScreenPasswordTextField);
                     Delay(500);

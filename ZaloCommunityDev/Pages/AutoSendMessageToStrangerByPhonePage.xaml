@@ -24,12 +24,15 @@
                                 Margin="20"
                                 StartCommand="{Binding AutoSendMessageToStrangerByPhoneCommand}"
                                 NumberOfActionHeader="Số lần gửi tin nhắn"
+                                TextGreetingForFemaleHeader="Tin nhắn bạn nữ"
+                                TextGreetingForMaleHeader="Tin nhắn bạn nam"
                                 AccountNameVisibility="Collapsed"
                                 ExcludePeopleNamesVisibility="Collapsed"
                                 ExcludePhoneNumbersVisibility="Collapsed"
                                 IgnoreRecentActionBeforeVisibility="Collapsed"
                                 IncludedPeopleNamesVisibility="Collapsed"
                                 IncludePhoneNumbersHeader="Danh bạ điện thoại"
+                                
                                 LocationsVisibility="Collapsed" />
 
         <TextBlock Grid.Row="0"

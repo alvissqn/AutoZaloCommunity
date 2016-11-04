@@ -3,5 +3,7 @@
 namespace ZaloCommunityDev.Data.Models
 {
     [Table("Profile")]
-    public class ProfileDto : ProfileBase { }
+    public class ProfileDto : ProfileBase {
+       public bool IsFriend { get; set; }
+    }
 }

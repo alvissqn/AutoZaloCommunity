@@ -29,13 +29,7 @@ namespace ZaloCommunityDev.Service
             ZaloHelper.Output($"Request:{args[0]} .SessionId:{sessionId}.");
 
             var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\setting.json"));
-            var filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\filter.json"));
-
-            //IKernel kernal = new StandardKernel();
-            //kernal.Bind<IZaloImageProcessing>().To<ZaloImageProcessing>();
-            //kernal.Bind<DatabaseContext>().ToSelf();
-            //kernal.Bind<Settings>().ToConstant(settings);
-            //kernal.Bind<ZaloAdbRequest>().ToSelf();
+            Func<Filter> getFilter = () => JsonConvert.DeserializeObject<Filter>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\filter.json"));
 
             var zaloImageProcessing = new ZaloImageProcessing();
             var databaseContext = new DatabaseContext();
@@ -55,40 +49,45 @@ namespace ZaloCommunityDev.Service
                 case "ket-ban-gan-day":
 
                     var zaloAddFriendService = new ZaloAddFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-                    zaloAddFriendService.AddFriendNearBy(filter);
+                    zaloAddFriendService.AddFriendNearBy(getFilter());
 
                     break;
 
                 case RunnerConstants.addfriendbyphone:
                 case "ket-ban-qua-dien-thoai":
                     zaloAddFriendService = new ZaloAddFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-                    zaloAddFriendService.AddFriendByPhone(filter);
+                    zaloAddFriendService.AddFriendByPhone(getFilter());
 
                     break;
 
                 case RunnerConstants.sendmessagenearby:
                 case "gui-tin-nhan-gan-day":
                     var zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-                    zaloMessageToFriendService.SendMessageNearBy(filter);
+                    zaloMessageToFriendService.SendMessageNearBy(getFilter());
 
                     break;
 
                 case RunnerConstants.sendmessagebyphonenumber:
                 case "gui-tin-nhan-qua-so-dien-thoai":
                     zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-                    zaloMessageToFriendService.SendMessageByPhoneNumber(filter);
+                    zaloMessageToFriendService.SendMessageByPhoneNumber(getFilter());
 
                     break;
 
                 case RunnerConstants.sendmessagetofriendsincontacts:
                 case "gui-tin-nhan-trong-danh-ba":
                     zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-                    zaloMessageToFriendService.SendMessageToFriendInContactList(filter);
+                    zaloMessageToFriendService.SendMessageToFriendInContactList(getFilter());
+
+                    break;
+
+                case RunnerConstants.searchallfriendsincontacts:
+                case "tim-tat-ca-cac-ban-trong-danh-ba":
+                    var  zaloSearchFriendService = new ZaloSearchFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
+                    zaloSearchFriendService.SearchFriendInContactList();
 
                     break;
             }
-
-            throw new Exception("TASK COMPLETED");
         }
     }
 }

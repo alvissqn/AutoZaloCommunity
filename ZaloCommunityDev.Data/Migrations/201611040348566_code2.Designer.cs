@@ -7,13 +7,13 @@ namespace ZaloCommunityDev.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class initcode : IMigrationMetadata
+    public sealed partial class code2 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(initcode));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(code2));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611021314052_initcode"; }
+            get { return "201611040348566_code2"; }
         }
         
         string IMigrationMetadata.Source

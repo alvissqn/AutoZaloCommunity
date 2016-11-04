@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:controls="clr-namespace:ZaloCommunityDev.Controls"
       DataContext="{Binding Main,Source={StaticResource Locator}}"
       mc:Ignorable="d"
@@ -25,6 +24,8 @@
                                 StartCommand="{Binding AutoSendMessageToFriendCommand}"
                                 NumberOfActionHeader="Số lần gửi tin nhắn"
                                 LocationsHeader="Vị trí địa lý (áp dụng trong database)"
+                                TextGreetingForFemaleHeader="Tin nhắn bạn nữ"
+                                TextGreetingForMaleHeader="Tin nhắn bạn nam"
                                 AccountNameVisibility="Collapsed" />
 
         <TextBlock Grid.Row="0"
@@ -33,5 +34,4 @@
                    FontSize="20"
                    VerticalAlignment="Center" />
     </Grid>
-
 </Page>

@@ -200,6 +200,9 @@
     <Compile Include="Pages\AutoSendMessageToFriendPage.xaml.cs">
       <DependentUpon>AutoSendMessageToFriendPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ProfilePage.xaml.cs">
+      <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\LogSendMessageToStrangerPage.xaml.cs">
       <DependentUpon>LogSendMessageToStrangerPage.xaml</DependentUpon>
     </Compile>
@@ -263,6 +266,10 @@
     <Page Include="Pages\AutoSendMessageToFriendPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ProfilePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\LogSendMessageToStrangerPage.xaml">
       <Generator>MSBuild:Compile</Generator>

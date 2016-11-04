@@ -93,6 +93,7 @@
                     <TextBlock Text="{Binding ElementName=This, Path=IncludedPeopleNamesHeader}"
                                VerticalAlignment="Bottom" />
                     <TextBox Grid.Column="1"
+                             AcceptsReturn="True"
                              Text="{Binding IncludedPeopleNames}" />
                 </Grid>
 
@@ -107,6 +108,7 @@
                     <TextBlock Text="{Binding ElementName=This, Path=ExcludePeopleNamesHeader}"
                                VerticalAlignment="Bottom" />
                     <TextBox Grid.Column="1"
+                             AcceptsReturn="True"
                              Text="{Binding ExcludePeopleNames}" />
                 </Grid>
 
@@ -137,6 +139,7 @@
                     <TextBlock Text="{Binding ElementName=This, Path=ExcludePhoneNumbersHeader}"
                                VerticalAlignment="Bottom" />
                     <TextBox Grid.Column="1"
+                             AcceptsReturn="True"
                              Text="{Binding ExcludePhoneNumbers}" />
                 </Grid>
 
@@ -147,11 +150,15 @@
                         <ColumnDefinition MinWidth="50"
                                           Width="220" />
                         <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding ElementName=This, Path=FilterAgeRangeHeader}"
                                VerticalAlignment="Bottom" />
                     <TextBox Grid.Column="1"
                              Text="{Binding FilterAgeRange}" />
+
+                    <CheckBox Grid.Column="2"
+                              IsChecked="{Binding FilterAgeRangeAcceptIfHidden}" Content="Chấp nhận gửi nếu không phân tích được năm sinh" />
                 </Grid>
 
                 <Grid Margin="5"

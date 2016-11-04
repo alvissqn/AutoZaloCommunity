@@ -3,8 +3,6 @@ using ZaloCommunityDev.Shared.Structures;
 
 namespace ZaloCommunityDev.ImageProcessing
 {
-
-
     public interface IZaloImageProcessing
     {
 

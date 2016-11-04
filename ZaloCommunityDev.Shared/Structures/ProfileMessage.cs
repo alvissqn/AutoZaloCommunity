@@ -1,25 +1,40 @@
 ﻿using System;
+using System.Linq;
 
 namespace ZaloCommunityDev.Shared.Structures
 {
     public class ProfileMessage
     {
+        private string _birthdayText;
         public string Name { get; set; }
         public string Gender { get; set; }
+
         public Gender GenderValue()
         {
             if (Gender == null)
             {
                 return Shared.Gender.Unknown;
             }
-            if (Gender.ToLower().Contains("na"))
-                return Shared.Gender.Male;
-            else
-                return Shared.Gender.Female;
+
+            return Gender.ToLower().Contains("na") ? Shared.Gender.Male : Shared.Gender.Female;
         }
+
         public string PhoneNumber { get; set; }
-        public DateTime Birthday { get;  set; }
-        public string BirthdayText { get;  set; }
+        public DateTime Birthday { get; set; }
+
+        public string BirthdayText
+        {
+            get { return _birthdayText; }
+            set
+            {
+                if (value.Any(c => char.IsDigit(c)))
+                {
+                    _birthdayText = value;
+                }
+                _birthdayText = string.Empty;
+            }
+        }
+
         public bool IsAddedToFriend { get; set; }
         public string Location { get; set; }
 
@@ -41,4 +56,3 @@ namespace ZaloCommunityDev.Shared.Structures
         }
     }
 }
-

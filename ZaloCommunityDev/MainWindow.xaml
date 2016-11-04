@@ -49,6 +49,15 @@
                                                Margin="10,0,0,0" />
                                 </StackPanel>
                             </ListBoxItem>
+
+                            <ListBoxItem Tag="Pages\ProfilePage.xaml">
+                                <StackPanel Orientation="Horizontal">
+                                    <wpf:PackIcon Kind="ContactMail" />
+                                    <TextBlock Text="DANH BẠ"
+                                               Margin="10,0,0,0" />
+                                </StackPanel>
+                            </ListBoxItem>
+
                             <ListBoxItem  Tag="Pages\AutoAddFriendNearByPage.xaml">
                                 <StackPanel Orientation="Horizontal">
                                     <wpf:PackIcon Kind="AccountLocation" />
@@ -86,7 +95,7 @@
                                                Margin="10,0,0,0" />
                                 </StackPanel>
                             </ListBoxItem>
-
+                            
                             <ListBoxItem Tag="Pages\LogDailyActivityPage.xaml">
                                 <StackPanel Orientation="Horizontal">
                                     <wpf:PackIcon Kind="Store24Hour" />
@@ -117,7 +126,6 @@
                                                Margin="10,0,0,0" />
                                 </StackPanel>
                             </ListBoxItem>
-
                         </ListBox.Items>
                     </ListBox>
 

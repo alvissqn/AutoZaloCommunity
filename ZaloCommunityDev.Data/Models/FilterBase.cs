@@ -26,6 +26,8 @@ namespace ZaloCommunityDev.Data.Models
 
         public string FilterAgeRange { get; set; }
 
+         public bool FilterAgeRangeAcceptIfHidden { get; set; }
+
         public string IncludedPeopleNames { get; set; }
 
         public string ExcludePeopleNames { get; set; }

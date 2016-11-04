@@ -17,6 +17,7 @@
         private string _sentImageForMale;
         private string _sentImageForFemale;
         private string _ignoreRecentActionBefore;
+        private bool _filterAgeRangeAcceptIfHidden  =true;
 
         public string SentImageForMale
         {
@@ -92,6 +93,16 @@
         {
             get { return _filterAgeRange; }
             set { _filterAgeRange = value; RaisePropertyChanged(); }
+        }
+
+        public bool FilterAgeRangeAcceptIfHidden
+        {
+            get { return _filterAgeRangeAcceptIfHidden; }
+            set
+            {
+                _filterAgeRangeAcceptIfHidden = value;
+                RaisePropertyChanged();
+            }
         }
 
         public GenderSelection GenderSelection

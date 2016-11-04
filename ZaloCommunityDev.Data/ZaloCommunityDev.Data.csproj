@@ -75,9 +75,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseContext.cs" />
-    <Compile Include="Migrations\201611021314052_initcode.cs" />
-    <Compile Include="Migrations\201611021314052_initcode.Designer.cs">
-      <DependentUpon>201611021314052_initcode.cs</DependentUpon>
+    <Compile Include="Migrations\201611040348566_code2.cs" />
+    <Compile Include="Migrations\201611040348566_code2.Designer.cs">
+      <DependentUpon>201611040348566_code2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AddFriendByPhoneConfigDto.cs" />
@@ -112,8 +112,8 @@
     <None Include="Data\db1.accdb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201611021314052_initcode.resx">
-      <DependentUpon>201611021314052_initcode.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201611040348566_code2.resx">
+      <DependentUpon>201611040348566_code2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

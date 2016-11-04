@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
 
@@ -16,7 +18,8 @@ namespace ZaloCommunityDev.Service
             profile.PhoneNumber = info.PhoneNumber;
         }
 
-        public static void Output(string text) => Console.WriteLine("ZALOSERVICE>> "+ text);
+        public static void Output(string text) => Console.WriteLine("ZALOSERVICE>> " + text);
+
         public static void SendCompletedTaskSignal()
         {
             Console.WriteLine("ZALOSERVICE>> @TASK COMPLETED");
@@ -24,16 +27,50 @@ namespace ZaloCommunityDev.Service
             Process.GetCurrentProcess().Kill();
         }
 
-        public static string GetGreetingText(ProfileMessage profle, Filter filter)
+        public static ZaloMessage[] GetZalomessages(ProfileMessage profile, Filter filter)
         {
-            if (profle.GenderValue() == Gender.Male)
+            if (profile.GenderValue() == Gender.Male)
             {
-                return filter.TextGreetingForMale;
+                return ParseZaloMessage(filter.TextGreetingForMale);
             }
             else
             {
-                return filter.TextGreetingForFemale;
+                return ParseZaloMessage(filter.TextGreetingForFemale);
             }
+        }
+
+        private static ZaloMessage[] ParseZaloMessage(string text)
+        {
+            var messages = new List<ZaloMessage>();
+            var values = text.Split("\r\n".ToCharArray());
+            foreach (var value in values)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    continue;
+
+                var zaloMessage = new ZaloMessage
+                {
+                    Type = value.StartsWith("%") ? ZaloMessageType.Image : ZaloMessageType.Text,
+                    Value = value
+                };
+                try
+                {
+                    if (zaloMessage.Type == ZaloMessageType.Image)
+                    {
+                        var f = new FileInfo(zaloMessage.Value.Substring(1));
+                        zaloMessage.Value = f.FullName;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Output("Không tìm thấy hình ảnh ở đường dẫn: " + zaloMessage.Value);
+                    continue;
+                }
+
+                messages.Add(zaloMessage);
+            }
+
+            return messages.ToArray();
         }
 
         internal static void OutputLine()

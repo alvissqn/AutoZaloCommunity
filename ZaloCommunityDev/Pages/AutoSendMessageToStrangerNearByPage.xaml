@@ -24,6 +24,8 @@
                                 Margin="20"
                                 StartCommand="{Binding AutoSendMessageToStrangerNearByCommand}"
                                 NumberOfActionHeader="Số lần gửi tin nhắn"
+                                TextGreetingForFemaleHeader="Tin nhắn bạn nữ"
+                                TextGreetingForMaleHeader="Tin nhắn bạn nam"
                                 AccountNameVisibility="Collapsed"
                                 ExcludePeopleNamesVisibility="Collapsed"
                                 ExcludePhoneNumbersVisibility="Collapsed"

@@ -74,7 +74,7 @@ namespace ZaloCommunityDev.Service
 
                     var rowFriend = stack.Pop();
 
-                    if (DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == rowFriend.Name && x.Account==Settings.User.Username) != null)
+                    if (DbContext.LogMessageSentToFriendSet.FirstOrDefault(x => x.Name == rowFriend.Name && x.Account == Settings.User.Username) != null)
                     {
                         ZaloHelper.Output($"Đã gửi tin cho bạn {rowFriend.Name} rồi");
 
@@ -88,7 +88,7 @@ namespace ZaloCommunityDev.Service
                         {
                             Name = rowFriend.Name,
                             Location = profile?.Location,
-                            PhoneNumber =  profile?.PhoneNumber
+                            PhoneNumber = profile?.PhoneNumber
                         },
                         Objective = ChatObjective.FriendInContactList
                     };
@@ -100,14 +100,12 @@ namespace ZaloCommunityDev.Service
 
                         NavigateToProfileScreenFromChatScreenToGetInfoThenGoBack(request);
 
-
                         string reason;
                         if (!filter.IsValidProfile(request.Profile, out reason))
                         {
                             ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
                             TouchAtIconTopLeft(); //Touch to close side bar
                             Delay(400);
-
                         }
                         else if (Chat(request, filter))
                         {
@@ -168,7 +166,7 @@ namespace ZaloCommunityDev.Service
 
                         DeleteWordInFocusedTextField();
                         SendText(phoneNumber);
-                        
+
                         SendKey(KeyCode.AkeycodeEnter);
                         Thread.Sleep(4000);
 
@@ -190,7 +188,7 @@ namespace ZaloCommunityDev.Service
                             {
                                 ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
 
-                                TouchAtIconTopLeft(); //Goback to Phone Entry
+                                TouchAtIconTopLeft(); //Go back to phone Entry
                                 Delay(400);
                             }
                             else
@@ -365,32 +363,43 @@ namespace ZaloCommunityDev.Service
         {
             TouchAt(Screen.ChatScreenTextField);
             Delay(300);
-            var chatText = ZaloHelper.GetGreetingText(profile.Profile, filter);
-            SendText(chatText);
-            Delay(500);
 
-            if (!IsDebug)
+            var messages = ZaloHelper.GetZalomessages(profile.Profile, filter);
+            foreach (var message in messages)
             {
-                TouchAt(Screen.ChatScreenSendButton);
-            }
+                if (message.Type == ZaloMessageType.Text)
+                {
+                    SendText(message.Value);
+                    Delay(500);
 
-            Delay(1000);
+                    if (!IsDebug)
+                    {
+                        //TouchAt(Screen.ChatScreenSendButton);
+                        SendKey(KeyCode.AkeycodeEnter);
+                    }
+                }
+                else
+                {
+                }
+
+                Delay(1000);
+
+                switch (profile.Objective)
+                {
+                    case ChatObjective.FriendInContactList:
+                        DbContext.AddLogMessageSentToFriend(profile.Profile, Settings.User.Username, message.Value);
+
+                        break;
+
+                    case ChatObjective.StrangerByPhone:
+                    case ChatObjective.StrangerNearBy:
+                        DbContext.AddLogMessageSentToStranger(profile.Profile, Settings.User.Username, message.Value);
+
+                        break;
+                }
+            }
 
             TouchAt(Screen.IconTopLeft);//Go Back
-
-            switch (profile.Objective)
-            {
-                case ChatObjective.FriendInContactList:
-                    DbContext.AddLogMessageSentToFriend(profile.Profile, Settings.User.Username, chatText);
-
-                    break;
-
-                case ChatObjective.StrangerByPhone:
-                case ChatObjective.StrangerNearBy:
-                    DbContext.AddLogMessageSentToStranger(profile.Profile, Settings.User.Username, chatText);
-
-                    break;
-            }
 
             return true;
         }

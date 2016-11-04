@@ -85,6 +85,13 @@ namespace ZaloCommunityDev.ViewModel
             await Task.Factory.StartNew(() => { RunZaloService(RunnerConstants.sendmessagenearby, sessionId, consoleOutput); });
         }
 
+        public async Task SearchAllContact(ConsoleOutput consoleOutput)
+        {
+            var sessionId = CreateSession(null);
+
+            await Task.Factory.StartNew(() => { RunZaloService(RunnerConstants.searchallfriendsincontacts, sessionId, consoleOutput); });
+        }
+
         public string RunZaloService(string type, string arguments, ConsoleOutput output)
         {
             try

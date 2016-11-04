@@ -143,8 +143,8 @@ namespace ZaloCommunityDev.Controls
         public static readonly DependencyProperty AccountNameVisibilityProperty = DependencyProperty.Register(nameof(AccountNameVisibility), typeof(Visibility), typeof(FilterControl), new PropertyMetadata(Visibility.Visible));
         public static readonly DependencyProperty ExcludePhoneNumbersVisibilityProperty = DependencyProperty.Register(nameof(ExcludePhoneNumbersVisibility), typeof(Visibility), typeof(FilterControl), new PropertyMetadata(Visibility.Visible));
         public static readonly DependencyProperty IncludePhoneNumbersVisibilityProperty = DependencyProperty.Register(nameof(IncludePhoneNumbersVisibility), typeof(Visibility), typeof(FilterControl), new PropertyMetadata(Visibility.Visible));
-        public static readonly DependencyProperty SentImageForFemaleVisibilityProperty = DependencyProperty.Register(nameof(SentImageForFemaleVisibility), typeof(Visibility), typeof(FilterControl), new PropertyMetadata(Visibility.Visible));
-        public static readonly DependencyProperty SentImageForMaleVisibilityProperty = DependencyProperty.Register(nameof(SentImageForMaleVisibility), typeof(Visibility), typeof(FilterControl), new PropertyMetadata(Visibility.Visible));
+        public static readonly DependencyProperty SentImageForFemaleVisibilityProperty = DependencyProperty.Register(nameof(SentImageForFemaleVisibility), typeof(Visibility), typeof(FilterControl), new PropertyMetadata(Visibility.Collapsed));
+        public static readonly DependencyProperty SentImageForMaleVisibilityProperty = DependencyProperty.Register(nameof(SentImageForMaleVisibility), typeof(Visibility), typeof(FilterControl), new PropertyMetadata(Visibility.Collapsed));
 
         #endregion Config Visibility
 
@@ -338,19 +338,19 @@ namespace ZaloCommunityDev.Controls
 
                 Sources.Add(newFilter);
                 SelectedFilter = newFilter;
-
             });
             SaveConfigsCommand = new RelayCommand(() =>
             {
-                
             });
         }
+
         private void GetSource()
         {
             Action getSource = () => DispatcherHelper.CheckBeginInvokeOnUI(() => Sources = new ObservableCollection<Filter>(db.GetFilter(ConfigType) ?? new Filter[0]));
 
             Task.Factory.StartNew(() => getSource());
         }
+
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             db.SaveFilter(Sources, ConfigType);

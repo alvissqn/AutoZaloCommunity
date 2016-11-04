@@ -7,6 +7,7 @@ using ZaloCommunityDev.Data;
 using ZaloCommunityDev.Shared;
 using System.Windows;
 using ZaloCommunityDev.Models;
+using System;
 
 namespace ZaloCommunityDev.ViewModel
 {
@@ -36,6 +37,8 @@ namespace ZaloCommunityDev.ViewModel
             AutoSendMessageToFriendCommand = new RelayCommand<Filter>(AutoSendMessageToFriendInvoke);
             AutoSendMessageToStrangerByPhoneCommand = new RelayCommand<Filter>(AutoSendMessageToStrangerByPhoneInvoke);
             AutoSendMessageToStrangerNearByCommand = new RelayCommand<Filter>(AutoSendMessageToStrangerNearByInvoke);
+
+            SearchAllContactCommand = new RelayCommand<string>(SearchAllContact);
         }
 
         #region Commands
@@ -46,6 +49,8 @@ namespace ZaloCommunityDev.ViewModel
         public ICommand AutoSendMessageToStrangerByPhoneCommand { get; }
         public ICommand AutoSendMessageToStrangerNearByCommand { get; }
         public ICommand RefreshAvdListCommand { get; }
+
+        public ICommand SearchAllContactCommand { get; }
 
         #endregion Commands
 
@@ -115,6 +120,14 @@ namespace ZaloCommunityDev.ViewModel
         #endregion Methods
 
         #region Auto
+
+        private async void SearchAllContact(string obj)
+        {
+            var consoleOutput = CreateConsoleOutput("Quét danh bạ");
+             if (consoleOutput == null)
+                return;
+
+        }
 
         private async void AutoAddFriendByPhoneInvoke(Filter filter)
         {

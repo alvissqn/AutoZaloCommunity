@@ -94,6 +94,7 @@
     <Compile Include="CommunityDistributeServiceBase.cs" />
     <Compile Include="ZaloHelper.cs" />
     <Compile Include="ZaloLoginService.cs" />
+    <Compile Include="ZaloSearchFriendService.cs" />
     <Compile Include="ZaloMessageToFriendService.cs" />
     <Compile Include="ZaloAddFriendService.cs" />
     <Compile Include="ZaloCommunityDistributeServiceBase.cs" />

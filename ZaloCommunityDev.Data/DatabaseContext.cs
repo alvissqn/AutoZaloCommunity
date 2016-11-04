@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Data;
 using System.Data.Entity;
 using System.Data.OleDb;
 using System.Linq;
@@ -45,7 +44,7 @@ namespace ZaloCommunityDev.Data
 
         private static string TodayText => DateTime.Now.Date.ToString("dd'/'MM'/'yyyy");
 
-        public void AddProfile(ProfileMessage profile, string account)
+        public void AddProfile(ProfileMessage profile, string account, bool isFriend = false)
         {
             try
             {
@@ -56,7 +55,8 @@ namespace ZaloCommunityDev.Data
                     Name = profile.Name,
                     PhoneNumber = profile.PhoneNumber,
                     Location = profile.Location,
-                    Account = account
+                    Account = account,
+                    IsFriend = isFriend
                 });
 
                 SaveChanges();
@@ -325,6 +325,17 @@ namespace ZaloCommunityDev.Data
             }
 
             return logs.OrderByDescending(x => DateTime.Parse(x.Date)).ThenBy(x => x.Account).ToArray();
+        }
+
+        public ProfileDto[] GetAllProfile(string account)
+        {
+            using (var db = new OleDbConnection(ConfigurationManager.ConnectionStrings["ZaloCommunityDb"].ConnectionString))
+            {
+                var sqlString = $"SELECT * FROM {DataHelper.TableName<ProfileDto>()} WHERE ({DataHelper.GetPropertyName<ProfileDto, string>(x => x.Account)}=@Account)";
+                var logs = (List<ProfileDto>)db.Query<ProfileDto>(sqlString, new { @Account = account });
+
+                return logs.ToArray();
+            }
         }
 
         public LogRequestAddFriendDto[] GetLogRequestAddFriends(DateTime dateTime, string account)
