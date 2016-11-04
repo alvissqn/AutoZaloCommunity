@@ -149,7 +149,7 @@ namespace ZaloCommunityDev.Data
                     foreach (var item in sources)
                     {
                         var itemConfig = Mapper.Map<Filter, AddFriendNearByConfigDto>(item);
-                        var dbItemConfig = AddFriendByPhoneConfigSet.FirstOrDefault(x => x.Id == itemConfig.Id);
+                        var dbItemConfig = AddFriendNearByConfigSet.FirstOrDefault(x => x.Id == itemConfig.Id);
                         if (dbItemConfig == null)
                         {
                             itemConfig.Id = 0;
@@ -166,7 +166,7 @@ namespace ZaloCommunityDev.Data
                     foreach (var item in sources)
                     {
                         var itemConfig = Mapper.Map<Filter, MessageToFriendConfigDto>(item);
-                        var dbItemConfig = AddFriendByPhoneConfigSet.FirstOrDefault(x => x.Id == itemConfig.Id);
+                        var dbItemConfig = MessageToFriendConfigSet.FirstOrDefault(x => x.Id == itemConfig.Id);
                         if (dbItemConfig == null)
                         {
                             itemConfig.Id = 0;
@@ -183,7 +183,7 @@ namespace ZaloCommunityDev.Data
                     foreach (var item in sources)
                     {
                         var itemConfig = Mapper.Map<Filter, MessageToStrangerByPhoneConfigDto>(item);
-                        var dbItemConfig = AddFriendByPhoneConfigSet.FirstOrDefault(x => x.Id == itemConfig.Id);
+                        var dbItemConfig = MessageToStrangerByPhoneConfigSet.FirstOrDefault(x => x.Id == itemConfig.Id);
                         if (dbItemConfig == null)
                         {
                             itemConfig.Id = 0;
@@ -201,7 +201,7 @@ namespace ZaloCommunityDev.Data
                     foreach (var item in sources)
                     {
                         var itemConfig = Mapper.Map<Filter, MessageToStrangerNearByConfigDto>(item);
-                        var dbItemConfig = AddFriendByPhoneConfigSet.FirstOrDefault(x => x.Id == itemConfig.Id);
+                        var dbItemConfig = MessageToStrangerNearByConfigSet.FirstOrDefault(x => x.Id == itemConfig.Id);
                         if (dbItemConfig == null)
                         {
                             itemConfig.Id = 0;

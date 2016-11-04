@@ -9,6 +9,8 @@ using GalaSoft.MvvmLight.Threading;
 using Microsoft.Practices.ServiceLocation;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.Shared;
+using System.IO;
+using System.Linq;
 
 namespace ZaloCommunityDev.Controls
 {
@@ -332,7 +334,7 @@ namespace ZaloCommunityDev.Controls
             {
                 var newFilter = new Filter
                 {
-                    ConfigName = "#Cau hinh",
+                    ConfigName = "#Cau hinh " + FruitsNames[new Random().Next(0, FruitsNames.Length)],
                     NumberOfAction = 5
                 };
 
@@ -353,8 +355,16 @@ namespace ZaloCommunityDev.Controls
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            var selectedFilterName = SelectedFilter.ConfigName;
             db.SaveFilter(Sources, ConfigType);
             GetSource();
+
+            SelectedFilter = Sources.FirstOrDefault(x => x.ConfigName == selectedFilterName);
         }
+
+        private static string[] _fruitsNames;
+        public static string[] FruitsNames => _fruitsNames ?? (_fruitsNames = File.ReadAllLines("./fruits.txt"));
     }
+
+    
 }

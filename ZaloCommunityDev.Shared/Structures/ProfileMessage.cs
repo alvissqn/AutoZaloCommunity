@@ -19,7 +19,20 @@ namespace ZaloCommunityDev.Shared.Structures
             return Gender.ToLower().Contains("na") ? Shared.Gender.Male : Shared.Gender.Female;
         }
 
-        public string PhoneNumber { get; set; }
+        string _phoneNumber;
+        public string PhoneNumber { get { return _phoneNumber; } set {
+
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _phoneNumber = string.Empty;
+                    return;
+                }
+
+                if (value.Any(char.IsDigit))
+                {
+                    _phoneNumber = value;
+                }
+            } }
         public DateTime Birthday { get; set; }
 
         public string BirthdayText

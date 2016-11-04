@@ -114,13 +114,18 @@ namespace ZaloCommunityDev.Service
                             TouchAtIconTopLeft(); //Touch to close side bar
                             Delay(400);
                         }
-                        else if (Chat(request, filter))
+                        else
                         {
-                            countSuccess++;
-                            if (profile == null)
+                            if (Chat(request, filter))
                             {
-                                DbContext.AddProfile(request.Profile, Settings.User.Username);
+                                countSuccess++;
+                                if (profile == null)
+                                {
+                                    DbContext.AddProfile(request.Profile, Settings.User.Username);
+                                }
                             }
+
+                            TouchAtIconTopLeft();//GO BACK PROFILE
                         }
                     }
                 }
@@ -214,6 +219,8 @@ namespace ZaloCommunityDev.Service
 
                                     success = true;
                                 }
+
+                                TouchAtIconTopLeft();//GO BACK FRIENDLIST
                             }
                         }
                     }
@@ -345,11 +352,21 @@ namespace ZaloCommunityDev.Service
                         TouchAt(Screen.IconTopLeft);
                         Delay(300);
                     }
-                    else if (Chat(request, filter))
+                    else
                     {
-                        DbContext.AddProfile(request.Profile, Settings.User.Username);
-                        countSuccess++;
-                        ZaloHelper.Output($"!gửi tin nhắn tới: {request.Profile.Name} thành công. Số bạn đã gửi thành công trong phiên này là: {countSuccess}");
+                        TouchAt(Screen.IconBottomLeft);
+                        Delay(800);
+
+                        if (Chat(request, filter))
+                        {
+                            DbContext.AddProfile(request.Profile, Settings.User.Username);
+                            countSuccess++;
+                            ZaloHelper.Output($"!gửi tin nhắn tới: {request.Profile.Name} thành công. Số bạn đã gửi thành công trong phiên này là: {countSuccess}");
+
+                            TouchAtIconTopLeft();//Go Back TO PROFILE
+
+                            TouchAtIconTopLeft();// GO BACK TO FRIENDLIST
+                        }
                     }
                 }
             }
@@ -375,12 +392,15 @@ namespace ZaloCommunityDev.Service
 
         private bool Chat(ChatRequest profile, Filter filter)
         {
+
             TouchAt(Screen.ChatScreenTextField);
             Delay(300);
-
+        
             var messages = ZaloHelper.GetZalomessages(profile.Profile, filter);
             foreach (var message in messages)
             {
+                DeleteWordInFocusedTextField();
+
                 if (message.Type == ZaloMessageType.Text)
                 {
                     SendText(message.Value);
@@ -391,9 +411,32 @@ namespace ZaloCommunityDev.Service
                         //TouchAt(Screen.ChatScreenSendButton);
                         SendKey(KeyCode.AkeycodeEnter);
                     }
+
+                    ZaloHelper.Output($"Gửi tin nhắn chữ '{message.Value}' tới bạn '{profile.Profile.Name}' thành công");
                 }
                 else
                 {
+                    UpImageChat(new System.IO.FileInfo(message.Value));
+
+                    Delay(500);
+                    TouchAt(Screen.ChatScreenOpenMoreWindowButton);
+
+                    Delay(500);
+                    TouchAt(Screen.ChatScreenAddImageButton);
+
+                    Delay(500);
+                    TouchAt(Screen.UploadAlbumDCimFolter);
+
+                    Delay(500);
+                    TouchAt(Screen.UploadAlbumFirstImageCheckBox);
+
+                    Delay(500);
+                    TouchAt(Screen.UploadAlbumSendButton);
+
+                    ZaloHelper.Output($"Gửi tin nhắn hình '{message.Value}' tới bạn '{profile.Profile.Name}' thành công");
+
+                    Delay(900);
+                    TouchAt(Screen.ChatScreenCloseMoreWindowButton);
                 }
 
                 Delay(1000);
@@ -412,9 +455,7 @@ namespace ZaloCommunityDev.Service
                         break;
                 }
             }
-
-            TouchAt(Screen.IconTopLeft);//Go Back
-
+          
             return true;
         }
     }

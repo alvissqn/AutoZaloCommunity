@@ -69,10 +69,23 @@
         #endregion Friend Tab
 
         #region Chat Screen
-        public ScreenPoint ChatScreenTextField { get; set; } = new ScreenPoint(272, 1875);
+
+        public ScreenPoint ChatScreenTextField { get; set; } = new ScreenPoint(800, 1875);
         public ScreenPoint ChatScreenSendButton => IconBottomRight;
-        public ScreenPoint ChatScreenProfileAvartar { get; set; } = new ScreenPoint(835, 160);
+        public ScreenPoint ChatScreenProfileAvartar { get; set; } = new ScreenPoint(835, 160);    
+        public ScreenPoint ChatScreenOpenMoreWindowButton { get; set; } = new ScreenPoint(1220, 1870);
+        public ScreenPoint ChatScreenCloseMoreWindowButton { get; set; } = new ScreenPoint(1220, 1340);
+        public ScreenPoint ChatScreenAddImageButton { get; set; } = new ScreenPoint(160, 1500);
+
         #endregion Chat Screen
+
+        #region Upload Album
+
+        public ScreenPoint UploadAlbumDCimFolter { get; set; } = new ScreenPoint(900, 500);
+        public ScreenPoint UploadAlbumFirstImageCheckBox { get; set; } = new ScreenPoint(365, 235);
+        public ScreenPoint UploadAlbumSendButton { get; set; } = new ScreenPoint(1180, 1880);
+
+        #endregion
 
         #region Login Screen
         public ScreenPoint LoginScreenCountryCombobox { get; set; } = new ScreenPoint(250, 270);
@@ -92,6 +105,7 @@
         public ScreenPoint FakeGpsLocationOkButton { get; set; } = new ScreenPoint(1000, 1160);
         public ScreenPoint FakeGpsStopButton { get; set; } = new ScreenPoint(1000, 115);
         public ScreenPoint FakeGpsStartButton { get; set; } = new ScreenPoint(850, 115);
+        
         #endregion
     }
 }

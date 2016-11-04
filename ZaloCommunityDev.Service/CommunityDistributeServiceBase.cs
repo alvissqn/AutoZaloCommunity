@@ -52,15 +52,15 @@ namespace ZaloCommunityDev.Service
         public string CaptureScreenNow()
         {
             var fileName = DateTime.Now.Ticks.ToString();
-            InvokeProc($"/c adb shell screencap -p sdcard/zalocommnunitydev/_screen.png");
+            InvokeProc($"/c adb shell screencap -p sdcard/zalocommunitydev/_screen.png");
 
             Delay(100);
 
-            InvokeProc($"/c adb pull sdcard/zalocommnunitydev/_screen.png \"{ConvertToAndroidPath(WorkingPath)}/ImageData/CaptureScreen/{fileName}.png\"");
+            InvokeProc($"/c adb pull sdcard/zalocommunitydev/_screen.png \"{ConvertToAndroidPath(WorkingPath)}/ImageData/CaptureScreen/{fileName}.png\"");
 
             Delay(100);
 
-            return $@"d:\zalo_images\{fileName}.png";
+            return $@"{WorkingPath}\ImageData\CaptureScreen\{fileName}.png";
         }
 
         public void ChangeDisplayDensity(int des)
@@ -97,8 +97,7 @@ namespace ZaloCommunityDev.Service
 
         public void SendKey(KeyCode keycode, int times = 1)
         {
-            ZaloHelper.Output("Debug: SendKey " + keycode.ToString() + ". Time : " + times);
-
+            //ZaloHelper.Output("Debug: SendKey " + keycode.ToString() + ". Time : " + times);
             if ((ZaloAdbRequest.Device != null) && (ZaloAdbRequest.Device.State == DeviceState.Online))
             {
                 for (var i = 0; i < times; i++)
@@ -248,7 +247,7 @@ namespace ZaloCommunityDev.Service
 
         public void UpImageChat(FileInfo path)
         {
-            InvokeProc("/c adb push \"" + ConvertToAndroidPath(path.FullName) + "\" sdcard/DCIM/image.png && adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard/DCIM/");
+            InvokeProc("/c adb push \"" + ConvertToAndroidPath(path.FullName) + "\" sdcard/DCIM/chat.png && adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard/DCIM/");
             Thread.Sleep(100);
         }
 
@@ -290,9 +289,12 @@ namespace ZaloCommunityDev.Service
                             }
             };
 
+            StringBuilder builder = new StringBuilder();
+            process.OutputDataReceived += (s, e) => builder.Append(e.Data);
             process.Start();
             process.WaitForExit();
-            return process.StandardOutput.ReadToEnd();
+            //return process.StandardOutput.ReadToEnd();
+            return builder.ToString();
         }
 
         protected void ScrollList(int times)

@@ -45,7 +45,7 @@ namespace ZaloCommunityDev.Shared
                 var to = int.Parse(ages[1]);
 
                 DateTime date;
-                if (DateTime.TryParse(profile.BirthdayText, out date))
+                if (DateTime.TryParse(profile.BirthdayText, out date) && date.Year >= 1930)
                 {
                     var profileAge = DateTime.Now.Year - date.Year;
 
@@ -59,12 +59,14 @@ namespace ZaloCommunityDev.Shared
                         return false;
                     }
                 }
-            } else if(filter.FilterAgeRangeAcceptIfHidden)
-            {
-                reason = "Không thấy tuổi";
+                else if (!filter.FilterAgeRangeAcceptIfHidden)
+                {
+                    reason = "Không thấy tuổi";
 
-                return false;
+                    return false;
+                }
             }
+            
 
             if (filter.GenderSelection != GenderSelection.Both)
             {

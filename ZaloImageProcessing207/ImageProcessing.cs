@@ -92,13 +92,27 @@ namespace ZaloCommunityDev.ImageProcessing
                 {
                     var startX = point.X + screen.FriendTabCircleRadiusAvartarUserTo + 3;
                     var startY = point.Y - screen.FriendRowHeight / 2;
-
+                    string accountName;
                     using (var subBitmap = bitmapData.Clone(new Rectangle(startX, startY, screen.WorkingRect.Right - startX, screen.FriendRowHeight), bitmapData.PixelFormat))
                     {
-                        var text = GetVietnameseText(subBitmap);
-                        friendPositionMessageList.Add(new FriendPositionMessage { Name = text.Trim(), Point = point });
+                        accountName = GetVietnameseText(subBitmap);
+                        if (string.IsNullOrWhiteSpace(accountName))
+                            continue;
+
+                        friendPositionMessageList.Add(new FriendPositionMessage { Name = accountName.Trim(), Point = point });
                     }
+
+#if DEBUG
+                    Graphics g = Graphics.FromImage(bitmapData);
+                    g.DrawString(accountName, new Font("Tahoma", 8), Brushes.Black, new PointF(point.X, point.Y));
+                    g.Flush();
+
+#endif
                 }
+
+#if DEBUG
+                bitmapData.Save(fileName+".debug.png");
+#endif
             }
 
             return friendPositionMessageList.ToArray();
@@ -127,6 +141,19 @@ namespace ZaloCommunityDev.ImageProcessing
 
             var circles = CvInvoke.HoughCircles(uimage, HoughType.Gradient, 2.0, 20.0, cannyThreshold, circleAccumulatorThreshold, screen.FriendTabCircleRadiusAvartarUserFrom, screen.FriendTabCircleRadiusAvartarUserTo);
             var circles2 = circles.Where(x => x.Center.Y > iconGroupTop).OrderBy(x => x.Center.Y).ToArray();
+
+            if (circles2.Count() >= 2)
+            {
+                var first = circles2.First();
+                var last = circles2.Last();
+                var totalPoints = 1 + ((last.Center.Y - first.Center.Y) / screen.FriendRowHeight);
+
+                if (totalPoints != circles2.Count())
+                {
+                    //missing contacts
+                    //Add missing later
+                }
+            }
 
             return circles2.Select(x => new ScreenPoint((int)x.Center.X, (int)x.Center.Y)).ToArray();
         }

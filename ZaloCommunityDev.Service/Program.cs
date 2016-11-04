@@ -39,10 +39,10 @@ namespace ZaloCommunityDev.Service
                 ZaloHelper.Output("Không tìm thấy thiết bị android nào.");
                 return;
             }
-#if RELEASE
+//#if RELEASE
             var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-           zaloLoginService.Login(settings.User);
-#endif
+            zaloLoginService.Login(settings.User);
+//#endif
             switch (args[0])
             {
                 case RunnerConstants.addfriendnearby:
