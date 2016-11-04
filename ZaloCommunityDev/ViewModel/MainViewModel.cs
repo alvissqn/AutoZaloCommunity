@@ -127,6 +127,7 @@ namespace ZaloCommunityDev.ViewModel
              if (consoleOutput == null)
                 return;
 
+             await _zaloCommunityService.SearchAllContact(consoleOutput);
         }
 
         private async void AutoAddFriendByPhoneInvoke(Filter filter)
