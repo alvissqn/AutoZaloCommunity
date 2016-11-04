@@ -39,10 +39,10 @@ namespace ZaloCommunityDev.Service
                 ZaloHelper.Output("Không tìm thấy thiết bị android nào.");
                 return;
             }
-//#if RELEASE
+#if RELEASE
             var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
             zaloLoginService.Login(settings.User);
-//#endif
+#endif
             switch (args[0])
             {
                 case RunnerConstants.addfriendnearby:
@@ -62,21 +62,21 @@ namespace ZaloCommunityDev.Service
 
                 case RunnerConstants.sendmessagenearby:
                 case "gui-tin-nhan-gan-day":
-                    var zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
+                    var zaloMessageToFriendService = new ZaloMessageService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
                     zaloMessageToFriendService.SendMessageNearBy(getFilter());
 
                     break;
 
                 case RunnerConstants.sendmessagebyphonenumber:
                 case "gui-tin-nhan-qua-so-dien-thoai":
-                    zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
+                    zaloMessageToFriendService = new ZaloMessageService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
                     zaloMessageToFriendService.SendMessageByPhoneNumber(getFilter());
 
                     break;
 
                 case RunnerConstants.sendmessagetofriendsincontacts:
                 case "gui-tin-nhan-trong-danh-ba":
-                    zaloMessageToFriendService = new ZaloMessageToFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
+                    zaloMessageToFriendService = new ZaloMessageService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
                     zaloMessageToFriendService.SendMessageToFriendInContactList(getFilter());
 
                     break;

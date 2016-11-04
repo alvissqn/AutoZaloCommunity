@@ -11,11 +11,11 @@ using ZaloCommunityDev.Service.Models;
 
 namespace ZaloCommunityDev.Service
 {
-    public class ZaloMessageToFriendService : ZaloCommunityDistributeServiceBase
+    public class ZaloMessageService : ZaloCommunityDistributeServiceBase
     {
-        private readonly ILog _log = LogManager.GetLogger(nameof(ZaloMessageToFriendService));
+        private readonly ILog _log = LogManager.GetLogger(nameof(ZaloMessageService));
 
-        public ZaloMessageToFriendService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest zaloAdbRequest)
+        public ZaloMessageService(Settings settings, DatabaseContext dbContext, IZaloImageProcessing zaloImageProcessing, ZaloAdbRequest zaloAdbRequest)
             : base(settings, dbContext, zaloImageProcessing, zaloAdbRequest)
         {
         }
@@ -32,7 +32,7 @@ namespace ZaloCommunityDev.Service
 
                 TouchAt(Screen.HomeScreenFriendTab);
 
-                if (string.IsNullOrWhiteSpace(filter.IncludedPeopleNames))
+                if (!string.IsNullOrWhiteSpace(filter.IncludedPeopleNames))
                 {
                     SendMessageToFriendWithNames(filter);
 
@@ -252,10 +252,16 @@ namespace ZaloCommunityDev.Service
                 }
 
                 var gender = filter.GenderSelection;
-                var ageValues = filter.FilterAgeRange.Split("-".ToArray());
-                var ageFrom = ageValues[0];
-                var ageTo = ageValues[1];
+                var ageValues = filter.FilterAgeRange?.Split("-".ToArray());
 
+                string ageFrom = "18";
+                string ageTo = "50";
+                if (ageValues.Length == 2)
+                {
+                    ageFrom = ageValues[0];
+                    ageTo = ageValues[1];
+                }
+                
                 GotoPage(Activity.UserNearbyList);
 
                 AddSettingSearchFriend(gender, ageFrom, ageTo);
@@ -399,7 +405,7 @@ namespace ZaloCommunityDev.Service
             var messages = ZaloHelper.GetZalomessages(profile.Profile, filter);
             foreach (var message in messages)
             {
-                DeleteWordInFocusedTextField();
+                DeleteWordInFocusedTextField(20);
 
                 if (message.Type == ZaloMessageType.Text)
                 {
@@ -430,13 +436,25 @@ namespace ZaloCommunityDev.Service
                     Delay(500);
                     TouchAt(Screen.UploadAlbumFirstImageCheckBox);
 
-                    Delay(500);
-                    TouchAt(Screen.UploadAlbumSendButton);
+                    if (!Settings.IsDebug)
+                    {
+                        Delay(500);
+                        TouchAt(Screen.UploadAlbumSendButton);
+                    }
+                    else
+                    {
+                        Delay(500);
+                        TouchAtIconTopLeft();
 
+                        Delay(500);
+                        TouchAtIconTopLeft();
+                    }
                     ZaloHelper.Output($"Gửi tin nhắn hình '{message.Value}' tới bạn '{profile.Profile.Name}' thành công");
 
                     Delay(900);
                     TouchAt(Screen.ChatScreenCloseMoreWindowButton);
+
+                    Delay(100);
                 }
 
                 Delay(1000);
