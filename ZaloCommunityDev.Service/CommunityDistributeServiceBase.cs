@@ -135,12 +135,41 @@ namespace ZaloCommunityDev.Service
 
             Delay(Settings.Delay.PressedKeyEvent);
         }
-
+        /// <summary>
+        /// $ telnet localhost 5554
+        ///Android Console: type 'help' for a list of commands
+        ///OK
+        ///geo fix -82.411629 28.054553
+        ///OK
+        /// </summary>
+        /// <param name="areaNameOrCoord"></param>
+        /// <returns></returns>
         public string SetLocationByName(string areaNameOrCoord)
         {
+            //"Enable Telnet";
+            //dism /online /Enable-Feature /FeatureName:TelnetClient
+
             if (string.IsNullOrWhiteSpace(areaNameOrCoord))
                 return string.Empty;
 
+            SetGpsByCxdeberryGeoTag(areaNameOrCoord);
+            
+            try
+            {
+                var locationText = InvokeProc("/c adb shell dumpsys location");
+
+                var logLat = locationText.Split("\r\n".ToArray())?.LastOrDefault(x => x.TrimStart().StartsWith("Location[gps"))?.Substring("gps ", " acc");
+
+                return $"{logLat}({areaNameOrCoord})";
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+                return string.Empty;
+            }
+        }
+        public void SetGpsByNewapphorizons(string areaNameOrCoord)
+        {
             try
             {
                 InvokeProc("/c adb shell am force-stop com.blogspot.newapphorizons.fakegps");
@@ -176,40 +205,38 @@ namespace ZaloCommunityDev.Service
 
                 TouchAt(Screen.FakeGpsStartButton);
                 Delay(300);
-
-                var locationText = InvokeProc("/c adb shell dumpsys location");
-
-                var logLat = locationText.Split("\r\n".ToArray())?.LastOrDefault(x => x.TrimStart().StartsWith("Location[gps"))?.Substring("gps ", " acc");
-
-                return $"{logLat}({areaNameOrCoord})";
             }
             catch (Exception ex)
             {
                 _log.Error(ex);
-                return string.Empty;
             }
         }
-
-        public void SetGpsByCxdeberryGeoTag(string lat, string longt)
+        public void SetGpsByCxdeberryGeoTag(string areaNameOrCoord)
         {
-            InvokeProc("/c adb shell am force-stop com.cxdeberry.geotag");
+            try
+            {
+                InvokeProc("/c adb shell am force-stop com.cxdeberry.geotag");
 
-            Delay(Settings.Delay.CloseMap);
+                Delay(Settings.Delay.CloseMap);
 
-            InvokeProc("/c adb shell am start -n com.cxdeberry.geotag/.MainActivity");
+                InvokeProc("/c adb shell am start -n com.cxdeberry.geotag/.MainActivity");
 
-            Delay(Settings.Delay.OpenMap);
+                Delay(Settings.Delay.OpenMap);
 
-            TouchAt(750, 50);
+                TouchAt(Screen.IconTopRight);
+                Delay(400);
 
-            SendText(lat + "," + longt);
-            SendKey(KeyCode.AkeycodeEnter);
+                SendText(areaNameOrCoord);
+                SendKey(KeyCode.AkeycodeEnter);
+                Delay(2000);
+                TouchAt(Screen.FakeGps2StartButton);
 
-            TouchAt(750, 50);
-
-            Delay(Settings.Delay.CloseMap);
-
-            TouchAt(200, 0x438);
+                Delay(Settings.Delay.CloseMap);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
         }
 
         public void SetKeyBoardTelex(bool check)

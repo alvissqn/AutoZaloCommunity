@@ -103,7 +103,7 @@
         public ScreenPoint HomeScreenFriendTabSearchFristItem { get; set; } = new ScreenPoint(100, 250);
         #endregion
 
-        #region FakeGps
+        #region FakeGps1
         public ScreenPoint FakeGpsScreenMenu { get; set; } = new ScreenPoint(1226, 114);
         public ScreenPoint FakeGpsSearch { get; set; } = new ScreenPoint(850, 130);
         public ScreenPoint FakeGpsLocationTab { get; set; } = new ScreenPoint(900, 850);
@@ -111,7 +111,12 @@
         public ScreenPoint FakeGpsLocationOkButton { get; set; } = new ScreenPoint(1000, 1160);
         public ScreenPoint FakeGpsStopButton { get; set; } = new ScreenPoint(1000, 115);
         public ScreenPoint FakeGpsStartButton { get; set; } = new ScreenPoint(850, 115);
-        
+
+        #endregion
+
+        #region FakeGps2        
+        public ScreenPoint FakeGps2StartButton { get; set; } = new ScreenPoint(330, 1740);
+
         #endregion
     }
 }

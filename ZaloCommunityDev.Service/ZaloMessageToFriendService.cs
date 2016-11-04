@@ -145,7 +145,7 @@ namespace ZaloCommunityDev.Service
                 TouchAtIconBottomLeft();//Open search
                 Delay(500);
                 var name = stack.Pop();
-
+                
                 TouchAt(Screen.HomeScreenFriendTabSearchTextField);
                 Delay(500);
 
