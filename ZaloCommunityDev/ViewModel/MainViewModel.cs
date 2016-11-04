@@ -132,6 +132,13 @@ namespace ZaloCommunityDev.ViewModel
 
         private async void AutoAddFriendByPhoneInvoke(Filter filter)
         {
+            string reasonFail;
+            if(!filter.IsValid(out reasonFail))
+            {
+                MessageBox.Show("Kiểm tra lại bộ lọc. Lỗi: " + reasonFail);
+                return;
+            }
+
             var consoleOutput = CreateConsoleOutput("Kết bạn theo số đt");
             if (consoleOutput == null)
                 return;
@@ -141,6 +148,14 @@ namespace ZaloCommunityDev.ViewModel
 
         private async void AutoAddFriendNearByInvoke(Filter filter)
         {
+            string reasonFail;
+            if (!filter.IsValid(out reasonFail))
+            {
+                MessageBox.Show("Kiểm tra lại bộ lọc. Lỗi: " + reasonFail);
+                return;
+            }
+
+
             var consoleOutput = CreateConsoleOutput("Kết bạn theo vị trí");
             if (consoleOutput == null)
                 return;
@@ -150,6 +165,14 @@ namespace ZaloCommunityDev.ViewModel
 
         private async void AutoSendMessageToFriendInvoke(Filter filter)
         {
+            string reasonFail;
+            if (!filter.IsValid(out reasonFail))
+            {
+                MessageBox.Show("Kiểm tra lại bộ lọc. Lỗi: " + reasonFail);
+                return;
+            }
+
+
             var consoleOutput = CreateConsoleOutput("Gửi tin nhắn cho bạn");
             if (consoleOutput == null)
                 return;
@@ -159,6 +182,15 @@ namespace ZaloCommunityDev.ViewModel
 
         private async void AutoSendMessageToStrangerByPhoneInvoke(Filter filter)
         {
+            string reasonFail;
+            if (!filter.IsValid(out reasonFail))
+            {
+                MessageBox.Show("Kiểm tra lại bộ lọc. Lỗi: " + reasonFail);
+                return;
+            }
+
+            filter.NumberOfAction = filter.IncludePhoneNumbers.ZaloSplitText().Length;
+
             var consoleOutput = CreateConsoleOutput("Gửi tin nhắn theo số đt");
             if (consoleOutput == null)
                 return;
@@ -168,6 +200,13 @@ namespace ZaloCommunityDev.ViewModel
 
         private async void AutoSendMessageToStrangerNearByInvoke(Filter filter)
         {
+            string reasonFail;
+            if (!filter.IsValid(out reasonFail))
+            {
+                MessageBox.Show("Kiểm tra lại bộ lọc. Lỗi: " + reasonFail);
+                return;
+            }
+
             var consoleOutput = CreateConsoleOutput("Gửi tin nhắn theo vị trí");
             if (consoleOutput == null)
                 return;

@@ -34,6 +34,47 @@ namespace ZaloCommunityDev.Shared
             return @default;
         }
 
+        public static bool IsValid(this Filter value, out string reason)
+        {
+            reason = null;
+            switch (value.GenderSelection)
+            {
+                case GenderSelection.OnlyMale:
+                    if (string.IsNullOrWhiteSpace(value.TextGreetingForMale))
+                    {
+                        reason = "Phải điền lời chào bạn nam";
+                        return false;
+                    }
+                    break;
+                case GenderSelection.OnlyFemale:
+                    if (string.IsNullOrWhiteSpace(value.TextGreetingForFemale))
+                    {
+                        reason = "Phải điền lời chào bạn nữ";
+                        return false;
+                    }
+                    break;
+                case GenderSelection.Both:
+                    if (string.IsNullOrWhiteSpace(value.TextGreetingForFemale))
+                    {
+                        reason = "Phải điền lời chào bạn nữ";
+                        return false;
+                    }
+                    if (string.IsNullOrWhiteSpace(value.TextGreetingForMale))
+                    {
+                        reason = "Phải điền lời chào bạn nam";
+                        return false;
+                    }
+                    break;
+            }
+
+            return true;
+        }
+
+        public static string[] ZaloSplitText(this string text)
+        {
+            return text.Split(";".ToArray());
+        }
+
         public static bool IsValidProfile(this Filter filter, ProfileMessage profile, out string reason)
         {
             reason = null;

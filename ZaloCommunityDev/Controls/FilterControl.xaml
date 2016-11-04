@@ -158,7 +158,8 @@
                              Text="{Binding FilterAgeRange}" />
 
                     <CheckBox Grid.Column="2"
-                              IsChecked="{Binding FilterAgeRangeAcceptIfHidden}" Content="Chấp nhận gửi nếu không phân tích được năm sinh" />
+                              Visibility="{Binding FilterAgeRange, Converter={x:Static ui:UiConverterHelper.CollapsedIfNullOrEmpty}}"
+                              IsChecked="{Binding FilterAgeRangeAcceptIfHidden}" Content="Vẫn gửi nếu không có năm sinh" />
                 </Grid>
 
                 <Grid Margin="5"

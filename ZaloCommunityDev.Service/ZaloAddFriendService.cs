@@ -108,7 +108,7 @@ namespace ZaloCommunityDev.Service
 
                         if (ZaloImageProcessing.HasFindButton(CaptureScreenNow(), Screen))
                         {
-                            ZaloHelper.Output("!Lỗi, số đt không có");
+                            ZaloHelper.Output("!Lỗi, Số đt chưa có tài khoản ZALO");
                         }
                         else
                         {

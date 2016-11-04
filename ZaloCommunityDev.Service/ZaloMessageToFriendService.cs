@@ -155,14 +155,15 @@ namespace ZaloCommunityDev.Service
                     return;
                 }
 
-                var phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray());
+                var phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray()).Where(x=>!string.IsNullOrWhiteSpace(x)).ToArray();
 
                 var countSuccess = 0;
+                var stack = new Stack<string>(phonelist);
+
                 while (countSuccess < numberOfAction)
                 {
                     GotoPage(Activity.FindFriendByPhoneNumber);
                     var success = false;
-                    var stack = new Stack<string>(phonelist);
 
                     while (!success)
                     {
@@ -171,10 +172,10 @@ namespace ZaloCommunityDev.Service
                             return;
                         }
                         var phoneNumber = stack.Pop();
-
-                        if (DbContext.LogMessageSentToStrangerSet.First(x => x.PhoneNumber == phoneNumber && x.Account == Settings.User.Username) != null)
+                        ZaloHelper.Output($"Tiến hành gửi tin qua số đt {phoneNumber}");
+                        if (DbContext.LogMessageSentToStrangerSet.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Account == Settings.User.Username) != null)
                         {
-                            ZaloHelper.Output($"Đã gửi tin cho số đt {phoneNumber} rồi");
+                            ZaloHelper.Output($"Đã gửi tin cho số đt '{phoneNumber}' rồi");
 
                             continue;
                         }
@@ -194,8 +195,7 @@ namespace ZaloCommunityDev.Service
                         }
                         else
                         {
-                            TouchAt(Screen.IconBottomLeft);
-                            Delay(800);
+                           
 
                             var profile = GrabProfileInfo();
                             profile.PhoneNumber = phoneNumber;
@@ -211,6 +211,9 @@ namespace ZaloCommunityDev.Service
                             else
                             {
                                 var request = new ChatRequest { Profile = profile, Objective = ChatObjective.StrangerByPhone };
+
+                                TouchAt(Screen.IconBottomLeft);
+                                Delay(800);
 
                                 if (Chat(request, filter))
                                 {
