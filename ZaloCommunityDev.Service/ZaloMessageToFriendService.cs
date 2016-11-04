@@ -139,6 +139,49 @@ namespace ZaloCommunityDev.Service
 
         private void SendMessageToFriendWithNames(Filter filter)
         {
+            var stack = new Stack<string>(filter.IncludedPeopleNames.ZaloSplitText());
+            while (stack.Count > 0)
+            {
+                TouchAtIconBottomLeft();//Open search
+                Delay(500);
+                var name = stack.Pop();
+
+                TouchAt(Screen.HomeScreenFriendTabSearchTextField);
+                Delay(500);
+
+                SendText(name);
+
+                var rowFriends = ZaloImageProcessing.GetFriendProfileList(CaptureScreenNow(), Screen);
+                if (!rowFriends.Any())
+                {
+                    ZaloHelper.Output("Không có kết quả");
+
+                    TouchAtIconTopLeft();
+
+                    continue;
+                }
+
+                TouchAt(Screen.HomeScreenFriendTabSearchFristItem);
+                Delay(500);
+
+                var request = new ChatRequest() { Objective = ChatObjective.FriendInContactList, Profile = new ProfileMessage() };
+                NavigateToProfileScreenFromChatScreenToGetInfoThenGoBack(request);
+
+                string reason;
+                if (!filter.IsValidProfile(request.Profile, out reason))
+                {
+                    ZaloHelper.Output("Bỏ qua bạn này, lý do: " + reason);
+                    TouchAtIconTopLeft(); //Touch to close side bar
+                    Delay(400);
+                }
+                else
+                {
+                    Chat(request, filter);
+
+                    TouchAtIconTopLeft();//GO BACK PROFILE
+                }
+            }
+
             //Search in contact
         }
 
@@ -155,7 +198,7 @@ namespace ZaloCommunityDev.Service
                     return;
                 }
 
-                var phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray()).Where(x=>!string.IsNullOrWhiteSpace(x)).ToArray();
+                var phonelist = filter.IncludePhoneNumbers.Split(";,|".ToArray()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
                 var countSuccess = 0;
                 var stack = new Stack<string>(phonelist);
@@ -195,7 +238,7 @@ namespace ZaloCommunityDev.Service
                         }
                         else
                         {
-                           
+
 
                             var profile = GrabProfileInfo();
                             profile.PhoneNumber = phoneNumber;
@@ -264,7 +307,7 @@ namespace ZaloCommunityDev.Service
                     ageFrom = ageValues[0];
                     ageTo = ageValues[1];
                 }
-                
+
                 GotoPage(Activity.UserNearbyList);
 
                 AddSettingSearchFriend(gender, ageFrom, ageTo);
@@ -404,7 +447,7 @@ namespace ZaloCommunityDev.Service
 
             TouchAt(Screen.ChatScreenTextField);
             Delay(300);
-        
+
             var messages = ZaloHelper.GetZalomessages(profile.Profile, filter);
             foreach (var message in messages)
             {
@@ -476,7 +519,7 @@ namespace ZaloCommunityDev.Service
                         break;
                 }
             }
-          
+
             return true;
         }
     }

@@ -72,7 +72,7 @@ namespace ZaloCommunityDev.Shared
 
         public static string[] ZaloSplitText(this string text)
         {
-            return text.Split(";".ToArray());
+            return text.Split(";,.".ToArray());
         }
 
         public static bool IsValidProfile(this Filter filter, ProfileMessage profile, out string reason)
