@@ -9,12 +9,13 @@ using Emgu.CV.Structure;
 using Tesseract;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
+using System.Configuration;
 
 namespace ZaloCommunityDev.ImageProcessing
 {
     public class ZaloImageProcessing : IZaloImageProcessing
     {
-        const string TesseracOcrDataFolder = @"C:\Users\ngan\documents\visual studio 2015\Projects\ZaloCommunityDev\ZaloImageProcessing207\Tesseract-OCR\tessdata";
+        string TesseracOcrDataFolder = ConfigurationManager.AppSettings["TesseracOcrDataWorkingFolder"];
 
         public static void Main(string[] arrgs)
         {

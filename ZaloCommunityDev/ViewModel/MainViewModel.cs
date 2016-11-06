@@ -96,6 +96,7 @@ namespace ZaloCommunityDev.ViewModel
 
         private ConsoleOutput CreateConsoleOutput(string type)
         {
+            _settings.AndroidDebugBridgeOsLocation = _zaloCommunityService.AndroidDebugBridgeOsLocation;
             _settings.User = Users.FirstOrDefault(x => x.IsActive);
             if (_settings.User == null)
             {

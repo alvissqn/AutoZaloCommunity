@@ -2,8 +2,7 @@
 {
     public class Settings
     {
-        //public string AndroidDebugBridgeOsLocation { get; set; } = @"C:\Program Files\Leapdroid\VM";
-        public string AndroidDebugBridgeOsLocation { get; set; } = @"D:\Program Files\Microvirt\MEmu";
+        public string AndroidDebugBridgeOsLocation { get; set; }
 
         public ScreenInfo Screen { get; } = new ScreenInfo();
 

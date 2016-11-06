@@ -40,8 +40,8 @@ namespace ZaloCommunityDev.Service
                 return;
             }
 //#if RELEASE
-            var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-            zaloLoginService.Login(settings.User);
+           // var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
+          //  zaloLoginService.Login(settings.User);
 //#endif
             switch (args[0])
             {
