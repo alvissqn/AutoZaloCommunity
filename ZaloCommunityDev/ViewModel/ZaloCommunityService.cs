@@ -2,6 +2,7 @@
 using Managed.Adb;
 using Newtonsoft.Json;
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,13 +18,15 @@ namespace ZaloCommunityDev.ViewModel
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloCommunityService));
 
-        //private const string WorkingFolderPath = @"C:\Users\diepnguyenv\Desktop\code\zalocommunitydev\ZaloCommunityDev.Service\bin\Debug";
-        private const string WorkingFolderPath = @"C:\Users\ngan\Desktop\ZaloCommunityDev\ZaloCommunityDev.Service\bin\Debug";
+        string _WorkingFolderPath;
+        private string WorkingFolderPath => _WorkingFolderPath ?? (_WorkingFolderPath = ConfigurationManager.AppSettings["ZaloServiceWorkingFolder"]);
 
         private const string Filename = @"ZaloCommunityDev.Service.exe";
 
         private readonly AndroidDebugBridge _adb;
-        public string AndroidDebugBridgeOsLocation { get; set; } = @"C:\Program Files\Leapdroid\VM";
+
+        string _AndroidDebugBridgeOsLocation;
+        public string AndroidDebugBridgeOsLocation => _AndroidDebugBridgeOsLocation ?? (_AndroidDebugBridgeOsLocation = ConfigurationManager.AppSettings["AdbOsWorkingFolder"]);
 
         private readonly Settings _settings;
 
