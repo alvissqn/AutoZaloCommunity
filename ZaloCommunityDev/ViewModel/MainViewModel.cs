@@ -1,13 +1,13 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Linq;
-using ZaloCommunityDev.Data;
-using ZaloCommunityDev.Shared;
 using System.Windows;
+using System.Windows.Input;
+using ZaloCommunityDev.Data;
 using ZaloCommunityDev.Models;
-using System;
+using ZaloCommunityDev.Shared;
 
 namespace ZaloCommunityDev.ViewModel
 {
@@ -96,7 +96,9 @@ namespace ZaloCommunityDev.ViewModel
 
         private ConsoleOutput CreateConsoleOutput(string type)
         {
-            _settings.AndroidDebugBridgeOsLocation = _zaloCommunityService.AndroidDebugBridgeOsLocation;
+            _settings.AndroidDebugBridgeOsWorkingLocation = _zaloCommunityService.AndroidDebugBridgeOsLocation;
+            _settings.MaxFriendAddedPerDay = int.Parse(ConfigurationManager.AppSettings["MaxFriendAddedPerDay"]);
+            _settings.MaxMessageStrangerPerDay = int.Parse(ConfigurationManager.AppSettings["MaxMessageStrangerPerDay"]);
             _settings.User = Users.FirstOrDefault(x => x.IsActive);
             if (_settings.User == null)
             {
@@ -125,16 +127,16 @@ namespace ZaloCommunityDev.ViewModel
         private async void SearchAllContact(string obj)
         {
             var consoleOutput = CreateConsoleOutput("Quét danh bạ");
-             if (consoleOutput == null)
+            if (consoleOutput == null)
                 return;
 
-             await _zaloCommunityService.SearchAllContact(consoleOutput);
+            await _zaloCommunityService.SearchAllContact(consoleOutput);
         }
 
         private async void AutoAddFriendByPhoneInvoke(Filter filter)
         {
             string reasonFail;
-            if(!filter.IsValid(out reasonFail))
+            if (!filter.IsValid(out reasonFail))
             {
                 MessageBox.Show("Kiểm tra lại bộ lọc. Lỗi: " + reasonFail);
                 return;
@@ -156,7 +158,6 @@ namespace ZaloCommunityDev.ViewModel
                 return;
             }
 
-
             var consoleOutput = CreateConsoleOutput("Kết bạn theo vị trí");
             if (consoleOutput == null)
                 return;
@@ -172,7 +173,6 @@ namespace ZaloCommunityDev.ViewModel
                 MessageBox.Show("Kiểm tra lại bộ lọc. Lỗi: " + reasonFail);
                 return;
             }
-
 
             var consoleOutput = CreateConsoleOutput("Gửi tin nhắn cho bạn");
             if (consoleOutput == null)

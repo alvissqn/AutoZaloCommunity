@@ -1,19 +1,19 @@
-﻿using System;
+﻿using log4net;
+using Managed.Adb;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using log4net;
-using Managed.Adb;
 using ZaloCommunityDev.Data;
 using ZaloCommunityDev.ImageProcessing;
+using ZaloCommunityDev.Service.Models;
 using ZaloCommunityDev.Shared;
 using ZaloCommunityDev.Shared.Structures;
-using ZaloCommunityDev.Service.Models;
-using System.Reflection;
 
 namespace ZaloCommunityDev.Service
 {
@@ -37,7 +37,7 @@ namespace ZaloCommunityDev.Service
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            if (string.IsNullOrWhiteSpace(settings.AndroidDebugBridgeOsLocation))
+            if (string.IsNullOrWhiteSpace(settings.AndroidDebugBridgeOsWorkingLocation))
                 throw new ArgumentException("Must declare AndroidDebugBridge Os Location");
 
             ZaloImageProcessing = zaloImageProcessing;
@@ -135,6 +135,7 @@ namespace ZaloCommunityDev.Service
 
             Delay(Settings.Delay.PressedKeyEvent);
         }
+
         /// <summary>
         /// $ telnet localhost 5554
         ///Android Console: type 'help' for a list of commands
@@ -153,14 +154,16 @@ namespace ZaloCommunityDev.Service
                 return string.Empty;
 
             SetGpsByCxdeberryGeoTag(areaNameOrCoord);
-            
+
             try
             {
-                var locationText = InvokeProc("/c adb shell dumpsys location");
+                string locationText = null;
+                Action<string> locationCallBack = x => locationText = x;
+                InvokeProc("/c adb shell dumpsys location", locationCallBack);
 
-                var logLat = locationText.Split("\r\n".ToArray())?.LastOrDefault(x => x.TrimStart().StartsWith("Location[gps"))?.Substring("gps ", " acc");
+                var logLat = locationText?.Split("\r\n".ToArray())?.LastOrDefault(x => x.TrimStart().StartsWith("Location[gps"))?.Substring("gps ", " acc");
 
-                return $"{logLat}({areaNameOrCoord})";
+                return $"[{logLat}] / ({areaNameOrCoord})";
             }
             catch (Exception ex)
             {
@@ -168,6 +171,7 @@ namespace ZaloCommunityDev.Service
                 return string.Empty;
             }
         }
+
         public void SetGpsByNewapphorizons(string areaNameOrCoord)
         {
             try
@@ -211,6 +215,7 @@ namespace ZaloCommunityDev.Service
                 _log.Error(ex);
             }
         }
+
         public void SetGpsByCxdeberryGeoTag(string areaNameOrCoord)
         {
             try
@@ -303,25 +308,38 @@ namespace ZaloCommunityDev.Service
             return profile;
         }
 
-        protected string InvokeProc(string args)
+        protected void InvokeProc(string args, Action<string> output=null)
         {
+            var hasOutput = output != null;
             var process = new Process
             {
                 StartInfo = {
-                               UseShellExecute = true,
+                               UseShellExecute = !hasOutput,
                                WorkingDirectory = ZaloAdbRequest.AdbPath,
                                FileName = @"C:\Windows\System32\cmd.exe",
                                Arguments = args,
-                               WindowStyle = ProcessWindowStyle.Hidden
+                               WindowStyle = ProcessWindowStyle.Hidden,
+                               RedirectStandardOutput = hasOutput,
+                               RedirectStandardError = hasOutput
                             }
             };
 
-            StringBuilder builder = new StringBuilder();
-            process.OutputDataReceived += (s, e) => builder.Append(e.Data);
+            var builder = new StringBuilder();
             process.Start();
             process.WaitForExit();
-            //return process.StandardOutput.ReadToEnd();
-            return builder.ToString();
+            if (hasOutput)
+            {
+                var outputText = process.StandardOutput.ReadToEnd();
+                var errorText = process.StandardError.ReadToEnd();
+                if(!string.IsNullOrWhiteSpace(errorText))
+                {
+                    output(errorText);
+                }
+                else
+                {
+                    output(outputText);
+                }
+            }
         }
 
         protected void ScrollList(int times)

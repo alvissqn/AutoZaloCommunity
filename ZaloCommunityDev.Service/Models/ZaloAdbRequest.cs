@@ -16,11 +16,11 @@ namespace ZaloCommunityDev.Service.Models
         {
             ConsoleOutputReceiver = new ConsoleOutputReceiver();
 
-            AdbPath = settings.AndroidDebugBridgeOsLocation;
+            AdbPath = settings.AndroidDebugBridgeOsWorkingLocation;
 
             try
             {
-                Adb = AndroidDebugBridge.CreateBridge(Path.Combine(settings.AndroidDebugBridgeOsLocation, "adb.exe"), true);
+                Adb = AndroidDebugBridge.CreateBridge(Path.Combine(settings.AndroidDebugBridgeOsWorkingLocation, "adb.exe"), true);
                 Adb.Start();
             }
             catch (Exception ex)

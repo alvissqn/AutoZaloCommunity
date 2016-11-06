@@ -11,8 +11,8 @@ namespace ZaloCommunityDev.Service
 {
     internal class Program
     {
-        private const string WorkingFolderPath = @"WorkingSession";
-
+        internal const string WorkingFolderPath = @"WorkingSession";
+        public static string SessionId { get; private set; }
         private static void Main(string[] args)
         {
             if (args[1] == "last-filter")
@@ -25,7 +25,7 @@ namespace ZaloCommunityDev.Service
              Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var sessionId = args[1];
-
+            SessionId = sessionId;
             ZaloHelper.Output($"Request:{args[0]} .SessionId:{sessionId}.");
 
             var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText($@".\{WorkingFolderPath}\{sessionId}\setting.json"));
@@ -40,8 +40,9 @@ namespace ZaloCommunityDev.Service
                 return;
             }
 //#if RELEASE
-           // var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-          //  zaloLoginService.Login(settings.User);
+
+            var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
+            zaloLoginService.Login(settings.User);
 //#endif
             switch (args[0])
             {

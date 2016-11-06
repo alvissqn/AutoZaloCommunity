@@ -142,6 +142,7 @@ namespace ZaloCommunityDev.Service
             var stack = new Stack<string>(filter.IncludedPeopleNames.ZaloSplitText());
             while (stack.Count > 0)
             {
+                Delay(1000);
                 TouchAtIconBottomLeft();//Open search
                 Delay(500);
                 var name = stack.Pop();

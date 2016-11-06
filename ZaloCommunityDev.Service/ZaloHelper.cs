@@ -18,13 +18,17 @@ namespace ZaloCommunityDev.Service
             profile.PhoneNumber = info.PhoneNumber;
         }
 
-        public static void Output(string text) => Console.WriteLine("ZALOSERVICE>> " + text);
+        public static void Output(string text)
+        {
+            Console.WriteLine("ZALOSERVICE>> " + text);
+            File.AppendAllText($@".\{Program.WorkingFolderPath}\{Program.SessionId}\log.txt", text);
+        }
 
         public static void SendCompletedTaskSignal()
         {
             Console.WriteLine("ZALOSERVICE>> @TASK COMPLETED");
 
-            Process.GetCurrentProcess().Kill();
+            Environment.Exit(0);
         }
 
         public static ZaloMessage[] GetZalomessages(ProfileMessage profile, Filter filter)
