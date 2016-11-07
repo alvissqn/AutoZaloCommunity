@@ -18,21 +18,21 @@ namespace ZaloCommunityDev.ViewModel
     {
         private readonly ILog _log = LogManager.GetLogger(nameof(ZaloCommunityService));
 
-        string _WorkingFolderPath;
-        private string WorkingFolderPath => _WorkingFolderPath ?? (_WorkingFolderPath = ConfigurationManager.AppSettings["ZaloServiceWorkingFolder"]);
+        private string _workingFolderPath;
+        private string WorkingFolderPath => _workingFolderPath ?? (_workingFolderPath = ConfigurationManager.AppSettings["ZaloServiceWorkingFolder"]);
 
         private const string Filename = @"ZaloCommunityDev.Service.exe";
 
         private readonly AndroidDebugBridge _adb;
 
-        string _AndroidDebugBridgeOsLocation;
-        public string AndroidDebugBridgeOsLocation => _AndroidDebugBridgeOsLocation ?? (_AndroidDebugBridgeOsLocation = ConfigurationManager.AppSettings["AdbOsWorkingFolder"]);
+        private string _androidDebugBridgeOsLocation;
+        public string AndroidDebugBridgeOsLocation => _androidDebugBridgeOsLocation ?? (_androidDebugBridgeOsLocation = ConfigurationManager.AppSettings["AdbOsWorkingFolder"]);
 
         private readonly Settings _settings;
 
         public ZaloCommunityService(Settings settings)
         {
-            this._settings = settings;
+            _settings = settings;
 
             try
             {

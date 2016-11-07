@@ -50,7 +50,13 @@
                 <CheckBox Content="Chế độ kiểm tra"
                           Margin="5,10,5,20"
                           IsChecked="{Binding Settings.IsDebug, Source={StaticResource Locator}}" />
+
+                <CheckBox Content="Đăng nhập bằng tài khoản có sẵn trên máy"
+                          Margin="5,10,5,20"
+                          IsChecked="{Binding Settings.IgnoreLogin, Source={StaticResource Locator}}" />
+
                 <DataGrid ItemsSource="{Binding Users}"
+                          IsEnabled="{Binding Settings.IgnoreLogin, Source={StaticResource Locator}, Converter={x:Static uiAssists:UiConverterHelper.IsFalse}}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">

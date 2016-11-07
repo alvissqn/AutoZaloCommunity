@@ -3,7 +3,10 @@
     public class Settings
     {
         public string AndroidDebugBridgeOsWorkingLocation { get; set; }
+
         public string DeviceNumber { get; set; }
+
+        public bool IgnoreLogin { get; set; }
 
         public ScreenInfo Screen { get; } = new ScreenInfo();
 
@@ -16,7 +19,5 @@
         public bool IsDebug { get; set; } = true;
 
         public User User { get; set; }
-
-        
     }
 }

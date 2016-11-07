@@ -42,6 +42,7 @@ namespace ZaloCommunityDev.UiAssists
     public static class UiConverterHelper
     {
         public static IValueConverter TextToUri => Get(text => new Uri((string)text, UriKind.RelativeOrAbsolute));
+        public static IValueConverter IsFalse => Get(value => !(bool)value);
         public static IValueConverter InvertBoolean => Get(text => !(bool)text);
 
         public static IValueConverter TimeSpanNowConverter => Get((timespan) => DateTime.Now.Date.Add((TimeSpan)timespan), (dateTime) => ((DateTime)dateTime) - ((DateTime)dateTime).Date);

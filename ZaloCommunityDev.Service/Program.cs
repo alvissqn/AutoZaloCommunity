@@ -13,6 +13,7 @@ namespace ZaloCommunityDev.Service
     {
         internal const string WorkingFolderPath = @"WorkingSession";
         public static string SessionId { get; private set; }
+
         private static void Main(string[] args)
         {
             if (args[1] == "last-filter")
@@ -22,7 +23,7 @@ namespace ZaloCommunityDev.Service
                 args[1] = directory.Split("\\".ToArray()).Last();
             }
 
-             Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var sessionId = args[1];
             SessionId = sessionId;
@@ -36,14 +37,15 @@ namespace ZaloCommunityDev.Service
             var zaloAdbRequest = new ZaloAdbRequest(settings);
             if (!zaloAdbRequest.StartAvd(settings.DeviceNumber))
             {
-                ZaloHelper.Output("Không tìm thấy thiết bị android nào.");
+                ZaloHelper.Output("Không tìm thấy thiết bị android.");
                 return;
             }
-//#if RELEASE
 
-            var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
-            zaloLoginService.Login(settings.User);
-//#endif
+            if (!settings.IgnoreLogin)
+            {
+                var zaloLoginService = new ZaloLoginService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
+                zaloLoginService.Login(settings.User);
+            }
             switch (args[0])
             {
                 case RunnerConstants.addfriendnearby:
@@ -84,7 +86,7 @@ namespace ZaloCommunityDev.Service
 
                 case RunnerConstants.searchallfriendsincontacts:
                 case "tim-tat-ca-cac-ban-trong-danh-ba":
-                    var  zaloSearchFriendService = new ZaloSearchFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
+                    var zaloSearchFriendService = new ZaloSearchFriendService(settings, databaseContext, zaloImageProcessing, zaloAdbRequest);
                     zaloSearchFriendService.SearchFriendInContactList();
 
                     break;
